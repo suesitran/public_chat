@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:public_chat/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/widgets/message_box_widget.dart';
+import 'package:public_chat/worker/genai_worker.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final GenAIWorker _worker = GenAIWorker();
+
+  MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
