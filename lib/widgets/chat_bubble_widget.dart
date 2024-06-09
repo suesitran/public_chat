@@ -38,9 +38,8 @@ class ChatBubble extends StatelessWidget {
 
     // message bubble
     widgets.add(Container(
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.8
-      ),
+      constraints:
+          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.0),
           color: isMine ? Colors.black26 : Colors.black87),
@@ -57,7 +56,8 @@ class ChatBubble extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: isMine ? widgets.reversed.toList() : widgets,
       ),
     );
