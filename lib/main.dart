@@ -20,23 +20,24 @@ class MainApp extends StatelessWidget {
             child: Column(
           children: [
             Expanded(
-                child: ListView(
-              children: [
-                ChatBubble(
-                    isMine: false,
-                    photoUrl: 'https://i.imgur.com/cefjdCQ.jpeg',
-                    message:
-                        'this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me'),
-                ChatBubble(
-                    isMine: true,
-                    photoUrl: 'https://i.imgur.com/cefjdCQ.jpeg',
-                    message:
-                        'this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me this is a message from me'),
-              ],
-            )),
+                child: StreamBuilder<List<ChatContent>>(
+                    stream: _worker.stream,
+                    builder: (context, snapshot) {
+                      final List<ChatContent> data = snapshot.data ?? [];
+                      return ListView(
+                        children: data.map((e) {
+                          final bool isMine = e.sender == Sender.user;
+                          return ChatBubble(
+                              isMine: isMine,
+                              photoUrl: null,
+                              message: e.message);
+                        }).toList(),
+                      );
+                    })),
             MessageBox(
               onSendMessage: (value) {
                 // TODO send message to Gemini
+                _worker.sendToGemini(value);
               },
             )
           ],
