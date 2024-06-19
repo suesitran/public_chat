@@ -24,19 +24,20 @@ class _MessageBoxState extends State<MessageBox> {
           controller: _controller,
           maxLines: 1,
           decoration: InputDecoration(
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16.0),
-                borderSide:
-                    const BorderSide(color: Colors.black38, width: 1.0)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-            suffix: IconButton(
-              onPressed: () {
-                widget.onSendMessage(_controller.text);
-                _controller.text = '';
-              },
-              icon: const Icon(Icons.send),
-            ),
-          ),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  borderSide:
+                      const BorderSide(color: Colors.black38, width: 1.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  widget.onSendMessage(_controller.text);
+                  _controller.text = '';
+                },
+                icon: const Icon(Icons.send),
+              ),
+              hintText: 'Write something...',
+              hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5))),
           onSubmitted: (value) {
             widget.onSendMessage(value);
             _controller.text = '';

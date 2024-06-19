@@ -8,8 +8,10 @@ environment:
 
 dependencies:
   cached_network_image: ^3.3.1
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.6
   flutter_svg: ^2.0.10+1
   google_generative_ai: ^0.4.3
 
@@ -20,3 +22,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/

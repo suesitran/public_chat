@@ -1,19 +1,21 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:public_chat/data/chat_data.dart';
+import 'package:public_chat/gen/assets.gen.dart';
 
 class ChatBubble extends StatelessWidget {
-  final bool isMine;
+  final Sender sender;
   final String? photoUrl;
   final String message;
 
   final double _iconSize = 24.0;
 
-  const ChatBubble(
-      {required this.isMine,
-      required this.photoUrl,
-      required this.message,
-      super.key});
+  const ChatBubble.user(this.message, {this.photoUrl, super.key})
+      : sender = Sender.user;
+  const ChatBubble.gemini(this.message, {super.key})
+      : photoUrl = null,
+        sender = Sender.gemini;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +26,23 @@ class ChatBubble extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: ClipRRect(
           borderRadius: BorderRadius.circular(_iconSize),
-          child: photoUrl == null
-              ? const _DefaultPersonWidget()
-              : CachedNetworkImage(
-                  imageUrl: photoUrl!,
+          child: sender == Sender.gemini
+              ? SvgPicture.asset(
+                  Assets.googleGeminiIcon,
                   width: _iconSize,
                   height: _iconSize,
-                  fit: BoxFit.fitWidth,
-                  errorWidget: (context, url, error) =>
-                      const _DefaultPersonWidget(),
-                  placeholder: (context, url) => const _DefaultPersonWidget())),
+                )
+              : photoUrl == null
+                  ? const _DefaultPersonWidget()
+                  : CachedNetworkImage(
+                      imageUrl: photoUrl!,
+                      width: _iconSize,
+                      height: _iconSize,
+                      fit: BoxFit.fitWidth,
+                      errorWidget: (context, url, error) =>
+                          const _DefaultPersonWidget(),
+                      placeholder: (context, url) =>
+                          const _DefaultPersonWidget())),
     ));
 
     // message bubble
@@ -58,14 +67,17 @@ class ChatBubble extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment:
             isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: isMine ? widgets.reversed.toList() : widgets,
       ),
     );
   }
+
+  bool get isMine => sender == Sender.user;
 }
 
 class _DefaultPersonWidget extends StatelessWidget {
-  const _DefaultPersonWidget({super.key});
+  const _DefaultPersonWidget();
 
   @override
   Widget build(BuildContext context) => const Icon(
