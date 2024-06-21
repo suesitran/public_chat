@@ -12,10 +12,11 @@ import 'package:flutter/widgets.dart';
 class Assets {
   Assets._();
 
+  static const String file = 'assets/file.svg';
   static const String googleGeminiIcon = 'assets/google-gemini-icon.svg';
 
   /// List of all assets
-  List<String> get values => [googleGeminiIcon];
+  List<String> get values => [file, googleGeminiIcon];
 }
 
 class AssetGenImage {

@@ -7,15 +7,17 @@ import 'package:public_chat/gen/assets.gen.dart';
 class ChatBubble extends StatelessWidget {
   final Sender sender;
   final String? photoUrl;
-  final String message;
+  final ChatData chatData;
 
   final double _iconSize = 24.0;
 
-  const ChatBubble.user(this.message, {this.photoUrl, super.key})
+  const ChatBubble.user(this.chatData, {this.photoUrl, super.key})
       : sender = Sender.user;
-  const ChatBubble.gemini(this.message, {super.key})
+  const ChatBubble.gemini(this.chatData, {super.key})
       : photoUrl = null,
         sender = Sender.gemini;
+
+  const ChatBubble(this.sender, this.photoUrl, this.chatData, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +49,14 @@ class ChatBubble extends StatelessWidget {
 
     // message bubble
     widgets.add(Container(
-      constraints:
-          BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
-          color: isMine ? Colors.black26 : Colors.black87),
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        message,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Colors.white),
-      ),
-    ));
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: isMine ? Colors.black26 : Colors.black87),
+        padding: const EdgeInsets.all(8.0),
+        child:
+            _DataContainer(chatData, isMine ? Colors.black87 : Colors.white)));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -85,4 +81,36 @@ class _DefaultPersonWidget extends StatelessWidget {
         color: Colors.black,
         size: 20,
       );
+}
+
+class _DataContainer extends StatelessWidget {
+  final ChatData data;
+  final Color color;
+
+  const _DataContainer(this.data, this.color, {super.key});
+
+  // TODO implement UI for File and Memory data
+  @override
+  Widget build(BuildContext context) => switch (data) {
+        TextData text => Text(
+            text.message,
+            style:
+                Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+          ),
+        FileData file => Text(
+            'File: ${file.file.path}',
+            style:
+                Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+          ),
+        MemoryData _ => Text(
+            'Data from Memory',
+            style:
+                Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+          ),
+        _ => Text(
+            'Unknown data',
+            style:
+                Theme.of(context).textTheme.bodyMedium?.copyWith(color: color),
+          )
+      };
 }
