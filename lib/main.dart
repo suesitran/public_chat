@@ -8,9 +8,9 @@ void main() {
 }
 
 class MainApp extends StatelessWidget {
-  final GenAIWorker _worker = GenAIWorker();
+  final GenAIWorker _worker;
 
-  MainApp({super.key});
+  MainApp({GenAIWorker? worker, super.key}) : _worker = worker ?? GenAIWorker();
 
   @override
   Widget build(BuildContext context) {

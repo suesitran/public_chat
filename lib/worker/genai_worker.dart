@@ -6,7 +6,8 @@ class GenAIWorker {
   late final GenerativeModelWrapper _model;
 
   final List<ChatContent> _content = [];
-  final StreamController<List<ChatContent>> _streamController = StreamController.broadcast();
+  final StreamController<List<ChatContent>> _streamController =
+      StreamController.broadcast();
 
   Stream<List<ChatContent>> get stream => _streamController.stream;
 
@@ -55,5 +56,6 @@ class GenerativeModelWrapper {
     _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey);
   }
 
-  Future<GenerateContentResponse> generateContent(Iterable<Content> prompt) => _model.generateContent(prompt);
+  Future<GenerateContentResponse> generateContent(Iterable<Content> prompt) =>
+      _model.generateContent(prompt);
 }
