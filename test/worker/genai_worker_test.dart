@@ -10,10 +10,11 @@ class MockGenerativeModel extends Mock implements GenerativeModelWrapper {}
 void main() {
   final MockGenerativeModel model = MockGenerativeModel();
 
-  test('given generateContent response success, and text is null,'
+  test(
+      'given generateContent response success, and text is null,'
       ' when sendToGemini,'
       ' then return preset response', () async {
-    final GenAIWorker worker = GenAIWorker(wrapper:  model);
+    final GenAIWorker worker = GenAIWorker(wrapper: model);
 
     List<ChatContent> contents = [];
     final StreamSubscription subscription = worker.stream.listen((event) {
@@ -21,10 +22,12 @@ void main() {
     });
 
     // given
-    when(() => model.generateContent(any()),).thenAnswer((invocation) => Future.value(GenerateContentResponse(
-      [Candidate(Content('user', []), null, null, null, null)],
-      null,
-    )));
+    when(
+      () => model.generateContent(any()),
+    ).thenAnswer((invocation) => Future.value(GenerateContentResponse(
+          [Candidate(Content('user', []), null, null, null, null)],
+          null,
+        )));
 
     // when
     await worker.sendToGemini('This is my message');
@@ -40,10 +43,11 @@ void main() {
     subscription.cancel();
   });
 
-  test('given generateContent response success, and text is available,'
+  test(
+      'given generateContent response success, and text is available,'
       ' when sendToGemini,'
       ' then return responded text', () async {
-    final GenAIWorker worker = GenAIWorker(wrapper:  model);
+    final GenAIWorker worker = GenAIWorker(wrapper: model);
 
     List<ChatContent> contents = [];
     final StreamSubscription subscription = worker.stream.listen((event) {
@@ -51,10 +55,15 @@ void main() {
     });
 
     // given
-    when(() => model.generateContent(any()),).thenAnswer((invocation) => Future.value(GenerateContentResponse(
-      [Candidate(Content.model([TextPart('this is message from gemini')]), null, null, null, null)],
-      null,
-    )));
+    when(
+      () => model.generateContent(any()),
+    ).thenAnswer((invocation) => Future.value(GenerateContentResponse(
+          [
+            Candidate(Content.model([TextPart('this is message from gemini')]),
+                null, null, null, null)
+          ],
+          null,
+        )));
 
     // when
     await worker.sendToGemini('This is my message');
@@ -70,10 +79,11 @@ void main() {
     subscription.cancel();
   });
 
-  test('given generateContent failed to response,'
+  test(
+      'given generateContent failed to response,'
       ' when sendToGemini,'
       ' then return preset text', () async {
-    final GenAIWorker worker = GenAIWorker(wrapper:  model);
+    final GenAIWorker worker = GenAIWorker(wrapper: model);
 
     List<ChatContent> contents = [];
     final StreamSubscription subscription = worker.stream.listen((event) {
@@ -81,7 +91,9 @@ void main() {
     });
 
     // given
-    when(() => model.generateContent(any()),).thenThrow(Exception('anything'));
+    when(
+      () => model.generateContent(any()),
+    ).thenThrow(Exception('anything'));
 
     // when
     await worker.sendToGemini('This is my message');
