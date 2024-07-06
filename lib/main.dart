@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/bloc/genai_bloc.dart';
+import 'package:public_chat/data/chat_content.dart';
 import 'package:public_chat/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/widgets/message_box_widget.dart';
 import 'package:public_chat/worker/genai_worker.dart';
 
 void main() {
-  runApp(MainApp());
+  runApp(BlocProvider<GenaiBloc>(
+    create: (context) => GenaiBloc(),
+    child: MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
-  final GenAIWorker _worker = GenAIWorker();
-
   MainApp({super.key});
 
   @override
@@ -20,10 +24,15 @@ class MainApp extends StatelessWidget {
             child: Column(
           children: [
             Expanded(
-                child: StreamBuilder<List<ChatContent>>(
-                    stream: _worker.stream,
-                    builder: (context, snapshot) {
-                      final List<ChatContent> data = snapshot.data ?? [];
+                child: BlocBuilder<GenaiBloc, GenaiState>(
+                    builder: (context, state) {
+
+                      final List<ChatContent> data = [];
+
+                      if (state is MessagesUpdate) {
+                        data.addAll(state.contents);
+                      }
+
                       return ListView(
                         children: data.map((e) {
                           final bool isMine = e.sender == Sender.user;
@@ -36,8 +45,7 @@ class MainApp extends StatelessWidget {
                     })),
             MessageBox(
               onSendMessage: (value) {
-                // TODO send message to Gemini
-                _worker.sendToGemini(value);
+                context.read<GenaiBloc>().add(SendMessageEvent(value));
               },
             )
           ],
