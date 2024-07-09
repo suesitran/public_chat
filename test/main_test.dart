@@ -1,24 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:public_chat/bloc/genai_bloc.dart';
+import 'package:public_chat/data/chat_content.dart';
 import 'package:public_chat/main.dart';
 import 'package:public_chat/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/widgets/message_box_widget.dart';
-import 'package:public_chat/worker/genai_worker.dart';
 
-class MockGenAIWorker extends Mock implements GenAIWorker {}
+class MockGenaiBloc extends Mock implements GenaiBloc {}
 
 void main() {
-  final MockGenAIWorker worker = MockGenAIWorker();
+  final MockGenaiBloc genaiBloc = MockGenaiBloc();
+
+  setUp(
+    () {
+      when(
+        () => genaiBloc.state,
+      ).thenAnswer(
+        (_) => GenaiInitial(),
+      );
+      when(
+        () => genaiBloc.stream,
+      ).thenAnswer(
+        (_) => const Stream.empty(),
+      );
+      when(
+        () => genaiBloc.close(),
+      ).thenAnswer(
+        (invocation) => Future.value(),
+      );
+    },
+  );
 
   tearDown(() {
-    reset(worker);
+    reset(genaiBloc);
   });
 
   testWidgets('verify UI component', (widgetTester) async {
-    final Widget widget = MainApp();
+    const Widget widget = MainApp();
 
-    await widgetTester.pumpWidget(widget);
+    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+      create: (context) => genaiBloc,
+      child: widget,
+    ));
 
     expect(
         find.descendant(
@@ -39,11 +64,11 @@ void main() {
     expect(
         find.descendant(
             of: find.byType(Expanded),
-            matching: find.byType(StreamBuilder<List<ChatContent>>)),
+            matching: find.byType(BlocBuilder<GenaiBloc, GenaiState>)),
         findsOneWidget);
     expect(
         find.descendant(
-            of: find.byType(StreamBuilder<List<ChatContent>>),
+            of: find.byType(BlocBuilder<GenaiBloc, GenaiState>),
             matching: find.byType(ListView)),
         findsOneWidget);
   });
@@ -55,16 +80,17 @@ void main() {
       (widgetTester) async {
     // given
     when(
-      () => worker.stream,
-    ).thenAnswer((invocation) => Stream.value([
+      () => genaiBloc.stream,
+    ).thenAnswer((invocation) => Stream.value(const MessagesUpdate([
           ChatContent.user('This is a message from user'),
           ChatContent.gemini('This is a message from Gemini')
-        ]));
-    final Widget widget = MainApp(
-      worker: worker,
-    );
+        ])));
+    const Widget widget = MainApp();
 
-    await widgetTester.pumpWidget(widget);
+    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+      create: (context) => genaiBloc,
+      child: widget,
+    ));
     await widgetTester.pumpAndSettle();
 
     // then
@@ -85,13 +111,14 @@ void main() {
       ' then show ListView 0 ChatBubbles', (widgetTester) async {
     // given
     when(
-      () => worker.stream,
-    ).thenAnswer((invocation) => Stream.value([]));
-    final Widget widget = MainApp(
-      worker: worker,
-    );
+      () => genaiBloc.stream,
+    ).thenAnswer((invocation) => Stream.value(const MessagesUpdate([])));
+    const Widget widget = MainApp();
 
-    await widgetTester.pumpWidget(widget);
+    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+      create: (context) => genaiBloc,
+      child: widget,
+    ));
     await widgetTester.pumpAndSettle();
 
     // then
@@ -110,13 +137,14 @@ void main() {
       ' then show ListView 0 ChatBubbles', (widgetTester) async {
     // given
     when(
-      () => worker.stream,
-    ).thenAnswer((invocation) => Stream.empty());
-    final Widget widget = MainApp(
-      worker: worker,
-    );
+      () => genaiBloc.stream,
+    ).thenAnswer((invocation) => const Stream.empty());
+    const Widget widget = MainApp();
 
-    await widgetTester.pumpWidget(widget);
+    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+      create: (context) => genaiBloc,
+      child: widget,
+    ));
     await widgetTester.pumpAndSettle();
 
     // then
