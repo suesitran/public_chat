@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/bloc/genai_bloc.dart';
 import 'package:public_chat/data/chat_content.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/widgets/message_box_widget.dart';
 
 void main() {
+  ServiceLocator.instance.initialise();
+
   runApp(BlocProvider<GenaiBloc>(
     create: (context) => GenaiBloc(),
     child: const MainApp(),
