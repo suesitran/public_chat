@@ -12,7 +12,7 @@ final class GenaiInitial extends GenaiState {
 class MessagesUpdate extends GenaiState {
   final List<ChatContent> contents;
 
-  MessagesUpdate(this.contents);
+  const MessagesUpdate(this.contents);
 
   @override
   List<Object?> get props => [...contents, contents.length];

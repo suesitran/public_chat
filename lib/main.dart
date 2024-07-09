@@ -4,17 +4,16 @@ import 'package:public_chat/bloc/genai_bloc.dart';
 import 'package:public_chat/data/chat_content.dart';
 import 'package:public_chat/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/widgets/message_box_widget.dart';
-import 'package:public_chat/worker/genai_worker.dart';
 
 void main() {
   runApp(BlocProvider<GenaiBloc>(
     create: (context) => GenaiBloc(),
-    child: MainApp(),
+    child: const MainApp(),
   ));
 }
 
 class MainApp extends StatelessWidget {
-  MainApp({super.key});
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
