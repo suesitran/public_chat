@@ -25,26 +25,22 @@ class MainApp extends StatelessWidget {
         body: Center(
             child: Column(
           children: [
-            Expanded(
-                child: BlocBuilder<GenaiBloc, GenaiState>(
-                    builder: (context, state) {
+            Expanded(child:
+                BlocBuilder<GenaiBloc, GenaiState>(builder: (context, state) {
+              final List<ChatContent> data = [];
 
-                      final List<ChatContent> data = [];
+              if (state is MessagesUpdate) {
+                data.addAll(state.contents);
+              }
 
-                      if (state is MessagesUpdate) {
-                        data.addAll(state.contents);
-                      }
-
-                      return ListView(
-                        children: data.map((e) {
-                          final bool isMine = e.sender == Sender.user;
-                          return ChatBubble(
-                              isMine: isMine,
-                              photoUrl: null,
-                              message: e.message);
-                        }).toList(),
-                      );
-                    })),
+              return ListView(
+                children: data.map((e) {
+                  final bool isMine = e.sender == Sender.user;
+                  return ChatBubble(
+                      isMine: isMine, photoUrl: null, message: e.message);
+                }).toList(),
+              );
+            })),
             MessageBox(
               onSendMessage: (value) {
                 context.read<GenaiBloc>().add(SendMessageEvent(value));

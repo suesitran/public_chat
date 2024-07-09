@@ -7,7 +7,7 @@ import '../material_wrapper_extension.dart';
 
 void main() {
   testWidgets('verify UI component', (widgetTester) async {
-    final Widget widget =
+    const Widget widget =
         ChatBubble(isMine: true, photoUrl: null, message: 'message');
 
     await widgetTester.wrapAndPump(widget);
@@ -45,7 +45,7 @@ void main() {
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.borderRadius, BorderRadius.circular(16));
-    expect(container.padding, EdgeInsets.all(8));
+    expect(container.padding, const EdgeInsets.all(8));
   });
 
   testWidgets(
@@ -54,7 +54,7 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    final Widget widget =
+    const Widget widget =
         ChatBubble(isMine: true, photoUrl: null, message: 'message');
 
     // when
@@ -76,7 +76,7 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    final Widget widget =
+    const Widget widget =
         ChatBubble(isMine: true, photoUrl: 'photoUrl', message: 'message');
 
     // when
@@ -93,7 +93,7 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    final Widget widget =
+    const Widget widget =
         ChatBubble(isMine: true, photoUrl: 'photoUrl', message: 'message');
 
     // when
@@ -124,7 +124,7 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    final Widget widget =
+    const Widget widget =
         ChatBubble(isMine: false, photoUrl: 'photoUrl', message: 'message');
 
     // when

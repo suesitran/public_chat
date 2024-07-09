@@ -9,5 +9,6 @@ class GenAiModel {
     _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey);
   }
 
-  Future<GenerateContentResponse> sendMessage(List<Content> content) => _model.generateContent(content);
+  Future<GenerateContentResponse> sendMessage(List<Content> content) =>
+      _model.generateContent(content);
 }
