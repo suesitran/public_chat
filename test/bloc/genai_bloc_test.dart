@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:get_it/get_it.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/bloc/genai_bloc.dart';
 import 'package:public_chat/data/chat_content.dart';
 import 'package:public_chat/repository/genai_model.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 
 class MockGenAiModel extends Mock implements GenAiModel {}
 
@@ -14,7 +14,7 @@ void main() {
 
   setUpAll(
     () {
-      GetIt.instance.registerSingleton<GenAiModel>(model);
+      ServiceLocator.instance.registerSingletonIfNeeded<GenAiModel>(model);
     },
   );
 
@@ -26,7 +26,7 @@ void main() {
 
   tearDownAll(
     () {
-      GetIt.instance.unregister<GenAiModel>();
+      ServiceLocator.instance.reset();
     },
   );
 

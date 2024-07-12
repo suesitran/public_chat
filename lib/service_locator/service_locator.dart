@@ -4,15 +4,23 @@ import 'package:public_chat/repository/genai_model.dart';
 class ServiceLocator {
   static ServiceLocator instance = ServiceLocator._();
 
+  final GetIt _getIt = GetIt.asNewInstance();
+
   ServiceLocator._();
 
   void initialise() {
-    if (!GetIt.instance.isRegistered<GenAiModel>()) {
-      GetIt.instance.registerSingleton(GenAiModel());
+    registerSingletonIfNeeded(GenAiModel());
+  }
+
+  void registerSingletonIfNeeded<T extends Object>(T instance) {
+    if (!_getIt.isRegistered<T>()) {
+      _getIt.registerSingleton<T>(instance);
     }
   }
 
+  void reset() => _getIt.reset();
+
   T get<T extends Object>() {
-    return GetIt.instance.get<T>();
+    return _getIt.get<T>();
   }
 }
