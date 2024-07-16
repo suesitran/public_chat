@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/bloc/genai_bloc.dart';
+import 'package:public_chat/data/chat_content.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/widgets/message_box_widget.dart';
-import 'package:public_chat/worker/genai_worker.dart';
 
 void main() {
-  runApp(MainApp());
+  ServiceLocator.instance.initialise();
+
+  runApp(BlocProvider<GenaiBloc>(
+    create: (context) => GenaiBloc(),
+    child: const MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
-  final GenAIWorker _worker = GenAIWorker();
-
-  MainApp({super.key});
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,25 +25,25 @@ class MainApp extends StatelessWidget {
         body: Center(
             child: Column(
           children: [
-            Expanded(
-                child: StreamBuilder<List<ChatContent>>(
-                    stream: _worker.stream,
-                    builder: (context, snapshot) {
-                      final List<ChatContent> data = snapshot.data ?? [];
-                      return ListView(
-                        children: data.map((e) {
-                          final bool isMine = e.sender == Sender.user;
-                          return ChatBubble(
-                              isMine: isMine,
-                              photoUrl: null,
-                              message: e.message);
-                        }).toList(),
-                      );
-                    })),
+            Expanded(child:
+                BlocBuilder<GenaiBloc, GenaiState>(builder: (context, state) {
+              final List<ChatContent> data = [];
+
+              if (state is MessagesUpdate) {
+                data.addAll(state.contents);
+              }
+
+              return ListView(
+                children: data.map((e) {
+                  final bool isMine = e.sender == Sender.user;
+                  return ChatBubble(
+                      isMine: isMine, photoUrl: null, message: e.message);
+                }).toList(),
+              );
+            })),
             MessageBox(
               onSendMessage: (value) {
-                // TODO send message to Gemini
-                _worker.sendToGemini(value);
+                context.read<GenaiBloc>().add(SendMessageEvent(value));
               },
             )
           ],

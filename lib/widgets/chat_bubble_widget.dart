@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
@@ -65,7 +64,7 @@ class ChatBubble extends StatelessWidget {
 }
 
 class _DefaultPersonWidget extends StatelessWidget {
-  const _DefaultPersonWidget({super.key});
+  const _DefaultPersonWidget();
 
   @override
   Widget build(BuildContext context) => const Icon(
