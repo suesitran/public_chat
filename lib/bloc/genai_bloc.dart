@@ -22,7 +22,7 @@ class GenaiBloc extends Bloc<GenaiEvent, GenaiState> {
     emitSafely(MessagesUpdate(List.from(_content)));
 
     try {
-      final response = await _model.sendMessage([Content.text(event.message)]);
+      final response = await _model.sendMessage(Content.text(event.message));
 
       final String? text = response.text;
 
