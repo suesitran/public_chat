@@ -15,6 +15,7 @@ void main() {
   setUpAll(
     () {
       ServiceLocator.instance.registerSingletonIfNeeded<GenAiModel>(model);
+      registerFallbackValue(Content.text('text'));
     },
   );
 
@@ -38,7 +39,7 @@ void main() {
     setUp: () {
       // given
       when(
-        () => model.sendMessage(any()),
+        () => model.sendMessage(any<Content>()),
       ).thenAnswer(
         (invocation) => Future.value(GenerateContentResponse(
           [Candidate(Content('user', []), null, null, null, null)],
@@ -69,7 +70,7 @@ void main() {
     build: () => GenaiBloc(),
     setUp: () {
       when(
-        () => model.sendMessage(any()),
+        () => model.sendMessage(any<Content>()),
       ).thenAnswer((invocation) => Future.value(GenerateContentResponse(
             [
               Candidate(
@@ -103,7 +104,7 @@ void main() {
     build: () => GenaiBloc(),
     setUp: () {
       when(
-        () => model.sendMessage(any()),
+        () => model.sendMessage(any<Content>()),
       ).thenThrow(Exception('anything'));
     },
     act: (bloc) => bloc.add(const SendMessageEvent('This is my message')),
