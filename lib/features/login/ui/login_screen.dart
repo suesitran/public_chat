@@ -10,7 +10,7 @@ class LoginScreen extends StatelessWidget {
         onPressed: () {
           // TODO login with Google
         },
-        child: Text('Login'),
+        child: const Text('Login'),
       ),
     ),
   );
