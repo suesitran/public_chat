@@ -35,9 +35,7 @@ class MainApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [
-          Locale('en'), // English
-        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         home: LoginScreen()
     );
   }
