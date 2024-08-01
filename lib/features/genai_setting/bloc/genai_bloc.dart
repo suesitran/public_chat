@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import 'package:public_chat/data/chat_content.dart';
+import 'package:public_chat/features/genai_setting/data/chat_content.dart';
 import 'package:public_chat/repository/genai_model.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
