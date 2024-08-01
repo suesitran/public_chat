@@ -1,12 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/bloc/genai_bloc.dart';
-import 'package:public_chat/data/chat_content.dart';
+import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
+import 'package:public_chat/features/genai_setting/ui/genai_setting_screen.dart';
+import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
-import 'package:public_chat/widgets/chat_bubble_widget.dart';
-import 'package:public_chat/widgets/message_box_widget.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   ServiceLocator.instance.initialise();
 
   runApp(BlocProvider<GenaiBloc>(
@@ -20,35 +25,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-            child: Column(
-          children: [
-            Expanded(child:
-                BlocBuilder<GenaiBloc, GenaiState>(builder: (context, state) {
-              final List<ChatContent> data = [];
-
-              if (state is MessagesUpdate) {
-                data.addAll(state.contents);
-              }
-
-              return ListView(
-                children: data.map((e) {
-                  final bool isMine = e.sender == Sender.user;
-                  return ChatBubble(
-                      isMine: isMine, photoUrl: null, message: e.message);
-                }).toList(),
-              );
-            })),
-            MessageBox(
-              onSendMessage: (value) {
-                context.read<GenaiBloc>().add(SendMessageEvent(value));
-              },
-            )
-          ],
-        )),
-      ),
+    return const MaterialApp(
+      home: GenaiSettingScreen()
     );
   }
 }
