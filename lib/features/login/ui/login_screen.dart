@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -10,7 +11,7 @@ class LoginScreen extends StatelessWidget {
         onPressed: () {
           // TODO login with Google
         },
-        child: const Text('Login'),
+        child: Text(AppLocalizations.of(context)?.login ?? ''),
       ),
     ),
   );
