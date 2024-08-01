@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/data/chat_content.dart';
+import 'package:public_chat/features/genai_setting/data/chat_content.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
 import 'package:public_chat/features/genai_setting/ui/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/features/genai_setting/ui/widgets/message_box_widget.dart';
