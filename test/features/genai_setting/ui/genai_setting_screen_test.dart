@@ -16,21 +16,21 @@ void main() {
   final MockGenaiBloc genaiBloc = MockGenaiBloc();
 
   setUp(
-        () {
+    () {
       when(
-            () => genaiBloc.state,
+        () => genaiBloc.state,
       ).thenAnswer(
-            (_) => GenaiInitial(),
+        (_) => GenaiInitial(),
       );
       when(
-            () => genaiBloc.stream,
+        () => genaiBloc.stream,
       ).thenAnswer(
-            (_) => const Stream.empty(),
+        (_) => const Stream.empty(),
       );
       when(
-            () => genaiBloc.close(),
+        () => genaiBloc.close(),
       ).thenAnswer(
-            (invocation) => Future.value(),
+        (invocation) => Future.value(),
       );
     },
   );
@@ -77,43 +77,43 @@ void main() {
 
   testWidgets(
       'given GenAIWorker stream return List of ChatContent,'
-          ' when load MainApp,'
-          ' then show ListView with number of ChatBubbles matching number of ChatContents',
-          (widgetTester) async {
-        // given
-        when(
-              () => genaiBloc.stream,
-        ).thenAnswer((invocation) => Stream.value(const MessagesUpdate([
+      ' when load MainApp,'
+      ' then show ListView with number of ChatBubbles matching number of ChatContents',
+      (widgetTester) async {
+    // given
+    when(
+      () => genaiBloc.stream,
+    ).thenAnswer((invocation) => Stream.value(const MessagesUpdate([
           ChatContent.user('This is a message from user'),
           ChatContent.gemini('This is a message from Gemini')
         ])));
-        const Widget widget = GenaiSettingScreen();
+    const Widget widget = GenaiSettingScreen();
 
-        await widgetTester.wrapAndPump(BlocProvider<GenaiBloc>(
-          create: (context) => genaiBloc,
-          child: widget,
-        ));
-        await widgetTester.pumpAndSettle();
+    await widgetTester.wrapAndPump(BlocProvider<GenaiBloc>(
+      create: (context) => genaiBloc,
+      child: widget,
+    ));
+    await widgetTester.pumpAndSettle();
 
-        // then
-        expect(find.byType(ChatBubble), findsNWidgets(2));
-        expect(
-            find.descendant(
-                of: find.byType(ListView), matching: find.byType(ChatBubble)),
-            findsNWidgets(2));
-        final ListView listView = widgetTester.widget(find.byType(ListView));
-        expect(listView.childrenDelegate.estimatedChildCount, 2);
-        expect(find.text('This is a message from user'), findsOneWidget);
-        expect(find.text('This is a message from Gemini'), findsOneWidget);
-      });
+    // then
+    expect(find.byType(ChatBubble), findsNWidgets(2));
+    expect(
+        find.descendant(
+            of: find.byType(ListView), matching: find.byType(ChatBubble)),
+        findsNWidgets(2));
+    final ListView listView = widgetTester.widget(find.byType(ListView));
+    expect(listView.childrenDelegate.estimatedChildCount, 2);
+    expect(find.text('This is a message from user'), findsOneWidget);
+    expect(find.text('This is a message from Gemini'), findsOneWidget);
+  });
 
   testWidgets(
       'given GenAIWorker stream return empty list of ChatContent,'
-          ' when load MainApp,'
-          ' then show ListView 0 ChatBubbles', (widgetTester) async {
+      ' when load MainApp,'
+      ' then show ListView 0 ChatBubbles', (widgetTester) async {
     // given
     when(
-          () => genaiBloc.stream,
+      () => genaiBloc.stream,
     ).thenAnswer((invocation) => Stream.value(const MessagesUpdate([])));
     const Widget widget = GenaiSettingScreen();
 
@@ -135,11 +135,11 @@ void main() {
 
   testWidgets(
       'given GenAIWorker stream does not update,'
-          ' when load MainApp,'
-          ' then show ListView 0 ChatBubbles', (widgetTester) async {
+      ' when load MainApp,'
+      ' then show ListView 0 ChatBubbles', (widgetTester) async {
     // given
     when(
-          () => genaiBloc.stream,
+      () => genaiBloc.stream,
     ).thenAnswer((invocation) => const Stream.empty());
     const Widget widget = GenaiSettingScreen();
 

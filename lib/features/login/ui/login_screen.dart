@@ -7,13 +7,13 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Center(
-      child: TextButton(
-        onPressed: () {
-          // TODO login with Google
-        },
-        child: Text(context.locale.login),
-      ),
-    ),
-  );
+        body: Center(
+          child: TextButton(
+            onPressed: () {
+              // TODO login with Google
+            },
+            child: Text(context.locale.login),
+          ),
+        ),
+      );
 }
