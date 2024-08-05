@@ -14,9 +14,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
+  flutter_localizations:
+    sdk: flutter
   flutter_svg: ^2.0.10+1
   get_it: ^7.7.0
   google_generative_ai: ^0.4.3
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +29,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
