@@ -4,9 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
 import 'package:public_chat/features/genai_setting/data/chat_content.dart';
-import 'package:public_chat/main.dart';
+import 'package:public_chat/features/genai_setting/ui/genai_setting_screen.dart';
 import 'package:public_chat/features/genai_setting/ui/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/features/genai_setting/ui/widgets/message_box_widget.dart';
+
+import '../../../material_wrapper_extension.dart';
 
 class MockGenaiBloc extends Mock implements GenaiBloc {}
 
@@ -38,9 +40,9 @@ void main() {
   });
 
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget = MainApp();
+    const Widget widget = GenaiSettingScreen();
 
-    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+    await widgetTester.wrapAndPump(BlocProvider<GenaiBloc>(
       create: (context) => genaiBloc,
       child: widget,
     ));
@@ -85,9 +87,9 @@ void main() {
           ChatContent.user('This is a message from user'),
           ChatContent.gemini('This is a message from Gemini')
         ])));
-    const Widget widget = MainApp();
+    const Widget widget = GenaiSettingScreen();
 
-    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+    await widgetTester.wrapAndPump(BlocProvider<GenaiBloc>(
       create: (context) => genaiBloc,
       child: widget,
     ));
@@ -113,9 +115,9 @@ void main() {
     when(
       () => genaiBloc.stream,
     ).thenAnswer((invocation) => Stream.value(const MessagesUpdate([])));
-    const Widget widget = MainApp();
+    const Widget widget = GenaiSettingScreen();
 
-    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+    await widgetTester.wrapAndPump(BlocProvider<GenaiBloc>(
       create: (context) => genaiBloc,
       child: widget,
     ));
@@ -139,9 +141,9 @@ void main() {
     when(
       () => genaiBloc.stream,
     ).thenAnswer((invocation) => const Stream.empty());
-    const Widget widget = MainApp();
+    const Widget widget = GenaiSettingScreen();
 
-    await widgetTester.pumpWidget(BlocProvider<GenaiBloc>(
+    await widgetTester.wrapAndPump(BlocProvider<GenaiBloc>(
       create: (context) => genaiBloc,
       child: widget,
     ));
