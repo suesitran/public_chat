@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,10 +10,18 @@ import 'package:public_chat/utils/bloc_extensions.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial());
+  LoginCubit() : super(LoginInitial()) {
+    userSubscription = googleSignIn.onCurrentUserChanged.listen((user) {
+      if (user != null) {
+        _authenticateToFirebase(user);
+      }
+    },);
+  }
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  late final StreamSubscription userSubscription;
 
   void requestLogin() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
     GoogleSignInAccount? googleUser;
     try {
       googleUser = await googleSignIn.signIn();
@@ -25,6 +35,10 @@ class LoginCubit extends Cubit<LoginState> {
       return null;
     }
 
+    await _authenticateToFirebase(googleUser);
+  }
+
+  Future<void> _authenticateToFirebase(GoogleSignInAccount googleUser) async {
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
 
@@ -51,5 +65,10 @@ class LoginCubit extends Cubit<LoginState> {
       emitSafely(LoginFailed(e.toString()));
       return null;
     }
+  }
+  @override
+  Future<void> close() {
+    userSubscription.cancel();
+    return super.close();
   }
 }

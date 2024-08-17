@@ -21,6 +21,7 @@ dependencies:
   get_it: ^7.7.0
   google_generative_ai: ^0.4.3
   google_sign_in: ^6.2.1
+  google_sign_in_web: ^0.12.4+2
   intl: ^0.19.0
 
 dev_dependencies:
