@@ -10,7 +10,7 @@ extension BlocSafety<Event, State> on Bloc<Event, State> {
 }
 
 extension CubitSafely<State> on Cubit<State> {
-  void emitSafely(Emitter<State> emit) {
+  void emitSafely(State state) {
     if (!isClosed) {
       emit(state);
     }
