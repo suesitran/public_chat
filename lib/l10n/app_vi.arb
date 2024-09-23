@@ -1,3 +1,5 @@
 {
-    "login":"Đăng nhập"
+    "login":"Đăng nhập",
+    "publicRoomTitle": "Phòng chat công cộng"
+
 }

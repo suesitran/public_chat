@@ -53,17 +53,16 @@ class LoginCubit extends Cubit<LoginState> {
 
       if (user == null) {
         emitSafely(LoginFailed('Unable to get user credential'));
-
-        return null;
+        return;
       }
 
       emitSafely(LoginSuccess(user.displayName ?? 'Unknown display name'));
     } on FirebaseAuthException catch (e) {
       emitSafely(LoginFailed(e.toString()));
-      return null;
+      return;
     } catch (e) {
       emitSafely(LoginFailed(e.toString()));
-      return null;
+      return;
     }
   }
   @override

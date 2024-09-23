@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
-import 'package:public_chat/features/genai_setting/ui/genai_setting_screen.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
 import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
@@ -34,6 +34,6 @@ class MainApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        home: LoginScreen());
+        home: PublicChatScreen());
   }
 }
