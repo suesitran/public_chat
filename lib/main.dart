@@ -34,6 +34,6 @@ class MainApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        home: PublicChatScreen());
+        home: LoginScreen());
   }
 }
