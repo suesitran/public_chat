@@ -64,4 +64,12 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",asy
     // parse this json to get translated text out
     const translated = JSON.parse(jsonTranslated);
     console.log('final result: ', translated.en);
+
+    // write to message
+    const data = event.data.after.data();
+    return event.data.after.ref.set({
+        'translated': {
+            'en': translated.en
+        }
+    }, {merge: true});
 })
