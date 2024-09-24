@@ -14,7 +14,7 @@ const vertexAIApi = require("@google-cloud/vertexai");
 
 const project = 'proj-atc';
 const location = 'us-central1';
-const textModel =  'gemini-1.0-pro';
+const textModel =  'gemini-1.5-flash';
 const visionModel = 'gemini-1.0-pro-vision';
 
 const vertexAI = new vertexAIApi.VertexAI({project: project, location: location});
@@ -27,24 +27,41 @@ const generativeModelPreview = vertexAI.preview.getGenerativeModel({
     model: textModel,
 });
 
+const generationConfig = {
+    temperature: 1,
+    topP: 0.95,
+    topK: 64,
+    maxOutputTokens: 8192,
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: "object",
+      properties: {
+        en: {
+          type: "string"
+        }
+      },
+      required: [
+        "en"
+      ]
+    },
+  };
+  
+
 exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",async (event) => {
     const document = event.data.after.data();
     const message = document["message"];
     console.log('message: ', message);
 
-    const request = {
-        contents: [
-            {
-                "role": "user",
-                parts: [
-                    {
-                        text: `translate this text to English: ${message}`
-                    }
-                ]
-            }
-        ]
-    }
-    const result = await generativeModelPreview.generateContent(request);
+    const chatSession = generativeModelPreview.startChat({
+        generationConfig: generationConfig
+    });
+    const result = await chatSession.sendMessage(`translate this text to English: ${message}`);
     const response = result.response;
     console.log('Response:', JSON.stringify(response));
+
+    const jsonTranslated = response.candidates[0].content.parts[0].text;
+    console.log('translated json: ', jsonTranslated);
+    // parse this json to get translated text out
+    const translated = JSON.parse(jsonTranslated);
+    console.log('final result: ', translated.en);
 })
