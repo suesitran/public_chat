@@ -12,7 +12,7 @@ class PublicChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final User? user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
         appBar: AppBar(
@@ -24,12 +24,13 @@ class PublicChatScreen extends StatelessWidget {
               child: FirestoreListView<Message>(
                 query: FirebaseFirestore.instance
                     .collection('public')
-                    .orderBy('time')
+                    .orderBy('time', descending: true)
                     .withConverter(
                       fromFirestore: (snapshot, options) =>
                           Message.fromMap(snapshot.id, snapshot.data() ?? {}),
                       toFirestore: (value, options) => value.toMap(),
                     ),
+                reverse: true,
                 itemBuilder:
                     (BuildContext context, QueryDocumentSnapshot<Message> doc) {
                   if (!doc.exists) {
@@ -39,8 +40,8 @@ class PublicChatScreen extends StatelessWidget {
                   final Message message = doc.data();
 
                   return ChatBubble(
-                      isMine: message.sender == uid,
-                      photoUrl: null,
+                      isMine: message.sender == user?.uid,
+                      photoUrl: user?.photoURL,
                       message: message.message,
                       translations: message.translations);
                 },
@@ -54,13 +55,13 @@ class PublicChatScreen extends StatelessWidget {
             ),
             MessageBox(
               onSendMessage: (value) {
-                if (uid == null) {
+                if (user == null) {
                   // do nothing
                   return;
                 }
                 FirebaseFirestore.instance
                     .collection('public')
-                    .add(Message(sender: uid, message: value).toMap());
+                    .add(Message(sender: user.uid, message: value).toMap());
               },
             )
           ],
