@@ -46,21 +46,29 @@ const generationConfig = {
     },
   };
   
-
+// use onDocumentWritten here to prepare to "edit message" feature later
 exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",async (event) => {
     const document = event.data.after.data();
     const message = document["message"];
-    const original = document["translated"]["original"];
-    console.log(`message: ${message}, original ${original}`);
+    console.log(`message: ${message}`);
 
     // no message? do nothing
     if (message == undefined) {
         return;
     }
+    const curTranslated = document["translated"];
 
-    // message is same as original, meaning it's already translated. Do nothing
-    if (message == original) {
-        return;
+    // check if message is translated
+    if (curTranslated != undefined) {
+        // message is translated before, 
+        // check the original message
+        const original = curTranslated["original"];
+
+        console.log('Original: ', original);
+        // message is same as original, meaning it's already translated. Do nothing
+        if (message == original) {
+            return;
+        }
     }
 
     const chatSession = generativeModelPreview.startChat({
