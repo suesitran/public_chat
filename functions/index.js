@@ -50,7 +50,18 @@ const generationConfig = {
 exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",async (event) => {
     const document = event.data.after.data();
     const message = document["message"];
-    console.log('message: ', message);
+    const original = document["translated"]["original"];
+    console.log(`message: ${message}, original ${original}`);
+
+    // no message? do nothing
+    if (message == undefined) {
+        return;
+    }
+
+    // message is same as original, meaning it's already translated. Do nothing
+    if (message == original) {
+        return;
+    }
 
     const chatSession = generativeModelPreview.startChat({
         generationConfig: generationConfig
@@ -69,6 +80,7 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",asy
     const data = event.data.after.data();
     return event.data.after.ref.set({
         'translated': {
+            'original':message,
             'en': translated.en
         }
     }, {merge: true});
