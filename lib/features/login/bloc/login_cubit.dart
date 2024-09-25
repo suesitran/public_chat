@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:public_chat/repository/database.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
 
 part 'login_state.dart';
@@ -47,7 +50,8 @@ class LoginCubit extends Cubit<LoginState> {
     final OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final Database database = ServiceLocator.instance.get<Database>();
     try {
       final UserCredential userCredential =
           await firebaseAuth.signInWithCredential(oAuthCredential);
@@ -58,6 +62,7 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
+      database.saveUser(user);
       emitSafely(LoginSuccess(user.displayName ?? 'Unknown display name'));
     } on FirebaseAuthException catch (e) {
       emitSafely(LoginFailed(e.toString()));
