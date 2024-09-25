@@ -76,30 +76,22 @@ class ChatBubble extends StatelessWidget {
               (element) => element.key != 'original',
             )
                 .map(
-              (e) {
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 4),
-                      child: Text(
-                        e.key,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: isMine ? Colors.black87 : Colors.grey),
-                      ),
-                    ),
-                    Flexible(
-                      child: Text(
-                        e.value,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: isMine ? Colors.black87 : Colors.grey),
-                      ),
-                    ),
-                  ],
-                );
-              },
+              (e) => Text.rich(
+                TextSpan(children: [
+                  TextSpan(
+                      text: '${e.key} ',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isMine ? Colors.black87 : Colors.grey)),
+                  TextSpan(
+                    text: e.value,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: isMine ? Colors.black87 : Colors.grey),
+                  )
+                ]),
+                textAlign: isMine ? TextAlign.right : TextAlign.left,
+              ),
             )
         ],
       ),
