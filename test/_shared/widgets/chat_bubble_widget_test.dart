@@ -1,14 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_network/image_network.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 
 import '../../material_wrapper_extension.dart';
 
 void main() {
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget =
-        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
+    const Widget widget = ChatBubble(
+      isMine: true,
+      message: 'message',
+      displayName: 'displayName',
+      photoUrl: null,
+    );
 
     await widgetTester.wrapAndPump(widget);
 
@@ -54,14 +58,18 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
+    const Widget widget = ChatBubble(
+      isMine: true,
+      message: 'message',
+      displayName: 'displayName',
+      photoUrl: null,
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // then
-    expect(find.byType(CachedNetworkImage), findsNothing);
+    expect(find.byType(ImageNetwork), findsNothing);
     expect(find.byWidgetPredicate((widget) {
       if (widget is! Icon) {
         return false;
@@ -76,14 +84,18 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
+    const Widget widget = ChatBubble(
+      isMine: true,
+      photoUrl: 'photoUrl',
+      message: 'message',
+      displayName: 'displayName',
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // then
-    expect(find.byType(CachedNetworkImage), findsOneWidget);
+    expect(find.byType(ImageNetwork), findsOneWidget);
   });
 
   testWidgets(
@@ -93,8 +105,11 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
+    const Widget widget = ChatBubble(
+        isMine: true,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName');
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -124,8 +139,11 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: false, senderUid: 'uid', message: 'message');
+    const Widget widget = ChatBubble(
+        isMine: false,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName');
 
     // when
     await widgetTester.wrapAndPump(widget);

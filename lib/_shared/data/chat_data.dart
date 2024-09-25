@@ -33,10 +33,10 @@ final class UserDetail {
         photoUrl = user.photoURL,
         uid = user.uid;
 
-  UserDetail.fromMap(this.uid, Map<String, dynamic> map): displayName = map['displayName'], photoUrl = map['photoUrl'];
+  UserDetail.fromMap(this.uid, Map<String, dynamic> map)
+      : displayName = map['displayName'],
+        photoUrl = map['photoUrl'];
 
-  Map<String, dynamic> toMap() => {
-    'displayName': displayName,
-    'photoUrl': photoUrl
-  };
+  Map<String, dynamic> toMap() =>
+      {'displayName': displayName, 'photoUrl': photoUrl};
 }

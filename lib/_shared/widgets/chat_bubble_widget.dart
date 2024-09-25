@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
-import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
-import 'package:public_chat/repository/database.dart';
-import 'package:public_chat/service_locator/service_locator.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
   final String message;
   final String? photoUrl;
+  final String? displayName;
   final Map<String, dynamic> translations;
 
   final double _iconSize = 24.0;
@@ -17,6 +14,7 @@ class ChatBubble extends StatelessWidget {
       {required this.isMine,
       required this.message,
       required this.photoUrl,
+      required this.displayName,
       this.translations = const {},
       super.key});
 
@@ -28,17 +26,18 @@ class ChatBubble extends StatelessWidget {
     widgets.add(Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipRRect(
-          borderRadius: BorderRadius.circular(_iconSize),
-          child: photoUrl == null
-              ? const _DefaultPersonWidget()
-              : ImageNetwork(
-            image: photoUrl!,
-              width: _iconSize,
-              height: _iconSize,
-              fitAndroidIos: BoxFit.fitWidth,
-              fitWeb: BoxFitWeb.contain,
-              onError: _DefaultPersonWidget(),
-              onLoading: _DefaultPersonWidget()),),
+        borderRadius: BorderRadius.circular(_iconSize),
+        child: photoUrl == null
+            ? const _DefaultPersonWidget()
+            : ImageNetwork(
+                image: photoUrl!,
+                width: _iconSize,
+                height: _iconSize,
+                fitAndroidIos: BoxFit.fitWidth,
+                fitWeb: BoxFitWeb.contain,
+                onError: const _DefaultPersonWidget(),
+                onLoading: const _DefaultPersonWidget()),
+      ),
     ));
 
     // message bubble
@@ -55,6 +54,13 @@ class ChatBubble extends StatelessWidget {
         crossAxisAlignment:
             isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
+          // display name
+          Text(
+            displayName ?? 'Unknown',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: isMine ? Colors.black87 : Colors.grey,
+                fontWeight: FontWeight.bold),
+          ),
           // original language
           Text(
             message,

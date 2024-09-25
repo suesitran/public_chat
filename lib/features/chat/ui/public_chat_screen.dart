@@ -38,13 +38,17 @@ class PublicChatScreen extends StatelessWidget {
 
                         final Message message = doc.data();
 
-                        return FutureBuilder(future: message.photoUrl, builder: (context, snapshot) {
-                          return ChatBubble(
-                              isMine: message.sender == user?.uid,
-                              message: message.message,
-                              photoUrl: snapshot.data,
-                              translations: message.translations);
-                        },);
+                        return FutureBuilder(
+                          future: message.userDetail,
+                          builder: (context, snapshot) {
+                            return ChatBubble(
+                                isMine: message.sender == user?.uid,
+                                message: message.message,
+                                photoUrl: snapshot.data?.photoUrl,
+                                displayName: snapshot.data?.displayName,
+                                translations: message.translations);
+                          },
+                        );
                       },
                       emptyBuilder: (context) => const Center(
                         child: Text(
