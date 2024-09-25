@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
 }
 
 class _LoginScreenBody extends StatelessWidget {
-  const _LoginScreenBody({super.key});
+  const _LoginScreenBody();
 
   @override
   Widget build(BuildContext context) => BlocConsumer<LoginCubit, LoginState>(
@@ -24,26 +24,29 @@ class _LoginScreenBody extends StatelessWidget {
           if (state is LoginSuccess) {
             // open public chat screen
             // use Navigator temporary, will be changed later
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PublicChatScreen(),));
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PublicChatScreen(),
+                ));
           }
         },
         builder: (context, state) {
           final Widget content = state is LoginFailed
-                  ? Column(
-                      children: [
-                        Text('Login failed. Try again'),
-                        buildSignInButton(
-                          label: context.locale.login,
-                          onPressed: () =>
-                              context.read<LoginCubit>().requestLogin(),
-                        )
-                      ],
-                    )
-                  : buildSignInButton(
+              ? Column(
+                  children: [
+                    const Text('Login failed. Try again'),
+                    buildSignInButton(
                       label: context.locale.login,
                       onPressed: () =>
                           context.read<LoginCubit>().requestLogin(),
-                    );
+                    )
+                  ],
+                )
+              : buildSignInButton(
+                  label: context.locale.login,
+                  onPressed: () => context.read<LoginCubit>().requestLogin(),
+                );
 
           return Scaffold(
             body: Center(child: content),

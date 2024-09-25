@@ -5,6 +5,7 @@ class ChatBubble extends StatelessWidget {
   final bool isMine;
   final String? photoUrl;
   final String message;
+  final Map<String, dynamic> translations;
 
   final double _iconSize = 24.0;
 
@@ -12,6 +13,7 @@ class ChatBubble extends StatelessWidget {
       {required this.isMine,
       required this.photoUrl,
       required this.message,
+      this.translations = const {},
       super.key});
 
   @override
@@ -43,12 +45,53 @@ class ChatBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
           color: isMine ? Colors.black26 : Colors.black87),
       padding: const EdgeInsets.all(8.0),
-      child: Text(
-        message,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Colors.white),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment:
+            isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          // original language
+          Text(
+            message,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: Colors.white),
+          ),
+          // english version (if there is)
+          if (translations.isNotEmpty)
+            ...translations.entries
+                .where(
+              (element) => element.key != 'original',
+            )
+                .map(
+              (e) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: Text(
+                        e.key,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isMine ? Colors.black87 : Colors.grey),
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        e.value,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: isMine ? Colors.black87 : Colors.grey),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            )
+        ],
       ),
     ));
     return Padding(

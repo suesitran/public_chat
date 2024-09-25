@@ -11,11 +11,13 @@ part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial()) {
-    userSubscription = googleSignIn.onCurrentUserChanged.listen((user) {
-      if (user != null) {
-        _authenticateToFirebase(user);
-      }
-    },);
+    userSubscription = googleSignIn.onCurrentUserChanged.listen(
+      (user) {
+        if (user != null) {
+          _authenticateToFirebase(user);
+        }
+      },
+    );
   }
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -31,7 +33,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
 
     if (googleUser == null) {
-      emitSafely(LoginFailed('User cancelled'));
+      emitSafely(const LoginFailed('User cancelled'));
       return null;
     }
 
@@ -52,7 +54,7 @@ class LoginCubit extends Cubit<LoginState> {
       final User? user = userCredential.user;
 
       if (user == null) {
-        emitSafely(LoginFailed('Unable to get user credential'));
+        emitSafely(const LoginFailed('Unable to get user credential'));
         return;
       }
 
@@ -65,6 +67,7 @@ class LoginCubit extends Cubit<LoginState> {
       return;
     }
   }
+
   @override
   Future<void> close() {
     userSubscription.cancel();
