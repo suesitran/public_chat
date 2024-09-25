@@ -25,7 +25,7 @@ class GenaiSettingScreen extends StatelessWidget {
                 children: data.map((e) {
                   final bool isMine = e.sender == Sender.user;
                   return ChatBubble(
-                      senderUid: e.sender.name,
+                      photoUrl: null,
                       isMine: isMine, message: e.message);
                 }).toList(),
               );

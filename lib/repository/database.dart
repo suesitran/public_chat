@@ -39,10 +39,30 @@ final class Database {
         .collection(_userList)
         .doc(uid)
         .withConverter(
-          fromFirestore: (snapshot, options) =>
-              UserDetail.fromMap(snapshot.id, snapshot.data() ?? {}),
-          toFirestore: (value, options) => value.toMap(),
-        )
+            fromFirestore: _userDetailFromFirestore,
+            toFirestore: _userDetailToFirestore)
         .get();
   }
+
+  Stream<QuerySnapshot<UserDetail>> getUserStream() {
+    return FirebaseFirestore.instance
+        .collection(_userList)
+        .withConverter(
+            fromFirestore: _userDetailFromFirestore,
+            toFirestore: _userDetailToFirestore)
+        .snapshots();
+  }
+
+  /// ###############################################################
+  /// fromFirestore and toFirestore
+  UserDetail _userDetailFromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) =>
+      UserDetail.fromMap(snapshot.id, snapshot.data() ?? {});
+  Map<String, Object?> _userDetailToFirestore(
+    UserDetail value,
+    SetOptions? options,
+  ) =>
+      value.toMap();
 }

@@ -27,3 +27,20 @@ class ChatCubit extends Cubit<ChatState> {
     ServiceLocator.instance.get<Database>().writePublicMessage(Message(message: message, sender: uid));
   }
 }
+
+extension UserPhotoUrl on Message {
+  Future<String?> get photoUrl async {
+    final DocumentSnapshot<UserDetail> snapshot = await ServiceLocator.instance.get<Database>().getUser(sender);
+
+    if (!snapshot.exists) {
+      return null;
+    }
+
+    final UserDetail? user = snapshot.data();
+    if (user == null) {
+      return null;
+    }
+
+    return user.photoUrl;
+  }
+}
