@@ -1,18 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
+import 'package:public_chat/repository/database.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
-  final String? photoUrl;
   final String message;
+  final String senderUid;
   final Map<String, dynamic> translations;
 
   final double _iconSize = 24.0;
 
   const ChatBubble(
       {required this.isMine,
-      required this.photoUrl,
       required this.message,
+      required this.senderUid,
       this.translations = const {},
       super.key});
 
@@ -23,18 +27,26 @@ class ChatBubble extends StatelessWidget {
     // user avatar
     widgets.add(Padding(
       padding: const EdgeInsets.all(8.0),
-      child: ClipRRect(
-          borderRadius: BorderRadius.circular(_iconSize),
-          child: photoUrl == null
-              ? const _DefaultPersonWidget()
-              : CachedNetworkImage(
-                  imageUrl: photoUrl!,
-                  width: _iconSize,
-                  height: _iconSize,
-                  fit: BoxFit.fitWidth,
-                  errorWidget: (context, url, error) =>
-                      const _DefaultPersonWidget(),
-                  placeholder: (context, url) => const _DefaultPersonWidget())),
+      child: FutureBuilder(
+        future: ServiceLocator.instance.get<Database>().getUser(senderUid),
+        builder: (context, state) {
+          final photoUrl = state.data?.data()?.photoUrl;
+          print('SUESI - photoUrl $photoUrl');
+          return ClipRRect(
+              borderRadius: BorderRadius.circular(_iconSize),
+              child: photoUrl == null
+                  ? const _DefaultPersonWidget()
+                  : CachedNetworkImage(
+                      imageUrl: photoUrl,
+                      width: _iconSize,
+                      height: _iconSize,
+                      fit: BoxFit.fitWidth,
+                      errorWidget: (context, url, error) =>
+                          const _DefaultPersonWidget(),
+                      placeholder: (context, url) =>
+                          const _DefaultPersonWidget()));
+        },
+      ),
     ));
 
     // message bubble

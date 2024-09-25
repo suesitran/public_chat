@@ -8,7 +8,7 @@ import '../../material_wrapper_extension.dart';
 void main() {
   testWidgets('verify UI component', (widgetTester) async {
     const Widget widget =
-        ChatBubble(isMine: true, photoUrl: null, message: 'message');
+        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
 
     await widgetTester.wrapAndPump(widget);
 
@@ -55,7 +55,7 @@ void main() {
       (widgetTester) async {
     // given
     const Widget widget =
-        ChatBubble(isMine: true, photoUrl: null, message: 'message');
+        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -77,7 +77,7 @@ void main() {
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
     const Widget widget =
-        ChatBubble(isMine: true, photoUrl: 'photoUrl', message: 'message');
+        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -94,7 +94,7 @@ void main() {
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
     const Widget widget =
-        ChatBubble(isMine: true, photoUrl: 'photoUrl', message: 'message');
+        ChatBubble(isMine: true, senderUid: 'uid', message: 'message');
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -125,7 +125,7 @@ void main() {
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
     const Widget widget =
-        ChatBubble(isMine: false, photoUrl: 'photoUrl', message: 'message');
+        ChatBubble(isMine: false, senderUid: 'uid', message: 'message');
 
     // when
     await widgetTester.wrapAndPump(widget);

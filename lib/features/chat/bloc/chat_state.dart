@@ -1,10 +1,9 @@
 part of 'chat_cubit.dart';
 
-abstract class ChatState extends Equatable {
-  const ChatState();
-}
+final class ChatState extends Equatable {
+  final Map<String, String?> userPhotos;
+  const ChatState(this.userPhotos);
 
-class ChatInitial extends ChatState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [...userPhotos.keys, ...userPhotos.values];
 }
