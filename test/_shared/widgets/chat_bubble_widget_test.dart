@@ -23,7 +23,7 @@ void main() {
     expect(
         find.descendant(
             of: find.byType(Container), matching: find.byType(Text)),
-        findsOneWidget);
+        findsNWidgets(2));
     expect(
         find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
         findsOneWidget);
@@ -38,12 +38,17 @@ void main() {
             of: find.byType(ClipRRect), matching: find.byType(Padding))));
     expect(padding.padding, const EdgeInsets.all(8.0));
 
-    final Text text = widgetTester.widget(find.descendant(
-        of: find.byType(Container), matching: find.byType(Text)));
-    expect(text.data, 'message');
+    expect(
+        find.descendant(
+            of: find.byType(Container), matching: find.text('message')),
+        findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(Container), matching: find.text('displayName')),
+        findsOneWidget);
 
-    final Container container = widgetTester.widget(
-        find.ancestor(of: find.byType(Text), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find.ancestor(
+        of: find.byType(Column), matching: find.byType(Container)));
     expect(container.decoration, isNotNull);
     expect(container.decoration, isA<BoxDecoration>());
 
@@ -115,8 +120,8 @@ void main() {
     await widgetTester.wrapAndPump(widget);
 
     // expect
-    final Container container = widgetTester.widget(
-        find.ancestor(of: find.byType(Text), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find.ancestor(
+        of: find.byType(Column), matching: find.byType(Container)));
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.black26);
@@ -149,8 +154,8 @@ void main() {
     await widgetTester.wrapAndPump(widget);
 
     // expect
-    final Container container = widgetTester.widget(
-        find.ancestor(of: find.byType(Text), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find.ancestor(
+        of: find.byType(Column), matching: find.byType(Container)));
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.black87);
