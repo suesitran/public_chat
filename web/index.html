@@ -42,6 +42,29 @@
     <meta name="google-signin-client_id" content="916350903850-phshr4usppu2tc2up0rvftmq974q3t1j.apps.googleusercontent.com">
 </head>
 <body>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyCUNgociNNuFYeWVqqRdc-aCHDWzcMaFkU",
+      authDomain: "proj-atc.firebaseapp.com",
+      projectId: "proj-atc",
+      storageBucket: "proj-atc.appspot.com",
+      messagingSenderId: "916350903850",
+      appId: "1:916350903850:web:529f6173ce35969bebc553",
+      measurementId: "G-P1FK3TT6ZT"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js
