@@ -5,17 +5,21 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:public_chat/repository/database.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial()) {
-    userSubscription = googleSignIn.onCurrentUserChanged.listen((user) {
-      if (user != null) {
-        _authenticateToFirebase(user);
-      }
-    },);
+    userSubscription = googleSignIn.onCurrentUserChanged.listen(
+      (user) {
+        if (user != null) {
+          _authenticateToFirebase(user);
+        }
+      },
+    );
   }
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -31,7 +35,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
 
     if (googleUser == null) {
-      emitSafely(LoginFailed('User cancelled'));
+      emitSafely(const LoginFailed('User cancelled'));
       return null;
     }
 
@@ -45,27 +49,29 @@ class LoginCubit extends Cubit<LoginState> {
     final OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
-    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final Database database = ServiceLocator.instance.get<Database>();
     try {
       final UserCredential userCredential =
           await firebaseAuth.signInWithCredential(oAuthCredential);
       final User? user = userCredential.user;
 
       if (user == null) {
-        emitSafely(LoginFailed('Unable to get user credential'));
-
-        return null;
+        emitSafely(const LoginFailed('Unable to get user credential'));
+        return;
       }
 
+      database.saveUser(user);
       emitSafely(LoginSuccess(user.displayName ?? 'Unknown display name'));
     } on FirebaseAuthException catch (e) {
       emitSafely(LoginFailed(e.toString()));
-      return null;
+      return;
     } catch (e) {
       emitSafely(LoginFailed(e.toString()));
-      return null;
+      return;
     }
   }
+
   @override
   Future<void> close() {
     userSubscription.cancel();
