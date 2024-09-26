@@ -1,14 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_network/image_network.dart';
 
-class ChatBubble extends StatelessWidget {
+class GenAIChatBubble extends StatelessWidget {
   final bool isMine;
   final String? photoUrl;
   final String message;
 
   final double _iconSize = 24.0;
 
-  const ChatBubble(
+  const GenAIChatBubble(
       {required this.isMine,
       required this.photoUrl,
       required this.message,
@@ -25,14 +25,14 @@ class ChatBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(_iconSize),
           child: photoUrl == null
               ? const _DefaultPersonWidget()
-              : CachedNetworkImage(
-                  imageUrl: photoUrl!,
+              : ImageNetwork(
+                  image: photoUrl!,
                   width: _iconSize,
                   height: _iconSize,
-                  fit: BoxFit.fitWidth,
-                  errorWidget: (context, url, error) =>
-                      const _DefaultPersonWidget(),
-                  placeholder: (context, url) => const _DefaultPersonWidget())),
+                  fitAndroidIos: BoxFit.fitWidth,
+                  fitWeb: BoxFitWeb.contain,
+                  onError: const _DefaultPersonWidget(),
+                  onLoading: const _DefaultPersonWidget())),
     ));
 
     // message bubble
