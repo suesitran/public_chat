@@ -12,7 +12,7 @@ class LoginInitial extends LoginState {
 class LoginSuccess extends LoginState {
   final String displayName;
 
-  LoginSuccess(this.displayName);
+  const LoginSuccess(this.displayName);
 
   @override
   List<Object?> get props => [displayName];
@@ -21,7 +21,7 @@ class LoginSuccess extends LoginState {
 class LoginFailed extends LoginState {
   final String reason;
 
-  LoginFailed(this.reason);
+  const LoginFailed(this.reason);
 
   @override
   List<Object?> get props => [reason];
