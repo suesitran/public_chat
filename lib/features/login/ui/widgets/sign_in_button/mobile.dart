@@ -4,8 +4,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'stub.dart';
-
 /// Renders a SIGN IN button that calls `handleSignIn` onclick.
 Widget buildSignInButton({required String label, VoidCallback? onPressed}) {
   return ElevatedButton(

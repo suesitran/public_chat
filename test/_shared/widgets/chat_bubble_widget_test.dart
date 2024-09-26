@@ -1,14 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:public_chat/features/genai_setting/ui/widgets/chat_bubble_widget.dart';
+import 'package:image_network/image_network.dart';
+import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 
-import '../material_wrapper_extension.dart';
+import '../../material_wrapper_extension.dart';
 
 void main() {
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget =
-        ChatBubble(isMine: true, photoUrl: null, message: 'message');
+    const Widget widget = ChatBubble(
+      isMine: true,
+      message: 'message',
+      displayName: 'displayName',
+      photoUrl: null,
+    );
 
     await widgetTester.wrapAndPump(widget);
 
@@ -19,7 +23,7 @@ void main() {
     expect(
         find.descendant(
             of: find.byType(Container), matching: find.byType(Text)),
-        findsOneWidget);
+        findsNWidgets(2));
     expect(
         find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
         findsOneWidget);
@@ -34,12 +38,17 @@ void main() {
             of: find.byType(ClipRRect), matching: find.byType(Padding))));
     expect(padding.padding, const EdgeInsets.all(8.0));
 
-    final Text text = widgetTester.widget(find.descendant(
-        of: find.byType(Container), matching: find.byType(Text)));
-    expect(text.data, 'message');
+    expect(
+        find.descendant(
+            of: find.byType(Container), matching: find.text('message')),
+        findsOneWidget);
+    expect(
+        find.descendant(
+            of: find.byType(Container), matching: find.text('displayName')),
+        findsOneWidget);
 
-    final Container container = widgetTester.widget(
-        find.ancestor(of: find.byType(Text), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find.ancestor(
+        of: find.byType(Column), matching: find.byType(Container)));
     expect(container.decoration, isNotNull);
     expect(container.decoration, isA<BoxDecoration>());
 
@@ -54,14 +63,18 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: true, photoUrl: null, message: 'message');
+    const Widget widget = ChatBubble(
+      isMine: true,
+      message: 'message',
+      displayName: 'displayName',
+      photoUrl: null,
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // then
-    expect(find.byType(CachedNetworkImage), findsNothing);
+    expect(find.byType(ImageNetwork), findsNothing);
     expect(find.byWidgetPredicate((widget) {
       if (widget is! Icon) {
         return false;
@@ -76,14 +89,18 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: true, photoUrl: 'photoUrl', message: 'message');
+    const Widget widget = ChatBubble(
+      isMine: true,
+      photoUrl: 'photoUrl',
+      message: 'message',
+      displayName: 'displayName',
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // then
-    expect(find.byType(CachedNetworkImage), findsOneWidget);
+    expect(find.byType(ImageNetwork), findsOneWidget);
   });
 
   testWidgets(
@@ -93,15 +110,18 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: true, photoUrl: 'photoUrl', message: 'message');
+    const Widget widget = ChatBubble(
+        isMine: true,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName');
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // expect
-    final Container container = widgetTester.widget(
-        find.ancestor(of: find.byType(Text), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find.ancestor(
+        of: find.byType(Column), matching: find.byType(Container)));
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.black26);
@@ -124,15 +144,18 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget =
-        ChatBubble(isMine: false, photoUrl: 'photoUrl', message: 'message');
+    const Widget widget = ChatBubble(
+        isMine: false,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName');
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // expect
-    final Container container = widgetTester.widget(
-        find.ancestor(of: find.byType(Text), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find.ancestor(
+        of: find.byType(Column), matching: find.byType(Container)));
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.black87);

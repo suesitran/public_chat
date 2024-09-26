@@ -1,3 +1,4 @@
 {
-    "login":"Login"
+    "login":"Login",
+    "publicRoomTitle": "Public Room"
 }
