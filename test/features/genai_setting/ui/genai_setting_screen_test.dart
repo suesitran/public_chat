@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
+import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
 import 'package:public_chat/features/genai_setting/data/chat_content.dart';
 import 'package:public_chat/features/genai_setting/ui/genai_setting_screen.dart';
-import 'package:public_chat/features/genai_setting/ui/widgets/chat_bubble_widget.dart';
-import 'package:public_chat/features/genai_setting/ui/widgets/message_box_widget.dart';
+import 'package:public_chat/features/genai_setting/ui/widgets/gen_ai_chat_bubble.dart';
 
 import '../../../material_wrapper_extension.dart';
 
@@ -96,10 +97,10 @@ void main() {
     await widgetTester.pumpAndSettle();
 
     // then
-    expect(find.byType(ChatBubble), findsNWidgets(2));
+    expect(find.byType(GenAIChatBubble), findsNWidgets(2));
     expect(
         find.descendant(
-            of: find.byType(ListView), matching: find.byType(ChatBubble)),
+            of: find.byType(ListView), matching: find.byType(GenAIChatBubble)),
         findsNWidgets(2));
     final ListView listView = widgetTester.widget(find.byType(ListView));
     expect(listView.childrenDelegate.estimatedChildCount, 2);
