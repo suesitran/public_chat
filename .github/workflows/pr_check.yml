@@ -41,7 +41,7 @@ jobs:
         java-version: '17'
     - name: setup secrets
       run: |
-        FIREBASE = ${{ secrets.FIREBASE_OPTIONS }}
+        FIREBASE=${{ secrets.FIREBASE_OPTIONS }}
         echo $FIREBASE >> lib/firebase_options.dart
     - name: Flutter action
       uses: subosito/flutter-action@v2.16.0
