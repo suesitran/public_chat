@@ -73,26 +73,30 @@ class ChatBubble extends StatelessWidget {
           if (translations.isNotEmpty)
             ...translations.entries
                 .where(
-              (element) => element.key != 'original',
-            )
+                  (element) => element.key != 'original',
+                )
                 .map(
-              (e) => Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                      text: '${e.key} ',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isMine ? Colors.black87 : Colors.grey)),
-                  TextSpan(
-                    text: e.value,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: isMine ? Colors.black87 : Colors.grey),
-                  )
-                ]),
-                textAlign: isMine ? TextAlign.right : TextAlign.left,
-              ),
-            )
+                  (e) => Text.rich(
+                    TextSpan(children: [
+                      TextSpan(
+                          text: '${e.key} ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      isMine ? Colors.black87 : Colors.grey)),
+                      TextSpan(
+                        text: e.value,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: isMine ? Colors.black87 : Colors.grey),
+                      )
+                    ]),
+                    textAlign: isMine ? TextAlign.right : TextAlign.left,
+                  ),
+                )
         ],
       ),
     ));
