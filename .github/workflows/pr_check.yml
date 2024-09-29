@@ -42,8 +42,10 @@ jobs:
     - name: setup secrets
       run: |
         echo "$FIREBASE_OPTION" > lib/firebase_options.dart
+        echo "$ANDROID_GOOGLE_SERVICE" > android/app/google-services.json
       env:
         FIREBASE_OPTION: ${{ secrets.FIREBASE_OPTIONS }}
+        ANDROID_GOOGLE_SERVICE: ${{ secrets.ANDROID_GOOGLE_SERVICE }}
     - name: Flutter action
       uses: subosito/flutter-action@v2.16.0
       with:
