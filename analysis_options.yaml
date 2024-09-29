@@ -1,1 +1,7 @@
 include: package:flutter_lints/flutter.yaml
+analyzer:
+  exclude:
+    - lib/generated/**.dart
+    - lib/**.g.dart
+    - lib/firebase_options.dart
+    - test/**.mocks.dart
