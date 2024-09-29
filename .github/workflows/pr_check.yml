@@ -23,7 +23,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   validation:
-    name: 'Run test and build android code'
+    name: 'Run test and build android and web code'
     runs-on: ubuntu-latest
     concurrency:
       cancel-in-progress: true
