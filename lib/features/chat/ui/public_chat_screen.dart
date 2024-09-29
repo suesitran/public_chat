@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/message_box_widget.dart';
@@ -38,16 +39,29 @@ class PublicChatScreen extends StatelessWidget {
 
                         final Message message = doc.data();
 
-                        return FutureBuilder(
-                          future: message.userDetail,
-                          builder: (context, snapshot) {
-                            return ChatBubble(
-                                isMine: message.sender == user?.uid,
-                                message: message.message,
-                                photoUrl: snapshot.data?.photoUrl,
-                                displayName: snapshot.data?.displayName,
-                                translations: message.translations);
-                          },
+                        return BlocProvider<UserManagerCubit>(
+                          create: (context) => UserManagerCubit()
+                            ..queryUserDetail(message.sender),
+                          lazy: false,
+                          child:
+                              BlocBuilder<UserManagerCubit, UserManagerState>(
+                            builder: (context, state) {
+                              String? photoUrl;
+                              String? displayName;
+
+                              if (state is UserDetailState) {
+                                photoUrl = state.photoUrl;
+                                displayName = state.displayName;
+                              }
+
+                              return ChatBubble(
+                                  isMine: message.sender == user?.uid,
+                                  message: message.message,
+                                  photoUrl: photoUrl,
+                                  displayName: displayName,
+                                  translations: message.translations);
+                            },
+                          ),
                         );
                       },
                       emptyBuilder: (context) => const Center(
