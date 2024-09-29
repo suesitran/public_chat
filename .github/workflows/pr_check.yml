@@ -42,7 +42,6 @@ jobs:
     - name: setup secrets
       run: |
         echo "$FIREBASE_OPTION" > lib/firebase_options.dart
-        cat lib/firebase_options.dart
       env:
         FIREBASE_OPTION: ${{ secrets.FIREBASE_OPTIONS }}
     - name: Flutter action
