@@ -14,7 +14,7 @@ final class UserDetailState extends UserManagerState {
   final String? photoUrl;
   final String? displayName;
 
-  UserDetailState(
+  const UserDetailState(
       {required this.uid, required this.photoUrl, required this.displayName});
 
   @override
