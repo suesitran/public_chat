@@ -28,8 +28,9 @@ class _MessageBoxState extends State<MessageBox> {
                 borderRadius: BorderRadius.circular(16.0),
                 borderSide:
                     const BorderSide(color: Colors.black38, width: 1.0)),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-            suffix: IconButton(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12.0),
+            suffixIcon: IconButton(
               onPressed: () {
                 widget.onSendMessage(_controller.text);
                 _controller.text = '';
