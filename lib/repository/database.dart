@@ -41,7 +41,7 @@ final class Database {
         .withConverter(
             fromFirestore: _userDetailFromFirestore,
             toFirestore: _userDetailToFirestore)
-        .get();
+        .get(const GetOptions(source: Source.serverAndCache));
   }
 
   Stream<QuerySnapshot<UserDetail>> getUserStream() {
