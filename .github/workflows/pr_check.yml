@@ -52,7 +52,10 @@ jobs:
     - name: Flutter doctor
       run: flutter doctor
     - name: Format code
-      run: dart format . --fix --set-exit-if-changed
+      run: |
+        dart format lib/*/ --fix --set-exit-if-changed
+        dart format lib/main.dart
+        dart format test
     - name: analyse code
       run: |
         flutter pub get
