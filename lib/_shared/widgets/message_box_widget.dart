@@ -29,7 +29,7 @@ class _MessageBoxState extends State<MessageBox> {
                 borderSide:
                     const BorderSide(color: Colors.black38, width: 1.0)),
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                const EdgeInsets.symmetric(horizontal: 12.0),
             suffixIcon: IconButton(
               onPressed: () {
                 widget.onSendMessage(_controller.text);
