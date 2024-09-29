@@ -43,11 +43,9 @@ jobs:
       run: |
         echo "$FIREBASE_OPTION" > lib/firebase_options.dart
         echo "$ANDROID_GOOGLE_SERVICE" > android/app/google-services.json
-        echo "$IOS_GOOGLE_SERVICE" > ios/Runner/GoogleService-Info.plist
       env:
         FIREBASE_OPTION: ${{ secrets.FIREBASE_OPTIONS }}
         ANDROID_GOOGLE_SERVICE: ${{ secrets.ANDROID_GOOGLE_SERVICE }}
-        IOS_GOOGLE_SERVICE: ${{ secrets.IOS_GOOGLE_SERVICE }}
     - name: Flutter action
       uses: subosito/flutter-action@v2.16.0
       with:
@@ -85,6 +83,13 @@ jobs:
         ref: ${{ github.event.sha }}
         repository: ${{ github.event.pull_request_target.head.repo.full_name || github.event.pull_request.head.repo.full_name}}
         fetch-depth: 0
+    - name: setup secrets
+      run: |
+        echo "$FIREBASE_OPTION" > lib/firebase_options.dart
+        echo "$IOS_GOOGLE_SERVICE" > ios/Runner/GoogleService-Info.plist
+      env:
+        FIREBASE_OPTION: ${{ secrets.FIREBASE_OPTIONS }}
+        IOS_GOOGLE_SERVICE: ${{ secrets.IOS_GOOGLE_SERVICE }}
     - name: Install Flutter
       uses: subosito/flutter-action@v2.16.0
       with:
