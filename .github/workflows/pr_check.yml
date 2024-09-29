@@ -41,7 +41,7 @@ jobs:
         java-version: '17'
     - name: setup secrets
       run: |
-        echo $FIREBASE >> lib/firebase_options.dart
+        echo "$FIREBASE_OPTION" > lib/firebase_options.dart
       env:
         FIREBASE: ${{ secrets.FIREBASE_OPTIONS }}
     - name: Flutter action
