@@ -58,7 +58,7 @@ jobs:
     - name: Format code
       run: |
         dart format lib/*/ --fix --set-exit-if-changed
-        dart format $(ls -I lib/firebase_options.dart) --fix --set-exit-if-changed
+        dart format lib/main.dart --fix --set-exit-if-changed
         dart format test --fix --set-exit-if-changed
     - name: analyse code
       run: |
