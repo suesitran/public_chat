@@ -51,7 +51,6 @@ jobs:
     - name: analyse code
       run: |
         flutter pub get
-        dart run intl_utils:generate
         dart analyze --fatal-infos --fatal-warnings
     - name: Run tests
       run: |
@@ -90,5 +89,4 @@ jobs:
     - name: build iOS no codesign
       run: |
         flutter pub get
-        dart run intl_utils:generate
         flutter build ipa --no-codesign
