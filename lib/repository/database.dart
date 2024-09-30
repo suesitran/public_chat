@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 
 final class Database {
   static Database? _instance;
 
+  Database._();
+
   static Database get instance {
-    _instance ??= Database();
+    _instance ??= Database._();
     return _instance!;
   }
 
