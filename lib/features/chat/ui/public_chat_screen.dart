@@ -39,10 +39,9 @@ class PublicChatScreen extends StatelessWidget {
 
                         final Message message = doc.data();
 
-                        return BlocProvider<UserManagerCubit>(
-                          create: (context) => UserManagerCubit()
+                        return BlocProvider<UserManagerCubit>.value(
+                          value: UserManagerCubit()
                             ..queryUserDetail(message.sender),
-                          lazy: false,
                           child:
                               BlocBuilder<UserManagerCubit, UserManagerState>(
                             builder: (context, state) {
