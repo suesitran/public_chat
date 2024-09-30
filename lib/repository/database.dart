@@ -5,8 +5,10 @@ import 'package:public_chat/_shared/data/chat_data.dart';
 final class Database {
   static Database? _instance;
 
+  Database._();
+
   static Database get instance {
-    _instance ??= Database();
+    _instance ??= Database._();
     return _instance!;
   }
 
