@@ -5,7 +5,7 @@ name: Deploy to web after merge
 # Controls when the workflow will run
 on:
   # push: # trigger at each merge to main
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
