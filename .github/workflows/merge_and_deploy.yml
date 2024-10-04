@@ -37,10 +37,7 @@ jobs:
     # run firebase deploy --only hosting to deploy when development is done
     - name: build and deploy web app
       run: |
-        curl -sL https://firebase.tools | bash
-        echo "$CLOUD_CREDENTIAL" > gcloud.json
         echo "$FIREBASE_JSON" > firebase.json
-        GOOGLE_APPLICATION_CREDENTIALS=./gcloud.json
         flutter pub get
         flutter build web
         firebase hosting:channel:deploy testing
