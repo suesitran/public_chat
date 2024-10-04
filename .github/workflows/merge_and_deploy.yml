@@ -38,10 +38,12 @@ jobs:
     - name: build and deploy web app
       run: |
         curl -sL https://firebase.tools | bash
-        echo "CLOUD_CREDENTIAL" > gcloud.json
+        echo "$CLOUD_CREDENTIAL" > gcloud.json
+        echo "$FIREBASE_JSON" > firebase.json
         GOOGLE_APPLICATION_CREDENTIALS=./gcloud.json
         flutter pub get
         flutter build web
         firebase hosting:channel:deploy testing
       env:
         CLOUD_CREDENTIAL: ${{ secrets.CLOUD_CREDENTIAL }}
+        FIREBASE_JSON: ${{ secrets.FIREBASE_JSON }}
