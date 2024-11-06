@@ -38,8 +38,7 @@ class _LoginScreenBody extends StatelessWidget {
                     const Text('Login failed. Try again'),
                     buildSignInButton(
                       label: context.locale.login,
-                      onPressed: () =>
-                          context.read<LoginCubit>().requestLogin(),
+                      onPressed: () => context.read<LoginCubit>().requestLogin(),
                     )
                   ],
                 )

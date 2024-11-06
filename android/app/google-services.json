@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "680152053567",
+    "project_id": "select-languages",
+    "storage_bucket": "select-languages.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680152053567:android:cc1e0969581d98e5ccc58a",
+        "android_client_info": {
+          "package_name": "com.longnd.publicchat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxbthWkfhpbvs6Jb8KGFmUZhotxcz4kRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680152053567:android:c5659d7974157f07ccc58a",
+        "android_client_info": {
+          "package_name": "com.suesitran.publicchat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxbthWkfhpbvs6Jb8KGFmUZhotxcz4kRc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
