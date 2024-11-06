@@ -1,5 +1,9 @@
 {
     "login":"Đăng nhập",
-    "publicRoomTitle": "Phòng chat công cộng"
-
+    "publicRoomTitle": "Phòng chat công cộng",
+    "emptyMessage": "Không tìm thấy tin nhắn nào. Gửi tin nhắn đầu tiên ngay bây giờ!",
+    "loginFailed": "Đăng nhập lỗi. Thử lại",
+    "changeLanguage": "Đổi ngôn ngữ",
+    "vietnamese": "Tiếng Việt",
+    "english": "Tiếng Anh"
 }

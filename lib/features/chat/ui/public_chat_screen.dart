@@ -3,11 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/_shared/bloc/change_language/change_language_bloc.dart';
+import 'package:public_chat/_shared/bloc/change_language/change_language_event.dart';
 import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
+import 'package:public_chat/utils/language_utils.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class PublicChatScreen extends StatelessWidget {
@@ -16,12 +19,32 @@ class PublicChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
-
     return BlocProvider<ChatCubit>(
       create: (context) => ChatCubit(),
       child: Scaffold(
           appBar: AppBar(
             title: Text(context.locale.publicRoomTitle),
+            actions: [
+              DropdownButton<String>(
+                  focusColor: Colors.transparent,
+                  icon: const Icon(Icons.language),
+                  underline: const SizedBox(),
+                  onChanged: (String? newValue) {
+                    context
+                        .read<ChangeLanguageBloc>()
+                        .add(OnChangeEvent(newValue ?? ''));
+                  },
+                  items: <String>[
+                    context.locale.english,
+                    context.locale.vietnamese
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: LanguageUtils.mapLanguageNameToLanguageCode(value),
+                      child: Text(value),
+                    );
+                  }).toList()),
+              const SizedBox(width: 16.0),
+            ],
           ),
           body: Column(
             children: [
@@ -63,9 +86,8 @@ class PublicChatScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      emptyBuilder: (context) => const Center(
-                        child: Text(
-                            'No messages found. Send the first message now!'),
+                      emptyBuilder: (context) => Center(
+                        child: Text(context.locale.emptyMessage),
                       ),
                       loadingBuilder: (context) => const Center(
                         child: CircularProgressIndicator(),
