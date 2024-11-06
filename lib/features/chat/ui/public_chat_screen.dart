@@ -87,7 +87,13 @@ class PublicChatScreen extends StatelessWidget {
                         );
                       },
                       emptyBuilder: (context) => Center(
-                        child: Text(context.locale.emptyMessage),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                          child: Text(
+                            context.locale.emptyMessage,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
                       loadingBuilder: (context) => const Center(
                         child: CircularProgressIndicator(),

@@ -8,19 +8,20 @@ import 'change_language_state.dart';
 
 class ChangeLanguageBloc
     extends Bloc<ChangeLanguageEvent, ChangeLanguageState> {
+  final pref = ServiceLocator.instance.get<SharedPreferences>();
   ChangeLanguageBloc() : super(EmptyState()) {
     on<OnInitEvent>(_onInit);
     on<OnChangeEvent>(_onChange);
   }
 
   void _onInit(OnInitEvent event, Emitter<ChangeLanguageState> emitter) {
-    final pref = ServiceLocator.instance.get<SharedPreferences>();
     final languageCode = pref.getString('languageCode');
-    emitter(InitState(Locale(languageCode ?? '')));
+    if (languageCode != null) {
+      emitter(InitState(Locale(languageCode)));
+    }
   }
 
   void _onChange(OnChangeEvent event, Emitter<ChangeLanguageState> emitter) {
-    final pref = ServiceLocator.instance.get<SharedPreferences>();
     pref.setString('languageCode', event.languageCode);
     emitter(ChangeState(Locale(event.languageCode)));
   }
