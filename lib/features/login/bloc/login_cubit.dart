@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
@@ -69,6 +69,17 @@ class LoginCubit extends Cubit<LoginState> {
     } catch (e) {
       emitSafely(LoginFailed(e.toString()));
       return;
+    }
+  }
+
+  Future<void> requestLogout() async {
+    try {
+      emitSafely(LogoutLoading());
+      await FirebaseAuth.instance
+          .signOut()
+          .then((value) => emitSafely(LogoutSuccess()));
+    } on PlatformException catch (e) {
+      emitSafely(LoginFailed(e.toString()));
     }
   }
 
