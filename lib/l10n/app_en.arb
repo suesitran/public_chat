@@ -1,4 +1,9 @@
 {
     "login":"Login",
-    "publicRoomTitle": "Public Room"
+    "publicRoomTitle": "Public Room",
+    "emptyMessage": "No messages found. Send the first message now!",
+    "loginFailed": "Login failed. Try again",
+    "changeLanguage": "Change Language",
+    "vietnamese": "Vietnamese",
+    "english": "English"
 }

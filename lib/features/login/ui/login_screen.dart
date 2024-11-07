@@ -34,8 +34,11 @@ class _LoginScreenBody extends StatelessWidget {
         builder: (context, state) {
           final Widget content = state is LoginFailed
               ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Login failed. Try again'),
+                    Text(context.locale.loginFailed),
                     buildSignInButton(
                       label: context.locale.login,
                       onPressed: () =>
