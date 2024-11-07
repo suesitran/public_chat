@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy to web after merge
+
+# Controls when the workflow will run
+on:
+  # push: # trigger at each merge to main
+  pull_request:
+    branches:
+      - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  validate-and-build-apps:
+    name: 'Validate and build web app'
+    runs-on: self-hosted
+    concurrency:
+      cancel-in-progress: true
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+    - name: checkout source code
+      uses: actions/checkout@v4.1.7
+      with:
+        ref: ${{github.event.pull_request_target.head.ref}}
+        repository: ${{github.event.pull_request_target.head.repo.full_name}}
+        fetch-depth: 0
+    - name: setup secrets
+      run: |
+        echo "$FIREBASE_OPTION" > lib/firebase_options.dart
+      env:
+        FIREBASE_OPTION: ${{ secrets.FIREBASE_OPTIONS }}
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2.6.2
+      with:
+        flutter-version: '3.22.0'
+        channel: 'stable'
+    # run firebase deploy --only hosting to deploy when development is done
+    - name: build and deploy web app
+      run: |
+        echo "$FIREBASE_JSON" > firebase.json
+        flutter pub get
+        flutter build web
+        firebase hosting:channel:deploy testing
+      env:
+        FIREBASE_JSON: ${{ secrets.FIREBASE_JSON }}
