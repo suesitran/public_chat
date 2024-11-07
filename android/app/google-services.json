@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:680152053567:android:cc1e0969581d98e5ccc58a",
+        "mobilesdk_app_id": "1:680152053567:android:5db3ed90560074b4ccc58a",
         "android_client_info": {
-          "package_name": "com.longnd.publicchat"
+          "package_name": "com.longndutc.publicchat"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.longndutc.publicchat",
+            "certificate_hash": "2377f13c4cc0a7d90bbb22c296a31668ba437455"
+          }
+        },
+        {
+          "client_id": "680152053567-bpfv7b91qdjpe3h2d7qkinj9lf3j1gn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCxbthWkfhpbvs6Jb8KGFmUZhotxcz4kRc"
@@ -20,26 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:680152053567:android:c5659d7974157f07ccc58a",
-        "android_client_info": {
-          "package_name": "com.suesitran.publicchat"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCxbthWkfhpbvs6Jb8KGFmUZhotxcz4kRc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "680152053567-bpfv7b91qdjpe3h2d7qkinj9lf3j1gn0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.longndutc.publicchat"
+              }
+            }
+          ]
         }
       }
     }

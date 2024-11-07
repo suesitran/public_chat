@@ -30,6 +30,8 @@
 	<string>NSApplication</string>
 	<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
     <!-- Google Sign-in Section -->
+    <key>GIDClientID</key>
+    <string>680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com</string>
     <key>CFBundleURLTypes</key>
     <array>
     	<dict>
@@ -39,7 +41,7 @@
     		<array>
     			<!-- TODO Replace this value: -->
     			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-    			<string>com.googleusercontent.apps.916350903850-15veig1d1abbd6vpsdvvkct1uh34io4b</string>
+    			<string>com.googleusercontent.apps.680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl</string>
     		</array>
     	</dict>
     </array>

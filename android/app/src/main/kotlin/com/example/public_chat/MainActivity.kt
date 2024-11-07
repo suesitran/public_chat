@@ -1,4 +1,4 @@
-package com.example.public_chat
+package com.longndutc.publicchat
 
 import io.flutter.embedding.android.FlutterActivity
 

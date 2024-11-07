@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -49,9 +40,18 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyD4J9QuFQixfF1MbPrpkWGUcSvgyHtGfxE',
+    appId: '1:680152053567:web:5878e63c2daad672ccc58a',
+    messagingSenderId: '680152053567',
+    projectId: 'select-languages',
+    authDomain: 'select-languages.firebaseapp.com',
+    storageBucket: 'select-languages.firebasestorage.app',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCxbthWkfhpbvs6Jb8KGFmUZhotxcz4kRc',
-    appId: '1:680152053567:android:c5659d7974157f07ccc58a',
+    appId: '1:680152053567:android:5db3ed90560074b4ccc58a',
     messagingSenderId: '680152053567',
     projectId: 'select-languages',
     storageBucket: 'select-languages.firebasestorage.app',
@@ -59,10 +59,33 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCuE3Y5CCqp2pyFbL78hcCGdg722gze8HQ',
-    appId: '1:680152053567:ios:1b603ac8cd0a3f93ccc58a',
+    appId: '1:680152053567:ios:44b3a4cab487d099ccc58a',
     messagingSenderId: '680152053567',
     projectId: 'select-languages',
     storageBucket: 'select-languages.firebasestorage.app',
-    iosBundleId: 'com.suesitran.publicchat',
+    androidClientId: '680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com',
+    iosClientId: '680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com',
+    iosBundleId: 'com.longndutc.publicchat',
   );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCuE3Y5CCqp2pyFbL78hcCGdg722gze8HQ',
+    appId: '1:680152053567:ios:44b3a4cab487d099ccc58a',
+    messagingSenderId: '680152053567',
+    projectId: 'select-languages',
+    storageBucket: 'select-languages.firebasestorage.app',
+    androidClientId: '680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com',
+    iosClientId: '680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com',
+    iosBundleId: 'com.longndutc.publicchat',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyD4J9QuFQixfF1MbPrpkWGUcSvgyHtGfxE',
+    appId: '1:680152053567:web:3b9a18c8faedc05cccc58a',
+    messagingSenderId: '680152053567',
+    projectId: 'select-languages',
+    authDomain: 'select-languages.firebaseapp.com',
+    storageBucket: 'select-languages.firebasestorage.app',
+  );
+
 }
