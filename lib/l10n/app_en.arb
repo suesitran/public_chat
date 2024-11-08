@@ -1,4 +1,11 @@
 {
     "login":"Login",
-    "publicRoomTitle": "Public Room"
+    "publicRoomTitle": "Public Room",
+    "settingTitle": "Settings",
+    "somethingError": "Something error!",
+    "tryAgain": "Try again.",
+    "loading": "Loading...",
+    "settingAppLanguage": "Application Language",
+    "settingTranslationLanguage": "Message Translation Language",
+    "localeSettingTitle": "Change Language"
 }

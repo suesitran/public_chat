@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
+import 'package:public_chat/features/settings/widgets/settings_button.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -34,6 +35,7 @@ class _LoginScreenBody extends StatelessWidget {
         builder: (context, state) {
           final Widget content = state is LoginFailed
               ? Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text('Login failed. Try again'),
                     buildSignInButton(
@@ -49,6 +51,9 @@ class _LoginScreenBody extends StatelessWidget {
                 );
 
           return Scaffold(
+            appBar: AppBar(
+              actions: const [SettingsButton()],
+            ),
             body: Center(child: content),
           );
         },
