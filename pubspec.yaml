@@ -13,6 +13,7 @@ dependencies:
   firebase_auth: ^4.16.0
   firebase_core: ^2.24.2
   firebase_ui_firestore: ^1.6.3
+  cloud_functions: ^4.5.5
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
