@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class FunctionsAlertDialog {
   static showDialogLoading(BuildContext context) {
@@ -12,18 +13,21 @@ class FunctionsAlertDialog {
           backgroundColor: Colors.transparent,
           contentPadding: const EdgeInsets.all(0),
           insetPadding: const EdgeInsets.all(0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
-          content: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 60),
-            padding: const EdgeInsets.symmetric(vertical: 24),
-            decoration: BoxDecoration(
-                color: Colors.white70, borderRadius: BorderRadius.circular(8)),
-            child: const CircularProgressIndicator(
-              color: Colors.blue,
-              strokeWidth: 24,
+          content: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 80),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+              child: const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SpinKitCircle(color: Colors.blue, size: 36),
+                ],
+              ),
             ),
           ),
         );

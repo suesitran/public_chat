@@ -29,6 +29,10 @@ dependencies:
   path_provider: ^2.1.4
   dropdown_button2: ^2.3.9
   another_flushbar: ^1.12.30
+  flutter_spinkit: ^5.2.1
+
+  country_flags: ^3.0.0
+  country_picker: ^2.0.26
 
 dev_dependencies:
   flutter_test:

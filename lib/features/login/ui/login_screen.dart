@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
           current is LoginSuccess ||
           current is LoginFailed,
       listener: (context, state) {
-        if (state is LogoutLoading) {
+        if (state is LoginLoading) {
           FunctionsAlertDialog.showDialogLoading(context);
         } else {
           Navigator.of(context).pop();
@@ -35,7 +35,7 @@ class LoginScreen extends StatelessWidget {
             ),
           );
         }
-        if (state is LogoutFailed) {
+        if (state is LoginFailed) {
           FunctionsAlertDialog.showAlertFlushBar(
             context,
             'Login failed. Try again',

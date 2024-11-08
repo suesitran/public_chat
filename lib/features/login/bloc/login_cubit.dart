@@ -26,6 +26,7 @@ class LoginCubit extends Cubit<LoginState> {
   late final StreamSubscription userSubscription;
 
   void requestLogin() async {
+    emitSafely(LoginLoading());
     GoogleSignInAccount? googleUser;
     try {
       googleUser = await googleSignIn.signIn();
@@ -43,17 +44,14 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   Future<void> _authenticateToFirebase(GoogleSignInAccount googleUser) async {
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    final OAuthCredential oAuthCredential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final OAuthCredential oAuthCredential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     final Database database = ServiceLocator.instance.get<Database>();
     try {
-      final UserCredential userCredential =
-          await firebaseAuth.signInWithCredential(oAuthCredential);
+      final UserCredential userCredential = await firebaseAuth.signInWithCredential(oAuthCredential);
       final User? user = userCredential.user;
 
       if (user == null) {
@@ -75,9 +73,7 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> requestLogout() async {
     try {
       emitSafely(LogoutLoading());
-      await FirebaseAuth.instance
-          .signOut()
-          .then((value) => emitSafely(LogoutSuccess()));
+      await FirebaseAuth.instance.signOut().then((value) => emitSafely(LogoutSuccess()));
     } on PlatformException catch (e) {
       emitSafely(LoginFailed(e.toString()));
     }
