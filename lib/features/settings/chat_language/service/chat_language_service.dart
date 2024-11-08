@@ -13,7 +13,6 @@ class ChatLanguageService {
       final List<dynamic> json = jsonDecode(jsonEncode(result.data));
       return json.map((e) => ChatLanguage.fromJson(e)).toList();
     } catch (e) {
-      print('Error getting supported languages: $e');
       rethrow;
     }
   }
