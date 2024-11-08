@@ -116,7 +116,7 @@ class _ChatLanguageSettingScreenState extends State<ChatLanguageSettingScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(context.locale.settingChatLanguage),
+            title: Text(context.locale.settingTranslationLanguage),
             elevation: 2,
           ),
           body: body,

@@ -6,6 +6,6 @@
     "tryAgain": "Try again.",
     "loading": "Loading...",
     "settingAppLanguage": "Application Language",
-    "settingChatLanguage": "Chat Language",
+    "settingTranslationLanguage": "Message Translation Language",
     "localeSettingTitle": "Change Language"
 }

@@ -53,7 +53,7 @@ class SettingsScreen extends StatelessWidget {
 
         return _buildSettingItem(
           context: context,
-          title: context.locale.settingChatLanguage,
+          title: context.locale.settingTranslationLanguage,
           subtitle: subtitle,
           onPressed: () => _goToChatLanguage(context),
         );
