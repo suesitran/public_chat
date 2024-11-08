@@ -21,7 +21,7 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
     Emitter<LocaleState> emit,
   ) async {
     final prefs = await SharedPreferences.getInstance();
-    final languageCode = prefs.getString('language');
+    final languageCode = prefs.getString('locale');
     if (languageCode != null && AppLocalizationsExt.isSupported(languageCode)) {
       emitSafely(LocaleChanged(Locale(languageCode)));
     }
@@ -32,7 +32,7 @@ class LocaleBloc extends Bloc<LocaleEvent, LocaleState> {
     Emitter<LocaleState> emit,
   ) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('language', event.locale.languageCode);
+    await prefs.setString('locale', event.locale.languageCode);
     emitSafely(LocaleChanged(event.locale));
   }
 }

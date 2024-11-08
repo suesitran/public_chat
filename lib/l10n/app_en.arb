@@ -1,5 +1,10 @@
 {
     "login":"Login",
     "publicRoomTitle": "Public Room",
-    "languageSettingTitle": "Change Language"
+    "settingTitle": "Settings",
+    "settingAppLanguage": "Application Language",
+    "settingGenaiLanguage": "Assistant Language",
+    "localeSettingTitle": "Change Language",
+    "genaiAutoLanguage": "Auto Detect",
+    "genaiLanguageSettingTitle": "Assistant Language"
 }

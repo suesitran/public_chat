@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
 import 'package:public_chat/features/genai_setting/ui/genai_setting_screen.dart';
-import 'package:public_chat/features/settings/locale/ui/widgets/locale_setting_button.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
+import 'package:public_chat/features/settings/widgets/settings_button.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -53,7 +52,7 @@ class _LoginScreenBody extends StatelessWidget {
 
           return Scaffold(
             appBar: AppBar(
-              actions: const [LocaleSettingButton()],
+              actions: const [SettingsButton()],
             ),
             body: Center(child: content),
           );

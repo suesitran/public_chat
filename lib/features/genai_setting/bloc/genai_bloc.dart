@@ -7,6 +7,7 @@ import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
 
 part 'genai_event.dart';
+
 part 'genai_state.dart';
 
 class GenaiBloc extends Bloc<GenaiEvent, GenaiState> {
@@ -19,7 +20,13 @@ class GenaiBloc extends Bloc<GenaiEvent, GenaiState> {
 
   void _sendMessage(SendMessageEvent event, Emitter<GenaiState> emit) async {
     _content.add(ChatContent.user(event.message));
+    _content.add(const ChatContent.gemini("", generating: true));
     emitSafely(MessagesUpdate(List.from(_content)));
+
+    addGenminiResponse(String text) {
+      _content.removeLast();
+      _content.add(ChatContent.gemini(text));
+    }
 
     try {
       final response = await _model.sendMessage(Content.text(event.message));
@@ -27,12 +34,12 @@ class GenaiBloc extends Bloc<GenaiEvent, GenaiState> {
       final String? text = response.text;
 
       if (text == null) {
-        _content.add(const ChatContent.gemini('Unable to generate response'));
+        addGenminiResponse('Unable to generate response');
       } else {
-        _content.add(ChatContent.gemini(text));
+        addGenminiResponse(text);
       }
     } catch (e) {
-      _content.add(const ChatContent.gemini('Unable to generate response'));
+      addGenminiResponse('Unable to generate response');
     }
 
     emitSafely(MessagesUpdate(List.from(_content)));

@@ -1,5 +1,10 @@
 {
     "login":"Đăng nhập",
     "publicRoomTitle": "Phòng chat công cộng",
-    "languageSettingTitle": "Thay đổi ngôn ngữ"
+    "settingTitle": "Cài đặt",
+    "settingAppLanguage": "Ngôn ngữ Ứng Dụng",
+    "settingGenaiLanguage": "Ngôn ngữ Trợ Lý",
+    "localeSettingTitle": "Thay đổi ngôn ngữ",
+    "genaiAutoLanguage": "Tự động phát hiện",
+    "genaiLanguageSettingTitle": "Ngôn ngữ trợ lý"
 }

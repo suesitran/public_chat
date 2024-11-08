@@ -43,13 +43,11 @@ const Map<String, Map<String, String>> kLocaleData = {
 class LocaleInfo {
   final String code;
   final String name;
-  final String emoji;
   final String imageUrl;
 
   LocaleInfo({
     required this.code,
     required this.name,
-    required this.emoji,
     required this.imageUrl,
   });
 
@@ -71,19 +69,7 @@ class LocaleInfo {
     return LocaleInfo(
       code: code,
       name: data['name']!,
-      emoji: _countryCodeToFlagEmoji(countryCode),
       imageUrl: 'https://flagcdn.com/${countryCode.toLowerCase()}.svg',
     );
-  }
-
-  /// Converts a country code to a flag emoji
-  static String _countryCodeToFlagEmoji(String countryCode) {
-    const flagOffset = 0x1F1E6;
-    const asciiOffset = 0x41;
-
-    final firstChar = countryCode.codeUnitAt(0) - asciiOffset + flagOffset;
-    final secondChar = countryCode.codeUnitAt(1) - asciiOffset + flagOffset;
-
-    return String.fromCharCode(firstChar) + String.fromCharCode(secondChar);
   }
 }

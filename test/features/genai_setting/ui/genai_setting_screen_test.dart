@@ -60,9 +60,9 @@ void main() {
 
     final Column column = widgetTester.widget(find.descendant(
         of: find.byType(Center), matching: find.byType(Column)));
-    expect(column.children.length, 2);
+    expect(column.children.length, 3);
     expect(column.children.first, isA<Expanded>());
-    expect(column.children.last, isA<MessageBox>());
+    expect(column.children.last, isA<SizedBox>());
 
     expect(
         find.descendant(

@@ -1,16 +1,32 @@
 import 'package:google_generative_ai/google_generative_ai.dart';
 
+const apiKey = String.fromEnvironment('apiKey');
+
 class GenAiModel {
-  late final GenerativeModel _model;
-  late final ChatSession _session;
+  ChatSession? _session;
 
   GenAiModel() {
-    const apiKey = String.fromEnvironment('apiKey');
+    _initModel();
+  }
 
-    _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey, systemInstruction: Content.text("You are an assistant and use Vietnamese to answer."));
-    _session = _model.startChat();
+  _initModel({String? systemInstruction}) {
+    final model = GenerativeModel(
+      model: 'gemini-1.5-pro',
+      apiKey: apiKey,
+      systemInstruction:
+          systemInstruction != null ? Content.text(systemInstruction) : null,
+    );
+
+    _session = model.startChat(history: _session?.history.toList());
+  }
+
+  void updateLanguage({required String? language}) {
+    final systemInstruction =
+        language != null ? "You are an assistant, answer in $language" : null;
+
+    _initModel(systemInstruction: systemInstruction);
   }
 
   Future<GenerateContentResponse> sendMessage(Content content) =>
-      _session.sendMessage(content);
+      _session!.sendMessage(content);
 }

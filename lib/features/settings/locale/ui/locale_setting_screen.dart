@@ -13,7 +13,8 @@ class LocaleSettingScreen extends StatelessWidget {
     return BlocBuilder<LocaleBloc, LocaleState>(
       builder: (context, state) => Scaffold(
         appBar: AppBar(
-          title: Text(context.locale.languageSettingTitle),
+          title: Text(context.locale.localeSettingTitle),
+          elevation: 2,
         ),
         body: ListView.separated(
           itemCount: AppLocalizationsExt.supportedLocaleInfos.length,

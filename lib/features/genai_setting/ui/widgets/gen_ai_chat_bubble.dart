@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:image_network/image_network.dart';
 
 class GenAIChatBubble extends StatelessWidget {
+  final bool isGenerating;
   final bool isMine;
   final String? photoUrl;
   final String message;
 
   final double _iconSize = 24.0;
 
-  const GenAIChatBubble(
-      {required this.isMine,
-      required this.photoUrl,
-      required this.message,
-      super.key});
+  const GenAIChatBubble({
+    required this.isGenerating,
+    required this.isMine,
+    required this.photoUrl,
+    required this.message,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +46,15 @@ class GenAIChatBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
           color: isMine ? Colors.black26 : Colors.black87),
       padding: const EdgeInsets.all(8.0),
-      child: Text(
-        message,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Colors.white),
-      ),
+      child: isGenerating
+          ? const CircularProgressIndicator()
+          : Text(
+              message,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.white),
+            ),
     ));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -57,6 +62,7 @@ class GenAIChatBubble extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment:
             isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: isMine ? widgets.reversed.toList() : widgets,
       ),
     );
