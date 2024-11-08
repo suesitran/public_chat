@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:public_chat/features/locale/bloc/locale_bloc.dart';
+import 'package:public_chat/features/settings/locale/bloc/locale_bloc.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
 
 import '../../../material_wrapper_extension.dart';

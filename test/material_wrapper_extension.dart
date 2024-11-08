@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:public_chat/features/locale/bloc/locale_bloc.dart';
+import 'package:public_chat/features/settings/locale/bloc/locale_bloc.dart';
 
 extension MaterialWrapperExtension on WidgetTester {
   Future<void> wrapAndPump(Widget widget, {LocaleBloc? bloc}) => pumpWidget(

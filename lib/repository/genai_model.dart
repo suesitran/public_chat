@@ -7,7 +7,7 @@ class GenAiModel {
   GenAiModel() {
     const apiKey = String.fromEnvironment('apiKey');
 
-    _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey);
+    _model = GenerativeModel(model: 'gemini-1.5-pro', apiKey: apiKey, systemInstruction: Content.text("You are an assistant and use Vietnamese to answer."));
     _session = _model.startChat();
   }
 

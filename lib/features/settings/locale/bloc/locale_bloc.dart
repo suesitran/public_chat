@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/locale/data/locale_info.dart';
+import 'package:public_chat/features/settings/locale/data/locale_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

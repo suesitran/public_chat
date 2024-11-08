@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/locale/bloc/locale_bloc.dart';
-import 'package:public_chat/features/locale/data/locale_info.dart';
-import 'package:public_chat/features/locale/ui/widgets/locale_icon.dart';
+import 'package:public_chat/features/settings/locale/bloc/locale_bloc.dart';
+import 'package:public_chat/features/settings/locale/data/locale_info.dart';
+import 'package:public_chat/features/settings/locale/ui/widgets/locale_icon.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class LocaleSettingScreen extends StatelessWidget {
