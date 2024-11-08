@@ -13,7 +13,7 @@ const {supportedLanguages} = require('./languageConfig');
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
 
-const project = 'phi-public-chat';
+const project = 'proj-atc';
 const location = 'us-central1';
 const textModel = 'gemini-1.5-flash';
 const visionModel = 'gemini-1.0-pro-vision';

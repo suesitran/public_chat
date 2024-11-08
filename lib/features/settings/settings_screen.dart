@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/settings/genai_language/bloc/genai_language_bloc.dart';
-import 'package:public_chat/features/settings/genai_language/data/genai_language.dart';
-import 'package:public_chat/features/settings/genai_language/genai_language_setting_screen.dart';
+import 'package:public_chat/features/settings/chat_language/bloc/chat_language_bloc.dart';
+import 'package:public_chat/features/settings/chat_language/ui/chat_language_setting_screen.dart';
 import 'package:public_chat/features/settings/locale/bloc/locale_bloc.dart';
 import 'package:public_chat/features/settings/locale/data/locale_info.dart';
 import 'package:public_chat/features/settings/locale/ui/locale_setting_screen.dart';
@@ -44,19 +43,19 @@ class SettingsScreen extends StatelessWidget {
   }
 
   _buildGenaiLanguageItem(BuildContext context) {
-    return BlocBuilder<GenaiLanguageBloc, GenaiLanguageState>(
+    return BlocBuilder<ChatLanguageBloc, ChatLanguageState>(
       builder: (context, state) {
-        final language = GenAiLanguage.values.firstWhere(
-          (l) => l.languageName == (state.language ?? ""),
-        );
+        final subtitle = switch (state) {
+          ChatLanguageChanged() => state.selectedLanguage.nativeName,
+          ChatLanguageError() => context.locale.somethingError,
+          _ => context.locale.loading,
+        };
 
         return _buildSettingItem(
           context: context,
-          title: context.locale.settingGenaiLanguage,
-          subtitle: language == GenAiLanguage.auto
-              ? context.locale.genaiAutoLanguage
-              : language.displayName,
-          onPressed: () => _goToAssistantLanguage(context),
+          title: context.locale.settingChatLanguage,
+          subtitle: subtitle,
+          onPressed: () => _goToChatLanguage(context),
         );
       },
     );
@@ -100,11 +99,11 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  _goToAssistantLanguage(BuildContext context) {
+  _goToChatLanguage(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const GenaiLanguageSettingScreen(),
+        builder: (context) => const ChatLanguageSettingScreen(),
       ),
     );
   }

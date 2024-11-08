@@ -1,10 +1,11 @@
 {
     "login":"Đăng nhập",
     "publicRoomTitle": "Phòng chat công cộng",
-    "settingTitle": "Cài đặt",
+    "settingTitle": "Cài Đặt",
+    "somethingError": "Đã có một số lỗi xảy ra!",
+    "tryAgain": "Thử lại.",
+    "loading": "Đang tải...",
     "settingAppLanguage": "Ngôn ngữ Ứng Dụng",
-    "settingGenaiLanguage": "Ngôn ngữ Trợ Lý",
-    "localeSettingTitle": "Thay đổi ngôn ngữ",
-    "genaiAutoLanguage": "Tự động phát hiện",
-    "genaiLanguageSettingTitle": "Ngôn ngữ trợ lý"
+    "settingChatLanguage": "Ngôn nhữ Tin Nhắn",
+    "localeSettingTitle": "Thay Đổi Ngôn Ngữ"
 }

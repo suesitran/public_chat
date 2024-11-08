@@ -2,9 +2,10 @@
     "login":"Login",
     "publicRoomTitle": "Public Room",
     "settingTitle": "Settings",
+    "somethingError": "Something error!",
+    "tryAgain": "Try again.",
+    "loading": "Loading...",
     "settingAppLanguage": "Application Language",
-    "settingGenaiLanguage": "Assistant Language",
-    "localeSettingTitle": "Change Language",
-    "genaiAutoLanguage": "Auto Detect",
-    "genaiLanguageSettingTitle": "Assistant Language"
+    "settingChatLanguage": "Chat Language",
+    "localeSettingTitle": "Change Language"
 }
