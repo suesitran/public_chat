@@ -23,17 +23,31 @@ final class Database {
     required ToFirestore<T> toFirestore,
   }) {
     return FirebaseFirestore.instance
-        .collection(_publicRoom)
-        .orderBy('time', descending: true)
-        .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
+    .collection(_publicRoom)
+    .orderBy('time', descending: true)
+    .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
   }
 
-  void saveUser(User user) {
-    final UserDetail userDetail = UserDetail.fromFirebaseUser(user);
+  Future<void> saveUser(User user) async {
+    final userDoc = await FirebaseFirestore.instance
+      .collection(_userList)
+      .doc(user.uid)
+      .get();
+
+    final existingUserLanguage = userDoc.data()?['userLanguage'];
+
+    final userDetail = UserDetail.fromFirebaseUser(user, existingUserLanguage);
     FirebaseFirestore.instance
         .collection(_userList)
         .doc(user.uid)
         .set(userDetail.toMap(), SetOptions(merge: true));
+  }
+
+  Future<void> updateUserLanguage(String uid, String language) async {
+    await FirebaseFirestore.instance
+      .collection(_userList)
+      .doc(uid)
+      .update({'userLanguage': language});
   }
 
   Future<DocumentSnapshot<UserDetail>> getUser(String uid) {
@@ -41,8 +55,8 @@ final class Database {
         .collection(_userList)
         .doc(uid)
         .withConverter(
-            fromFirestore: _userDetailFromFirestore,
-            toFirestore: _userDetailToFirestore)
+          fromFirestore: _userDetailFromFirestore,
+          toFirestore: _userDetailToFirestore)
         .get(const GetOptions(source: Source.serverAndCache));
   }
 
