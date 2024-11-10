@@ -7,7 +7,8 @@ import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+BuildContext? get globalAppContext => navigatorKey.currentContext;
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
