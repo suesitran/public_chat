@@ -36,10 +36,14 @@ class _LoginScreenBody extends StatelessWidget {
               ? Column(
                   children: [
                     const Text('Login failed. Try again'),
-                    buildSignInButton(
-                      label: context.locale.login,
-                      onPressed: () =>
-                          context.read<LoginCubit>().requestLogin(),
+                    Expanded(
+                      child: Center(
+                        child: buildSignInButton(
+                          label: context.locale.login,
+                          onPressed: () =>
+                              context.read<LoginCubit>().requestLogin(),
+                        ),
+                      ),
                     )
                   ],
                 )
