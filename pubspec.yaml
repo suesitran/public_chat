@@ -30,9 +30,11 @@ dependencies:
   dropdown_button2: ^2.3.9
   another_flushbar: ^1.12.30
   flutter_spinkit: ^5.2.1
+  shared_preferences: ^2.2.3
 
   country_flags: ^3.0.0
   country_picker: ^2.0.26
+  translator: ^1.0.0
 
 dev_dependencies:
   flutter_test:

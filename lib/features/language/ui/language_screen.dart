@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:public_chat/utils/countries.dart';
 import 'package:country_flags/country_flags.dart';
@@ -19,7 +18,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
           onTap: () => Navigator.of(context).pop(),
           child: const Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.grey,
+            color: Colors.black,
             size: 24,
           ),
         ),
@@ -39,7 +38,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
             child: Row(
               children: [
                 CountryFlag.fromCountryCode(
-                  countries[index]['iso2_cc'],
+                  countries[index]['country_code'],
                   shape: const Circle(),
                   width: 32,
                   height: 32,

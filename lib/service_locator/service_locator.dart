@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/repository/genai_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ServiceLocator {
   static ServiceLocator instance = ServiceLocator._();
@@ -12,12 +13,18 @@ class ServiceLocator {
   void initialise() {
     registerSingletonIfNeeded(GenAiModel());
     registerSingletonIfNeeded(Database.instance);
+    registerSharePreference();
   }
 
   void registerSingletonIfNeeded<T extends Object>(T instance) {
     if (!_getIt.isRegistered<T>()) {
       _getIt.registerSingleton<T>(instance);
     }
+  }
+
+  Future<void> registerSharePreference() async {
+    final pref = await SharedPreferences.getInstance();
+    _getIt.registerSingleton(pref);
   }
 
   void reset() => _getIt.reset();

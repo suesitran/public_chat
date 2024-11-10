@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
+import 'package:public_chat/utils/countries.dart';
 
 part 'chat_state.dart';
 
@@ -26,22 +27,18 @@ class ChatCubit extends Cubit<ChatState> {
         .get<Database>()
         .writePublicMessage(Message(message: message, sender: uid));
   }
-}
 
-extension UserPhotoUrl on Message {
-  Future<UserDetail?> get userDetail async {
-    final DocumentSnapshot<UserDetail> snapshot =
-        await ServiceLocator.instance.get<Database>().getUser(sender);
+  String getCountryCodeFromLanguageCode(String languageCode) {
+    return countries.firstWhere(
+      (el) => el['language_code'] == languageCode,
+      orElse: () => countries.first,
+    )['country_code'];
+  }
 
-    if (!snapshot.exists) {
-      return null;
-    }
-
-    final UserDetail? user = snapshot.data();
-    if (user == null) {
-      return null;
-    }
-
-    return user;
+  String getCountryNameFromLanguageCode(String languageCode) {
+    return countries.firstWhere(
+      (el) => el['language_code'] == languageCode,
+      orElse: () => countries.first,
+    )['name'];
   }
 }

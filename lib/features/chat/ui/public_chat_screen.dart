@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
@@ -20,6 +21,7 @@ class PublicChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chatCubit = context.read<ChatCubit>();
     final User? user = FirebaseAuth.instance.currentUser;
 
     return BlocListener<LoginCubit, LoginState>(
@@ -92,14 +94,27 @@ class PublicChatScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(
-                                option == 0 ? Icons.flag : Icons.logout,
-                                color: Colors.black,
-                                size: 24,
-                              ),
+                              option == 0
+                                  ? CountryFlag.fromCountryCode(
+                                      chatCubit.getCountryCodeFromLanguageCode(
+                                        context.locale.localeName,
+                                      ),
+                                      shape: const RoundedRectangle(6),
+                                      width: 24,
+                                      height: 24,
+                                    )
+                                  : const Icon(
+                                      Icons.logout,
+                                      color: Colors.black,
+                                      size: 24,
+                                    ),
                               const SizedBox(width: 8),
                               Text(
-                                option == 0 ? 'Language' : 'Logout',
+                                option == 0
+                                    ? chatCubit.getCountryNameFromLanguageCode(
+                                        context.locale.localeName,
+                                      )
+                                    : 'Logout',
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -139,7 +154,7 @@ class PublicChatScreen extends StatelessWidget {
               child: Builder(
                 builder: (context) {
                   return FirestoreListView<Message>(
-                    query: context.read<ChatCubit>().chatContent,
+                    query: chatCubit.chatContent,
                     reverse: true,
                     itemBuilder: (BuildContext context,
                         QueryDocumentSnapshot<Message> doc) {
