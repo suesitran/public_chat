@@ -7,7 +7,8 @@ import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/message_box_widget.dart';
-import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
+import 'package:public_chat/features/chat/bloc/chat_bloc.dart';
+import 'package:public_chat/features/language/bloc/language_bloc.dart';
 import 'package:public_chat/features/language/ui/language_setting_screen.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
@@ -17,9 +18,10 @@ class PublicChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
+    context.read<LanguageBloc>().add(LoadLanguageEvent());
 
-    return BlocProvider<ChatCubit>(
-      create: (context) => ChatCubit(),
+    return BlocProvider<ChatBloc>(
+      create: (context) => ChatBloc(),
       child: Scaffold(
           appBar: AppBar(
             title: Text(context.locale.publicRoomTitle),
@@ -43,7 +45,7 @@ class PublicChatScreen extends StatelessWidget {
                 child: Builder(
                   builder: (context) {
                     return FirestoreListView<Message>(
-                      query: context.read<ChatCubit>().chatContent,
+                      query: context.read<ChatBloc>().chatContent,
                       reverse: true,
                       itemBuilder: (BuildContext context,
                       QueryDocumentSnapshot<Message> doc) {
@@ -67,7 +69,9 @@ class PublicChatScreen extends StatelessWidget {
                                 displayName = state.displayName;
                               }
 
+                              // Handle tap action to trigger message translation
                               return ChatBubble(
+                                  onChatBubbleTap: () => context.read<ChatBloc>().add(TranslateMessageEvent(message: message)),
                                   isMine: message.sender == user?.uid,
                                   message: message.message,
                                   photoUrl: photoUrl,
@@ -88,6 +92,8 @@ class PublicChatScreen extends StatelessWidget {
                   },
                 ),
               ),
+              SizedBox(height: 5,),
+              const Text('Click on the message to translate it into your language.'),
               MessageBox(
                 onSendMessage: (value) {
                   if (user == null) {

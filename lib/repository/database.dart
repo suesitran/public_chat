@@ -18,6 +18,14 @@ final class Database {
     FirebaseFirestore.instance.collection(_publicRoom).add(message.toMap());
   }
 
+  // Update the translated message of message[id] in the Firestore collection
+  void updateTranslatePublicMessage(MessageTranslate message) {
+    FirebaseFirestore.instance
+      .collection(_publicRoom)
+      .doc(message.id)
+      .set(message.toMap(), SetOptions(merge: true));
+  }
+
   Query<T> getPublicChatContents<T>({
     required FromFirestore<T> fromFirestore,
     required ToFirestore<T> toFirestore,

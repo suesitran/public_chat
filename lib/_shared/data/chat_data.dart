@@ -9,10 +9,10 @@ final class Message {
   final Timestamp timestamp;
   final Map<String, dynamic> translations;
 
-  Message({required this.message, required this.sender})
-      : id = '',
+  Message({String? uid, required this.message,required this.sender, Map<String, dynamic>? translations})
+      : id = uid ?? '',
         timestamp = Timestamp.now(),
-        translations = {};
+        translations = translations ?? {'Original': message};
 
   Message.fromMap(this.id, Map<String, dynamic> map)
       : message = map['message'] ?? '',
@@ -21,7 +21,19 @@ final class Message {
         translations = map['translated'] as Map<String, dynamic>? ?? {};
 
   Map<String, dynamic> toMap() =>
-  {'message': message, 'sender': sender, 'time': timestamp};
+    {'message': message, 'sender': sender, 'time': timestamp, 'translated': translations};
+}
+
+final class MessageTranslate {
+  final String id;
+  final Map<String, dynamic> translations;
+
+  MessageTranslate({ required this.id, required this.translations});
+
+  MessageTranslate.fromMap(this.id, Map<String, dynamic> map)
+      : translations = map['translated'] as Map<String, dynamic>? ?? {};
+
+  Map<String, dynamic> toMap() =>{'translated': translations};
 }
 
 final class UserDetail {
