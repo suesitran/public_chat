@@ -12,7 +12,7 @@ const vertexAIApi = require("@google-cloud/vertexai");
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
 
-const project = 'proj-atc';
+const project = 'test-9079e';
 const location = 'us-central1';
 const textModel =  'gemini-1.5-flash';
 const visionModel = 'gemini-1.0-pro-vision';
