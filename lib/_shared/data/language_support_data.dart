@@ -38,7 +38,8 @@ class LanguageSupport {
   LanguageSupport({required this.name, required this.flagUrl});
 }
 
-final List<LanguageSupport> supportedLanguageObjects = supportedLanguages.map((language) {
+final List<LanguageSupport> supportedLanguageObjects =
+    supportedLanguages.map((language) {
   return LanguageSupport(
     name: language['name']!,
     flagUrl: language['flagUrl']!,

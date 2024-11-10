@@ -9,7 +9,11 @@ final class Message {
   final Timestamp timestamp;
   final Map<String, dynamic> translations;
 
-  Message({String? uid, required this.message,required this.sender, Map<String, dynamic>? translations})
+  Message(
+      {String? uid,
+      required this.message,
+      required this.sender,
+      Map<String, dynamic>? translations})
       : id = uid ?? '',
         timestamp = Timestamp.now(),
         translations = translations ?? {'Original': message};
@@ -20,20 +24,24 @@ final class Message {
         timestamp = map['time'],
         translations = map['translated'] as Map<String, dynamic>? ?? {};
 
-  Map<String, dynamic> toMap() =>
-    {'message': message, 'sender': sender, 'time': timestamp, 'translated': translations};
+  Map<String, dynamic> toMap() => {
+        'message': message,
+        'sender': sender,
+        'time': timestamp,
+        'translated': translations
+      };
 }
 
 final class MessageTranslate {
   final String id;
   final Map<String, dynamic> translations;
 
-  MessageTranslate({ required this.id, required this.translations});
+  MessageTranslate({required this.id, required this.translations});
 
   MessageTranslate.fromMap(this.id, Map<String, dynamic> map)
       : translations = map['translated'] as Map<String, dynamic>? ?? {};
 
-  Map<String, dynamic> toMap() =>{'translated': translations};
+  Map<String, dynamic> toMap() => {'translated': translations};
 }
 
 final class UserDetail {
@@ -53,6 +61,9 @@ final class UserDetail {
         photoUrl = map['photoUrl'],
         userLanguage = map['userLanguage'];
 
-  Map<String, dynamic> toMap() =>
-      {'displayName': displayName, 'photoUrl': photoUrl, 'userLanguage': userLanguage};
+  Map<String, dynamic> toMap() => {
+        'displayName': displayName,
+        'photoUrl': photoUrl,
+        'userLanguage': userLanguage
+      };
 }

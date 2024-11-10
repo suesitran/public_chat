@@ -7,11 +7,13 @@ import '../../material_wrapper_extension.dart';
 
 void main() {
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget = ChatBubble(
+    Widget widget = ChatBubble(
+      onChatBubbleTap: () {},
       isMine: true,
       message: 'message',
       displayName: 'displayName',
       photoUrl: null,
+      translations: const {'English': 'translated message'},
     );
 
     await widgetTester.wrapAndPump(widget);
@@ -23,7 +25,7 @@ void main() {
     expect(
         find.descendant(
             of: find.byType(Container), matching: find.byType(Text)),
-        findsNWidgets(2));
+        findsNWidgets(3));
     expect(
         find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
         findsOneWidget);
@@ -63,7 +65,8 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
+    Widget widget = ChatBubble(
+      onChatBubbleTap: () {},
       isMine: true,
       message: 'message',
       displayName: 'displayName',
@@ -89,7 +92,8 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
+    Widget widget = ChatBubble(
+      onChatBubbleTap: () {},
       isMine: true,
       photoUrl: 'photoUrl',
       message: 'message',
@@ -110,11 +114,13 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-        isMine: true,
-        photoUrl: 'photoUrl',
-        message: 'message',
-        displayName: 'displayName');
+    Widget widget = ChatBubble(
+      onChatBubbleTap: () {},
+      isMine: true,
+      photoUrl: 'photoUrl',
+      message: 'message',
+      displayName: 'displayName',
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -131,8 +137,8 @@ void main() {
     expect(row.mainAxisAlignment, MainAxisAlignment.end);
 
     expect(row.children.length, 2);
-    // verify Container wrapper for Text is present
-    expect(row.children.first, isA<Container>());
+    // verify GestureDetector wrapper for Text is present
+    expect(row.children.first, isA<GestureDetector>());
     // verify Padding wrapper for ClipRRect is preset
     expect(row.children.last, isA<Padding>());
   });
@@ -144,11 +150,13 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-        isMine: false,
-        photoUrl: 'photoUrl',
-        message: 'message',
-        displayName: 'displayName');
+    Widget widget = ChatBubble(
+      onChatBubbleTap: () {},
+      isMine: false,
+      photoUrl: 'photoUrl',
+      message: 'message',
+      displayName: 'displayName',
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -167,7 +175,7 @@ void main() {
     expect(row.children.length, 2);
     // verify Padding wrapper for ClipRRect is preset
     expect(row.children.first, isA<Padding>());
-    // verify Container wrapper for Text is present
-    expect(row.children.last, isA<Container>());
+    // verify GestureDetector wrapper for Text is present
+    expect(row.children.last, isA<GestureDetector>());
   });
 }

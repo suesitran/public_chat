@@ -16,7 +16,10 @@ final class UserDetailState extends UserManagerState {
   final String? userLanguage;
 
   const UserDetailState(
-    {required this.uid, required this.photoUrl, required this.displayName, required this.userLanguage});
+      {required this.uid,
+      required this.photoUrl,
+      required this.displayName,
+      required this.userLanguage});
 
   @override
   List<Object?> get props => [uid, photoUrl, displayName, userLanguage];

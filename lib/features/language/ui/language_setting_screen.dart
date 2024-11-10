@@ -54,8 +54,11 @@ class _LanguageSettingScreenState extends State<LanguageSettingScreen> {
                         ),
                         title: Text(language.name),
                         onTap: () {
-                          context.read<LanguageBloc>().add(ChangeLanguageEvent(language.name));
-                          Navigator.pop(context); // Close the language selection screen
+                          context
+                              .read<LanguageBloc>()
+                              .add(ChangeLanguageEvent(language.name));
+                          Navigator.pop(
+                              context); // Close the language selection screen
                         },
                       );
                     }

@@ -10,8 +10,8 @@ part 'language_event.dart';
 part 'language_state.dart';
 
 class LanguageBloc extends Bloc<LanguageEvent, LanguageState> {
-
-  final SharedPreferences prefs = ServiceLocator.instance.get<SharedPreferences>();
+  final SharedPreferences prefs =
+      ServiceLocator.instance.get<SharedPreferences>();
 
   LanguageBloc() : super(LanguageInitial(defaultLanguage)) {
     on<LoadLanguageEvent>(_onLoadLanguage);

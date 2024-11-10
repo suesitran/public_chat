@@ -59,21 +59,24 @@ class _ChatBubbleState extends State<ChatBubble> {
         child: Column(
           children: [
             Container(
-              constraints:
-                  BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.8),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
                   color: _isTapped
                       ? (widget.isMine
                           ? Colors.black54
                           : Colors.blueGrey) // Change color on tap
-                      : widget.isMine ? Colors.black26 : Colors.black87),
+                      : widget.isMine
+                          ? Colors.black26
+                          : Colors.black87),
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment:
-                    widget.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: widget.isMine
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 children: [
                   // display name
                   Text(
@@ -108,16 +111,24 @@ class _ChatBubbleState extends State<ChatBubble> {
                                       .bodySmall
                                       ?.copyWith(
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              widget.isMine ? Colors.black87 : Colors.grey)),
+                                          color: widget.isMine
+                                              ? Colors.black87
+                                              : Colors.grey)),
                               TextSpan(
                                 text: e.value,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
                                         fontStyle: FontStyle.italic,
-                                        color: widget.isMine ? Colors.black87 : Colors.grey),
+                                        color: widget.isMine
+                                            ? Colors.black87
+                                            : Colors.grey),
                               )
                             ]),
-                            textAlign: widget.isMine ? TextAlign.right : TextAlign.left,
+                            textAlign: widget.isMine
+                                ? TextAlign.right
+                                : TextAlign.left,
                           ),
                         )
                 ],

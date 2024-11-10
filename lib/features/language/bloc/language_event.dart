@@ -8,4 +8,4 @@ class ChangeLanguageEvent extends LanguageEvent {
   ChangeLanguageEvent(this.languageName);
 }
 
-class LoadLanguageEvent extends LanguageEvent{}
+class LoadLanguageEvent extends LanguageEvent {}

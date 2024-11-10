@@ -48,7 +48,7 @@ class PublicChatScreen extends StatelessWidget {
                       query: context.read<ChatBloc>().chatContent,
                       reverse: true,
                       itemBuilder: (BuildContext context,
-                      QueryDocumentSnapshot<Message> doc) {
+                          QueryDocumentSnapshot<Message> doc) {
                         if (!doc.exists) {
                           return const SizedBox.shrink();
                         }
@@ -57,9 +57,9 @@ class PublicChatScreen extends StatelessWidget {
 
                         return BlocProvider<UserManagerCubit>.value(
                           value: UserManagerCubit()
-                          ..queryUserDetail(message.sender),
+                            ..queryUserDetail(message.sender),
                           child:
-                          BlocBuilder<UserManagerCubit, UserManagerState>(
+                              BlocBuilder<UserManagerCubit, UserManagerState>(
                             builder: (context, state) {
                               String? photoUrl;
                               String? displayName;
@@ -71,7 +71,10 @@ class PublicChatScreen extends StatelessWidget {
 
                               // Handle tap action to trigger message translation
                               return ChatBubble(
-                                  onChatBubbleTap: () => context.read<ChatBloc>().add(TranslateMessageEvent(message: message)),
+                                  onChatBubbleTap: () => context
+                                      .read<ChatBloc>()
+                                      .add(TranslateMessageEvent(
+                                          message: message)),
                                   isMine: message.sender == user?.uid,
                                   message: message.message,
                                   photoUrl: photoUrl,
@@ -83,7 +86,7 @@ class PublicChatScreen extends StatelessWidget {
                       },
                       emptyBuilder: (context) => const Center(
                         child: Text(
-                          'No messages found. Send the first message now!'),
+                            'No messages found. Send the first message now!'),
                       ),
                       loadingBuilder: (context) => const Center(
                         child: CircularProgressIndicator(),
@@ -92,8 +95,11 @@ class PublicChatScreen extends StatelessWidget {
                   },
                 ),
               ),
-              SizedBox(height: 5,),
-              const Text('Click on the message to translate it into your language.'),
+              const SizedBox(
+                height: 5,
+              ),
+              const Text(
+                  'Click on the message to translate it into your language.'),
               MessageBox(
                 onSendMessage: (value) {
                   if (user == null) {

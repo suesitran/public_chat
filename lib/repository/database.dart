@@ -21,9 +21,9 @@ final class Database {
   // Update the translated message of message[id] in the Firestore collection
   void updateTranslatePublicMessage(MessageTranslate message) {
     FirebaseFirestore.instance
-      .collection(_publicRoom)
-      .doc(message.id)
-      .set(message.toMap(), SetOptions(merge: true));
+        .collection(_publicRoom)
+        .doc(message.id)
+        .set(message.toMap(), SetOptions(merge: true));
   }
 
   Query<T> getPublicChatContents<T>({
@@ -31,16 +31,16 @@ final class Database {
     required ToFirestore<T> toFirestore,
   }) {
     return FirebaseFirestore.instance
-    .collection(_publicRoom)
-    .orderBy('time', descending: true)
-    .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
+        .collection(_publicRoom)
+        .orderBy('time', descending: true)
+        .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
   }
 
   Future<void> saveUser(User user) async {
     final userDoc = await FirebaseFirestore.instance
-      .collection(_userList)
-      .doc(user.uid)
-      .get();
+        .collection(_userList)
+        .doc(user.uid)
+        .get();
 
     final existingUserLanguage = userDoc.data()?['userLanguage'];
 
@@ -53,9 +53,9 @@ final class Database {
 
   Future<void> updateUserLanguage(String uid, String language) async {
     await FirebaseFirestore.instance
-      .collection(_userList)
-      .doc(uid)
-      .update({'userLanguage': language});
+        .collection(_userList)
+        .doc(uid)
+        .update({'userLanguage': language});
   }
 
   Future<DocumentSnapshot<UserDetail>> getUser(String uid) {
@@ -63,8 +63,8 @@ final class Database {
         .collection(_userList)
         .doc(uid)
         .withConverter(
-          fromFirestore: _userDetailFromFirestore,
-          toFirestore: _userDetailToFirestore)
+            fromFirestore: _userDetailFromFirestore,
+            toFirestore: _userDetailToFirestore)
         .get(const GetOptions(source: Source.serverAndCache));
   }
 

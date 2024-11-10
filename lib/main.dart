@@ -19,7 +19,8 @@ void main() async {
     providers: [
       BlocProvider<GenaiBloc>(create: (context) => GenaiBloc()),
       // Auto triggers LoadLanguageEvent when LanguageBloc is initialized to load the user's language.
-      BlocProvider<LanguageBloc>(create: (context) => LanguageBloc()..add(LoadLanguageEvent())),
+      BlocProvider<LanguageBloc>(
+          create: (context) => LanguageBloc()..add(LoadLanguageEvent())),
     ],
     child: const MainApp(),
   ));

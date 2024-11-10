@@ -16,7 +16,6 @@ class ServiceLocator {
     registerSingletonIfNeeded<SharedPreferences>(pref);
     registerSingletonIfNeeded(GenAiModel());
     registerSingletonIfNeeded(Database.instance);
-
   }
 
   void registerSingletonIfNeeded<T extends Object>(T instance) {
