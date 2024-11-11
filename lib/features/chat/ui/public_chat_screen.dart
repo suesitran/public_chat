@@ -13,7 +13,6 @@ import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
 import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
-import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
@@ -25,7 +24,6 @@ class PublicChatScreen extends StatefulWidget {
 }
 
 class _PublicChatScreenState extends State<PublicChatScreen> {
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -44,13 +42,13 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
           current is LogoutLoading ||
           current is LogoutSuccess ||
           current is LogoutFailed,
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is LogoutLoading) {
-          FunctionsAlertDialog.showDialogLoading(context);
+          await FunctionsAlertDialog.showLoadingDialog(context);
         } else {
           Navigator.of(context).pop();
         }
-        if (state is LogoutSuccess) {
+        if (state is LogoutSuccess && context.mounted) {
           FunctionsAlertDialog.showAlertFlushBar(
             context,
             'Logout successfully',
@@ -63,7 +61,7 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
             ),
           );
         }
-        if (state is LogoutFailed) {
+        if (state is LogoutFailed && context.mounted) {
           FunctionsAlertDialog.showAlertFlushBar(
             context,
             'Logout failed. Try again',
@@ -77,13 +75,14 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
             buildWhen: (previous, current) =>
                 current is CurrentCountryCodeSelected,
             builder: (context, state) {
-              return CountryFlag.fromCountryCode(
-                state is CurrentCountryCodeSelected
-                    ? state.countryCode
-                    : Constants.countryCodeDefault,
-                shape: const Circle(),
-                width: 24,
-                height: 24,
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: CountryFlag.fromCountryCode(
+                  state is CurrentCountryCodeSelected
+                      ? state.countryCode
+                      : chatCubit.currentCountryCodeSelected,
+                  shape: const Circle(),
+                ),
               );
             },
           ),
@@ -99,7 +98,7 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
                   customButton: const Icon(
                     Icons.settings,
                     color: Colors.black,
-                    size: 24,
+                    size: 32,
                   ),
                   dropdownStyleData: DropdownStyleData(
                     width: 160,
@@ -166,67 +165,71 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
             ),
           ],
         ),
-        body: Column(
-          children: [
-            Expanded(
-              child: Builder(
-                builder: (context) {
-                  return FirestoreListView<Message>(
-                    query: chatCubit.chatContent,
-                    reverse: true,
-                    itemBuilder: (BuildContext context,
-                        QueryDocumentSnapshot<Message> doc) {
-                      if (!doc.exists) {
-                        return const SizedBox.shrink();
-                      }
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    return FirestoreListView<Message>(
+                      query: chatCubit.chatContent,
+                      reverse: true,
+                      itemBuilder: (BuildContext context,
+                          QueryDocumentSnapshot<Message> doc) {
+                        if (!doc.exists) {
+                          return const SizedBox.shrink();
+                        }
 
-                      final Message message = doc.data();
+                        final Message message = doc.data();
 
-                      return BlocProvider<UserManagerCubit>.value(
-                        value: UserManagerCubit()
-                          ..queryUserDetail(message.sender),
-                        child: BlocBuilder<UserManagerCubit, UserManagerState>(
-                          builder: (context, state) {
-                            String? photoUrl;
-                            String? displayName;
+                        return BlocProvider<UserManagerCubit>.value(
+                          value: UserManagerCubit()
+                            ..queryUserDetail(message.sender),
+                          child:
+                              BlocBuilder<UserManagerCubit, UserManagerState>(
+                            builder: (context, state) {
+                              String? photoUrl;
+                              String? displayName;
 
-                            if (state is UserDetailState) {
-                              photoUrl = state.photoUrl;
-                              displayName = state.displayName;
-                            }
+                              if (state is UserDetailState) {
+                                photoUrl = state.photoUrl;
+                                displayName = state.displayName;
+                              }
 
-                            return ChatBubble(
-                              isMine: message.sender == user?.uid,
-                              message: chatCubit.getMessageTranslated(message),
-                              photoUrl: photoUrl,
-                              displayName: displayName,
-                              translations: message.translations,
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    emptyBuilder: (context) => const Center(
-                      child: Text(
-                          'No messages found. Send the first message now!'),
-                    ),
-                    loadingBuilder: (context) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                },
+                              return ChatBubble(
+                                isMine: message.sender == user?.uid,
+                                message:
+                                    chatCubit.getMessageTranslated(message),
+                                photoUrl: photoUrl,
+                                displayName: displayName,
+                                translations: message.translations,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      emptyBuilder: (context) => const Center(
+                        child: Text(
+                            'No messages found. Send the first message now!'),
+                      ),
+                      loadingBuilder: (context) => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-            MessageBox(
-              onSendMessage: (value) {
-                if (user == null) {
-                  // do nothing
-                  return;
-                }
-                chatCubit.sendChat(uid: user.uid, message: value);
-              },
-            )
-          ],
+              MessageBox(
+                onSendMessage: (value) {
+                  if (user == null) {
+                    // do nothing
+                    return;
+                  }
+                  chatCubit.sendChat(uid: user.uid, message: value);
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

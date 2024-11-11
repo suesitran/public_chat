@@ -32,17 +32,25 @@ final class Database {
       Map<String, String> translated =
           (doc.data() as Map<String, dynamic>)['translated'];
       if (!translated.keys.contains(languageCode)) {
+        final translator = ServiceLocator.instance.get<GoogleTranslator>();
+        late Translation messageTranslated;
         if (translated.keys.contains(Constants.languageCodeDefault)) {
-          final translator = ServiceLocator.instance.get<GoogleTranslator>();
-          final messageTranslated = await translator.translate(
-              translated[Constants.languageCodeDefault]!,
-              from: Constants.languageCodeDefault,
-              to: languageCode);
-          translated[languageCode] = messageTranslated.text;
+          messageTranslated = await translator.translate(
+            translated[Constants.languageCodeDefault]!,
+            from: Constants.languageCodeDefault,
+            to: languageCode,
+          );
+        } else {
+          messageTranslated = await translator.translate(
+            translated.values.first,
+            from: translated.keys.first,
+            to: languageCode,
+          );
         }
+        translated[languageCode] = messageTranslated.text;
+        batch.update(doc.reference, {'translated': translated});
+        batchLength++;
       }
-      batch.update(doc.reference, {'translated': translated});
-      batchLength++;
       if (batchLength == Constants.lengthBatchUpdateTranslateMessage) {
         await batch.commit();
         batch = FirebaseFirestore.instance.batch();

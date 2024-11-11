@@ -12,6 +12,8 @@ import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:public_chat/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +47,14 @@ class MainApp extends StatelessWidget {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         home: FirebaseAuth.instance.currentUser != null
-            ? const PublicChatScreen()
+            ? (ServiceLocator.instance
+                            .get<SharedPreferences>()
+                            .get(Constants.prefCurrentCountryCode)
+                            ?.toString() ??
+                        '')
+                    .isNotEmpty
+                ? const PublicChatScreen()
+                : const CountryScreen()
             : const LoginScreen(),
       ),
     );

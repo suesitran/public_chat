@@ -12,16 +12,18 @@ part 'chat_state.dart';
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit() : super(ChatInitial());
 
+  // Use in case logged in && has country code in local
+  String currentCountryCodeSelected = '';
   String currentLanguageCodeSelected = '';
 
   void getCurrentLanguageCodeSelected() {
-    final currentCountryCodeInLocal = ServiceLocator.instance
+    currentCountryCodeSelected = ServiceLocator.instance
             .get<SharedPreferences>()
             .get(Constants.prefCurrentCountryCode)
             ?.toString() ??
         '';
     currentLanguageCodeSelected = Constants.countries.firstWhere(
-        (el) => el['country_code'] == currentCountryCodeInLocal,
+        (el) => el['country_code'] == currentCountryCodeSelected,
         orElse: () => Constants.countries.firstWhere((el) =>
             el['country_code'] ==
             Constants.countryCodeDefault))['language_code'];
