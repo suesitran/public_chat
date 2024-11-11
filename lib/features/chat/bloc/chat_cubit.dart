@@ -4,41 +4,55 @@ import 'package:equatable/equatable.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
-import 'package:public_chat/utils/countries.dart';
+import 'package:public_chat/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
-  ChatCubit() : super(const ChatState({}));
+  ChatCubit() : super(ChatInitial());
+
+  String currentLanguageCodeSelected = '';
+
+  void getCurrentLanguageCodeSelected() {
+    final currentCountryCodeInLocal = ServiceLocator.instance
+            .get<SharedPreferences>()
+            .get(Constants.prefCurrentCountryCode)
+            ?.toString() ??
+        '';
+    currentLanguageCodeSelected = Constants.countries.firstWhere(
+        (el) => el['country_code'] == currentCountryCodeInLocal,
+        orElse: () => Constants.countries.firstWhere((el) =>
+            el['country_code'] ==
+            Constants.countryCodeDefault))['language_code'];
+  }
 
   Query<Message> get chatContent =>
       ServiceLocator.instance.get<Database>().getPublicChatContents<Message>(
-            fromFirestore: (snapshot, options) {
+            fromFireStore: (snapshot, options) {
               final message =
                   Message.fromMap(snapshot.id, snapshot.data() ?? {});
-
               return message;
             },
-            toFirestore: (value, options) => value.toMap(),
+            toFireStore: (value, options) => value.toMap(),
           );
 
   void sendChat({required String uid, required String message}) {
-    ServiceLocator.instance
-        .get<Database>()
-        .writePublicMessage(Message(message: message, sender: uid));
+    ServiceLocator.instance.get<Database>().writePublicMessage(
+          Message(
+            sender: uid,
+            translations: {currentLanguageCodeSelected: message},
+          ),
+        );
   }
 
-  String getCountryCodeFromLanguageCode(String languageCode) {
-    return countries.firstWhere(
-      (el) => el['language_code'] == languageCode,
-      orElse: () => countries.first,
-    )['country_code'];
-  }
-
-  String getCountryNameFromLanguageCode(String languageCode) {
-    return countries.firstWhere(
-      (el) => el['language_code'] == languageCode,
-      orElse: () => countries.first,
-    )['name'];
+  String getMessageTranslated(Message message) {
+    if (message.translations.keys.isNotEmpty) {
+      if (message.translations.keys.contains(currentLanguageCodeSelected)) {
+        return message.translations[currentLanguageCodeSelected]!;
+      }
+      return message.translations.values.first;
+    }
+    return '';
   }
 }

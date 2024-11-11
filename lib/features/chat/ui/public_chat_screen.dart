@@ -10,14 +10,29 @@ import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
-import 'package:public_chat/features/language/ui/language_screen.dart';
+import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
+import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
-class PublicChatScreen extends StatelessWidget {
+class PublicChatScreen extends StatefulWidget {
   const PublicChatScreen({super.key});
+
+  @override
+  State<PublicChatScreen> createState() => _PublicChatScreenState();
+}
+
+class _PublicChatScreenState extends State<PublicChatScreen> {
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ChatCubit>().getCurrentLanguageCodeSelected();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +73,20 @@ class PublicChatScreen extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: BlocBuilder<CountryCubit, CountryState>(
+            buildWhen: (previous, current) =>
+                current is CurrentCountryCodeSelected,
+            builder: (context, state) {
+              return CountryFlag.fromCountryCode(
+                state is CurrentCountryCodeSelected
+                    ? state.countryCode
+                    : Constants.countryCodeDefault,
+                shape: const Circle(),
+                width: 24,
+                height: 24,
+              );
+            },
+          ),
           title: Text(context.locale.publicRoomTitle),
           actions: [
             Padding(
@@ -94,27 +123,14 @@ class PublicChatScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              option == 0
-                                  ? CountryFlag.fromCountryCode(
-                                      chatCubit.getCountryCodeFromLanguageCode(
-                                        context.locale.localeName,
-                                      ),
-                                      shape: const RoundedRectangle(6),
-                                      width: 24,
-                                      height: 24,
-                                    )
-                                  : const Icon(
-                                      Icons.logout,
-                                      color: Colors.black,
-                                      size: 24,
-                                    ),
+                              Icon(
+                                option == 0 ? Icons.language : Icons.logout,
+                                color: Colors.black,
+                                size: 24,
+                              ),
                               const SizedBox(width: 8),
                               Text(
-                                option == 0
-                                    ? chatCubit.getCountryNameFromLanguageCode(
-                                        context.locale.localeName,
-                                      )
-                                    : 'Logout',
+                                option == 0 ? 'Language' : 'Logout',
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
@@ -136,7 +152,9 @@ class PublicChatScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const LanguageScreen(),
+                          builder: (context) => const CountryScreen(
+                            isHasBackButton: true,
+                          ),
                         ),
                       );
                     } else {
@@ -178,11 +196,12 @@ class PublicChatScreen extends StatelessWidget {
                             }
 
                             return ChatBubble(
-                                isMine: message.sender == user?.uid,
-                                message: message.message,
-                                photoUrl: photoUrl,
-                                displayName: displayName,
-                                translations: message.translations);
+                              isMine: message.sender == user?.uid,
+                              message: chatCubit.getMessageTranslated(message),
+                              photoUrl: photoUrl,
+                              displayName: displayName,
+                              translations: message.translations,
+                            );
                           },
                         ),
                       );
@@ -204,9 +223,7 @@ class PublicChatScreen extends StatelessWidget {
                   // do nothing
                   return;
                 }
-                FirebaseFirestore.instance
-                    .collection('public')
-                    .add(Message(sender: user.uid, message: value).toMap());
+                chatCubit.sendChat(uid: user.uid, message: value);
               },
             )
           ],

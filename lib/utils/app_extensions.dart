@@ -20,3 +20,11 @@ extension UserPhotoUrl on Message {
     return user;
   }
 }
+
+extension StringExtension on String? {
+  bool get isNotNullAndNotEmpty => this != null && this!.isNotEmpty;
+}
+
+extension ListExtension on List<dynamic>? {
+  bool get isNotNullAndNotEmpty => this != null && this!.isNotEmpty;
+}

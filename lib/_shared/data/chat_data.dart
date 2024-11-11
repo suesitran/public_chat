@@ -3,24 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 final class Message {
   final String id;
-  final String message;
   final String sender;
   final Timestamp timestamp;
-  final Map<String, dynamic> translations;
+  final Map<String, String> translations;
 
-  Message({required this.message, required this.sender})
+  Message({required this.sender, required this.translations})
       : id = '',
-        timestamp = Timestamp.now(),
-        translations = {};
+        timestamp = Timestamp.now();
 
   Message.fromMap(this.id, Map<String, dynamic> map)
-      : message = map['message'] ?? '',
-        sender = map['sender'],
+      : sender = map['sender'],
         timestamp = map['time'],
-        translations = map['translated'] as Map<String, dynamic>? ?? {};
+        translations = map['translated'] as Map<String, String>? ?? {};
 
   Map<String, dynamic> toMap() =>
-      {'message': message, 'sender': sender, 'time': timestamp};
+      {'sender': sender, 'time': timestamp, 'translated': translations};
 }
 
 final class UserDetail {

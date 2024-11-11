@@ -4,16 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:public_chat/features/chat/chat.dart';
+import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
-import 'package:public_chat/features/login/bloc/login_cubit.dart';
-import 'package:public_chat/features/login/ui/login_screen.dart';
+import 'package:public_chat/features/login/login.dart';
 import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'features/chat/bloc/chat_cubit.dart';
-import 'features/chat/ui/public_chat_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +33,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<LoginCubit>(create: (context) => LoginCubit()),
         BlocProvider<GenaiBloc>(create: (context) => GenaiBloc()),
         BlocProvider<ChatCubit>(create: (context) => ChatCubit()),
+        BlocProvider<CountryCubit>(create: (context) => CountryCubit()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

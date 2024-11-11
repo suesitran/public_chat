@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/repository/genai_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:translator/translator.dart';
 
 class ServiceLocator {
   static ServiceLocator instance = ServiceLocator._();
@@ -12,6 +13,7 @@ class ServiceLocator {
 
   void initialise() {
     registerSingletonIfNeeded(GenAiModel());
+    registerSingletonIfNeeded(GoogleTranslator());
     registerSingletonIfNeeded(Database.instance);
     registerSharePreference();
   }
