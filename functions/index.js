@@ -14,6 +14,8 @@ const path = require('path');
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
+admin.initializeApp();
+const db = admin.firestore();
 
 const project = 'proj-atc';
 const location = 'us-central1';
@@ -30,25 +32,14 @@ const generativeModelPreview = vertexAI.preview.getGenerativeModel({
     model: textModel,
 });
 
-const generationConfig = {
-    temperature: 1,
-    topP: 0.95,
-    topK: 64,
-    maxOutputTokens: 8192,
-    responseMimeType: "application/json",
-    responseSchema: {
-        type: "object",
-        properties: {
-            en: {
-                type: "string"
-            }
-        },
-        required: [
-            "en"
-        ]
-    },
-};
-
+//get all supports language
+async function getSupportedLanguages() {
+    const languagesCol = db.collection('support_languages');
+    const languageSnapshot = await languagesCol.get();
+    const languageList = languageSnapshot.docs.map(doc => doc.data().code);
+    return languageList;
+  }
+  
 // use onDocumentWritten here to prepare to "edit message" feature later
 exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", async (event) => {
     const document = event.data.after.data();
@@ -74,31 +65,44 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", as
         }
     }
 
+    const supportedLanguages = await getSupportedLanguages();
+    const properties = supportedLanguages.reduce((acc, lang) => {
+        acc[lang] = { type: "string" };
+        return acc;
+    }, {});
+    console.log(supportedLanguages)
     const chatSession = generativeModelPreview.startChat({
-        generationConfig: generationConfig
+        generationConfig: {
+            temperature: 1,
+            topP: 0.95,
+            topK: 64,
+            maxOutputTokens: 8192,
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: properties,
+              required: supportedLanguages,
+            },
+          }
     });
-    const result = await chatSession.sendMessage(`translate this text to English: ${message}`);
+    const result = await chatSession.sendMessage(`translate this text to multiple languages: ${message}`);
     const response = result.response;
     console.log('Response:', JSON.stringify(response));
 
     const jsonTranslated = response.candidates[0].content.parts[0].text;
-    console.log('translated json: ', jsonTranslated);
-    // parse this json to get translated text out
-    const translated = JSON.parse(jsonTranslated);
-    console.log('final result: ', translated.en);
+    console.log('Translated JSON:', jsonTranslated);
+
+    const translations = JSON.parse(jsonTranslated);
 
     // write to message
     const data = event.data.after.data();
     return event.data.after.ref.set({
         'translated': {
             'original': message,
-            'en': translated.en
+            ...translations
         }
     }, { merge: true });
 })
-
-admin.initializeApp();
-const db = admin.firestore();
 
 importLanguages();
 
