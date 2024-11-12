@@ -1,4 +1,8 @@
 {
     "login":"Login",
-    "publicRoomTitle": "Public Room"
+    "publicRoomTitle": "Public Room",
+    "chooseLanguage": "Choose Your Language",
+    "chooseLanguageDescription": "Select a language to translate messages into",
+    "translate" : "Translate",
+    "translationSettings": "Translation Settings"
 }
