@@ -1,5 +1,8 @@
 {
-    "login":"Đăng nhập",
-    "publicRoomTitle": "Phòng chat công cộng"
-
+    "login": "Đăng nhập",
+    "publicRoomTitle": "Phòng chat công khai",
+    "chooseLanguage": "Chọn ngôn ngữ",
+    "chooseLanguageDescription": "Chọn ngôn ngữ để dịch tin nhắn sang",
+    "translate" : "Dịch",
+    "translationSettings": "Cài đặt dịch" 
 }
