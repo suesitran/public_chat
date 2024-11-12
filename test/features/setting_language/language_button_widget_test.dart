@@ -18,12 +18,12 @@ void main() {
   final MockUserLanguageCubit languageCubit = MockUserLanguageCubit();
   final MockSupportLanguageCubit supportLanguage = MockSupportLanguageCubit();
 
-  setUpAll(
+  setUp(
     () async {
       when(
         () => languageCubit.stream,
       ).thenAnswer(
-        (_) => const Stream.empty(),
+        (_) => const Stream<String>.empty(),
       );
       when(
         () => languageCubit.close(),
@@ -42,7 +42,7 @@ void main() {
       when(
         () => supportLanguage.stream,
       ).thenAnswer(
-        (_) => const Stream.empty(),
+        (_) => const Stream<List<LanguageSupport>>.empty(),
       );
       when(
         () => supportLanguage.close(),

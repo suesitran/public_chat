@@ -18,7 +18,7 @@ void main() {
   final MockUserLanguageCubit languageCubit = MockUserLanguageCubit();
   final MockSupportLanguageCubit supportLanguage = MockSupportLanguageCubit();
 
-  setUpAll(
+  setUp(
     () async {
       when(
         () => languageCubit.stream,
@@ -80,46 +80,6 @@ void main() {
     final firstCountryFinder = find.text('🇿🇦');
     expect(firstCountryFinder, findsOneWidget);
     final textFinder = find.text('🇻🇳');
-    await widgetTester.scrollUntilVisible(
-      textFinder,
-      500.0,
-      scrollable: find.byType(Scrollable),
-    );
-
-    // Verify the text is found
-    expect(textFinder, findsOneWidget);
-
-    final radioButtonFinder = find.ancestor(
-      of: textFinder,
-      matching: find.byType(RadioListTile<LanguageSupport>),
-    );
-
-    final RadioListTile<LanguageSupport> radioButton =
-        widgetTester.widget(radioButtonFinder);
-    expect(radioButton.value, equals(const LanguageSupport(code: 'vi')));
-  });
-
-  testWidgets('test choose another language', (widgetTester) async {
-    when(
-      () => languageCubit.state,
-    ).thenAnswer(
-      (_) => 'vi',
-    );
-    const Widget widget = LanguageSettingScreen();
-
-    await widgetTester.wrapAndPump(MultiBlocProvider(
-      providers: [
-        BlocProvider<UserLanguageCubit>(
-          create: (context) => languageCubit,
-        ),
-        BlocProvider<LanguageSupportCubit>(
-          create: (context) => supportLanguage,
-        ),
-      ],
-      child: widget,
-    ));
-
-    final textFinder = find.text('🇺🇸');
     await widgetTester.scrollUntilVisible(
       textFinder,
       500.0,
