@@ -12,7 +12,6 @@ part 'chat_state.dart';
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit() : super(ChatInitial());
 
-  // Use in case logged in && has country code in local
   String currentCountryCodeSelected = '';
   String currentLanguageCodeSelected = '';
 

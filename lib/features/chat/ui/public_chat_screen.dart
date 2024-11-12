@@ -13,6 +13,7 @@ import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
 import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
+import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
@@ -71,14 +72,21 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          leading: BlocBuilder<CountryCubit, CountryState>(
+          backgroundColor: Colors.white,
+          elevation: 0.5,
+          leading: BlocConsumer<CountryCubit, CountryState>(
+            listenWhen: (previous, current) =>
+                current is CurrentCountryCodeSelected,
+            listener: (context, state) =>
+                chatCubit.getCurrentLanguageCodeSelected(),
             buildWhen: (previous, current) =>
                 current is CurrentCountryCodeSelected,
             builder: (context, state) {
               return Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: CountryFlag.fromCountryCode(
-                  state is CurrentCountryCodeSelected
+                  state is CurrentCountryCodeSelected &&
+                          state.countryCode.isNotNullAndNotEmpty
                       ? state.countryCode
                       : chatCubit.currentCountryCodeSelected,
                   shape: const Circle(),
@@ -86,7 +94,10 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
               );
             },
           ),
-          title: Text(context.locale.publicRoomTitle),
+          title: Text(
+            context.locale.publicRoomTitle,
+            style: const TextStyle(color: Colors.black, fontSize: 24),
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16),

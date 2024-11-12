@@ -1,8 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:public_chat/utils/app_extensions.dart';
 
@@ -80,7 +78,7 @@ class FunctionsAlertDialog {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.transparent,
-          contentPadding: const EdgeInsets.all(16),
+          contentPadding: const EdgeInsets.all(0),
           insetPadding: const EdgeInsets.all(0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -88,7 +86,7 @@ class FunctionsAlertDialog {
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           content: Container(
-            width: double.infinity,
+            width: MediaQuery.of(context).size.width - 64,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -120,7 +118,6 @@ class FunctionsAlertDialog {
                     ),
                   ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (titleButtonClose.isNotNullAndNotEmpty)
                       Expanded(

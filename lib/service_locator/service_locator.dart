@@ -11,11 +11,11 @@ class ServiceLocator {
 
   ServiceLocator._();
 
-  void initialise() {
+  Future<void> initialise() async {
     registerSingletonIfNeeded(GenAiModel());
     registerSingletonIfNeeded(GoogleTranslator());
     registerSingletonIfNeeded(Database.instance);
-    registerSharePreference();
+    await _registerSharePreference();
   }
 
   void registerSingletonIfNeeded<T extends Object>(T instance) {
@@ -24,7 +24,7 @@ class ServiceLocator {
     }
   }
 
-  Future<void> registerSharePreference() async {
+  Future<void> _registerSharePreference() async {
     final pref = await SharedPreferences.getInstance();
     _getIt.registerSingleton(pref);
   }

@@ -21,7 +21,7 @@ void main() async {
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
-  ServiceLocator.instance.initialise();
+  await ServiceLocator.instance.initialise();
   runApp(const MainApp());
 }
 
@@ -38,6 +38,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<CountryCubit>(create: (context) => CountryCubit()),
       ],
       child: MaterialApp(
+        theme: Theme.of(context).copyWith(useMaterial3: false),
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           AppLocalizations.delegate,

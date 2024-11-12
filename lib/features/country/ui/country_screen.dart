@@ -1,11 +1,12 @@
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
+import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/cubit/country_cubit.dart';
 import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class CountryScreen extends StatefulWidget {
   const CountryScreen({super.key, this.isHasBackButton});
@@ -17,30 +18,34 @@ class CountryScreen extends StatefulWidget {
 }
 
 class _CountryScreenState extends State<CountryScreen> {
-  final _scrollController = ScrollController();
+  final _scrollController = ItemScrollController();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.isHasBackButton ?? false) {
-        await _scrollToCountrySelected(
-          context.read<ChatCubit>().currentCountryCodeSelected,
-        );
-      } else {
-        await _showNoticeDialogSelectCountry();
-        final countryCode =
-            WidgetsBinding.instance.platformDispatcher.locale.countryCode;
-        if (!(widget.isHasBackButton ?? false) &&
-            countryCode.isNotNullAndNotEmpty &&
-            mounted) {
-          context
-              .read<CountryCubit>()
-              .selectCountry(countryCode!, isAgreement: true);
-          await _scrollToCountrySelected(countryCode);
-        }
-      }
+      widget.isHasBackButton ?? false
+          ? await _handleInCaseHadCountryCodeSelected()
+          : await _handleInCaseNotYetCountryCodeSelected();
     });
     super.initState();
+  }
+
+  Future<void> _handleInCaseHadCountryCodeSelected() async {
+    final countryCode = context.read<ChatCubit>().currentCountryCodeSelected;
+    context.read<CountryCubit>().setCountrySelectedInitialIfAny(countryCode);
+    await _scrollToCountrySelected(countryCode);
+  }
+
+  Future<void> _handleInCaseNotYetCountryCodeSelected() async {
+    await _showNoticeDialogSelectCountry();
+    final countryCode =
+        WidgetsBinding.instance.platformDispatcher.locale.countryCode;
+    if (!(widget.isHasBackButton ?? false) &&
+        countryCode.isNotNullAndNotEmpty &&
+        mounted) {
+      context.read<CountryCubit>().selectCountry(countryCode!);
+      await _scrollToCountrySelected(countryCode);
+    }
   }
 
   Future<void> _showNoticeDialogSelectCountry() async {
@@ -57,10 +62,13 @@ class _CountryScreenState extends State<CountryScreen> {
       context,
       title: 'Confirm',
       description:
-          'Are you sure you want to use ${context.read<CountryCubit>().getCountryNameSelected()} language?',
+          'Are you sure you want to use\n"${context.read<CountryCubit>().getCountryNameSelected()}" language?',
       titleButtonClose: 'Close',
       titleButtonSubmit: 'OK',
-      callBackClickSubmit: () => Navigator.of(context).pop(),
+      callBackClickSubmit: () {
+        context.read<CountryCubit>().agreementConfirmSelectCountry();
+        Navigator.of(context).pop();
+      },
     );
   }
 
@@ -68,21 +76,26 @@ class _CountryScreenState extends State<CountryScreen> {
     int indexCountrySelected = Constants.countries
         .indexWhere((el) => el['country_code'] == countryCodeSelected);
     await Future.delayed(const Duration(milliseconds: 300));
-    await _scrollController.animateTo(
-      indexCountrySelected * 56,
+    _scrollController.scrollTo(
+      index: indexCountrySelected,
       duration: const Duration(milliseconds: 800),
-      curve: Curves.linear,
+      curve: Curves.easeIn,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final countryCubit = context.read<CountryCubit>();
     return Scaffold(
       appBar: AppBar(
-        scrolledUnderElevation: 0,
+        backgroundColor: Colors.white,
+        elevation: 0.5,
         leading: (widget.isHasBackButton ?? false)
             ? GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () {
+                  countryCubit.resetValueTempCountryCodeSelected();
+                  Navigator.of(context).pop();
+                },
                 child: const Icon(
                   Icons.arrow_back_ios_new,
                   color: Colors.black,
@@ -90,45 +103,73 @@ class _CountryScreenState extends State<CountryScreen> {
                 ),
               )
             : null,
-        title: const Text('Countries'),
-        actions: widget.isHasBackButton ?? false
-            ? [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: GestureDetector(
-                    // onTap: () => Navigator.pushReplacement(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const PublicChatScreen(),
-                    //   ),
-                    // ),
-                    onTap: () async => await _showConfirmDialogSelectCountry(),
-                    child: const Text(
-                      'Select',
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ),
-                ),
-              ]
-            : null,
+        title: const Text(
+          'Countries',
+          style: TextStyle(color: Colors.black, fontSize: 24),
+        ),
+        actions: [
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: BlocBuilder<CountryCubit, CountryState>(
+                buildWhen: (previous, current) =>
+                    current is CurrentCountryCodeSelected ||
+                    current is TemporaryCountryCodeSelected,
+                builder: (context, state) {
+                  final isShowButtonAction =
+                      countryCubit.checkAllowShowButtonAction(
+                          widget.isHasBackButton ?? false);
+                  return isShowButtonAction
+                      ? GestureDetector(
+                          onTap: () async =>
+                              countryCubit.checkNeedConfirmSelectCountry()
+                                  ? await _showConfirmDialogSelectCountry()
+                                  : Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PublicChatScreen(),
+                                      ),
+                                    ),
+                          child: Text(
+                            countryCubit.checkNeedConfirmSelectCountry()
+                                ? 'Select'
+                                : 'Go',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        )
+                      : const SizedBox();
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
           child: BlocBuilder<CountryCubit, CountryState>(
             buildWhen: (previous, current) =>
-                current is CurrentCountryCodeSelected,
+                current is CurrentCountryCodeSelected ||
+                current is TemporaryCountryCodeSelected,
             builder: (context, state) {
               final countryCodeSelected =
-                  state is CurrentCountryCodeSelected ? state.countryCode : '';
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: Constants.countries.length,
+                  countryCubit.currentCountryCodeSelected;
+              final tempCountryCodeSelected =
+                  countryCubit.tempCountryCodeSelected;
+              return ScrollablePositionedList.builder(
+                itemScrollController: _scrollController,
+                itemCount: Constants.countries.length - 1,
                 itemBuilder: (_, index) {
                   final countryCode =
                       Constants.countries[index]['country_code'];
                   final countryName = Constants.countries[index]['name'];
                   final isSelected = countryCode == countryCodeSelected;
+                  final isSelectedTemp = countryCode == tempCountryCodeSelected;
                   return GestureDetector(
                     onTap: () => context.read<CountryCubit>().selectCountry(
                           countryCode,
@@ -141,8 +182,10 @@ class _CountryScreenState extends State<CountryScreen> {
                         border: Border.all(
                           width: 2,
                           color: isSelected
-                              ? Colors.brown
-                              : Colors.grey.withOpacity(0.3),
+                              ? Colors.green
+                              : isSelectedTemp
+                                  ? Colors.brown
+                                  : Colors.grey.withOpacity(0.3),
                         ),
                       ),
                       child: Row(
@@ -158,8 +201,9 @@ class _CountryScreenState extends State<CountryScreen> {
                             child: Text(
                               countryName,
                               style: TextStyle(
-                                color:
-                                    isSelected ? Colors.black : Colors.black54,
+                                color: isSelected || isSelectedTemp
+                                    ? Colors.black
+                                    : Colors.black54,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
                               ),
