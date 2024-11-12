@@ -27,16 +27,18 @@ final class UserDetail {
   final String displayName;
   final String? photoUrl;
   final String uid;
+  final String? language;
 
-  UserDetail.fromFirebaseUser(User user)
+  UserDetail.fromFirebaseUser(User user, this.language)
       : displayName = user.displayName ?? 'Unknown',
         photoUrl = user.photoURL,
         uid = user.uid;
 
   UserDetail.fromMap(this.uid, Map<String, dynamic> map)
       : displayName = map['displayName'],
+        language = map['language'],
         photoUrl = map['photoUrl'];
 
   Map<String, dynamic> toMap() =>
-      {'displayName': displayName, 'photoUrl': photoUrl};
+      {'displayName': displayName, 'photoUrl': photoUrl, 'language': language};
 }

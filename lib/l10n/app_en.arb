@@ -1,4 +1,5 @@
 {
     "login":"Login",
-    "publicRoomTitle": "Public Room"
+    "publicRoomTitle": "Public Room",
+    "settingLanguage": "Setting Language"
 }
