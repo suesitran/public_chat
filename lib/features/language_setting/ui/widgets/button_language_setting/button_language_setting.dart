@@ -17,7 +17,7 @@ class ButtonLanguageSetting extends StatelessWidget {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const SettingLanguageScreen(),
+              builder: (context) => const LanguageSettingScreen(),
             ));
       },
       child: Padding(

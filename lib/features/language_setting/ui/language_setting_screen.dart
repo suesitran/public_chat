@@ -7,8 +7,8 @@ import 'package:public_chat/utils/locale_support.dart';
 import '../../language_support/data/language.dart';
 import '../bloc/language_setting_cubit.dart';
 
-class SettingLanguageScreen extends StatelessWidget {
-  const SettingLanguageScreen({super.key});
+class LanguageSettingScreen extends StatelessWidget {
+  const LanguageSettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) => BlocProvider<LanguageSettingCubit>(
