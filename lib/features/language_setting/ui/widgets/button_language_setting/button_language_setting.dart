@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/language_setting/bloc/user_language_cubit.dart';
 import 'package:public_chat/features/language_setting/constants.dart';

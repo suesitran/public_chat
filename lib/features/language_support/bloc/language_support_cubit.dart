@@ -15,7 +15,6 @@ class LanguageSupportCubit extends Cubit<List<LanguageSupport>> {
           await ServiceLocator.instance.get<Database>().getLanguage();
       emit(languageSupport);
     } catch (e) {
-      print(e);
       emit([]);
     }
   }
