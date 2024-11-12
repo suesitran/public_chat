@@ -23,6 +23,21 @@ final class Message {
       {'message': message, 'sender': sender, 'time': timestamp};
 }
 
+final class TranslatedMessage {
+  final String translatedText;
+
+  TranslatedMessage({
+    required this.translatedText,
+  });
+
+  TranslatedMessage.fromMap(Map<String, dynamic> map)
+      : translatedText = map['translatedText'];
+
+  Map<String, dynamic> toMap() => {
+        'translatedText': translatedText,
+      };
+}
+
 final class UserDetail {
   final String displayName;
   final String? photoUrl;

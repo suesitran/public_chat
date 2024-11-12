@@ -8,14 +8,23 @@ import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'features/translation_message/bloc/translation_message_bloc.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   ServiceLocator.instance.initialise();
 
-  runApp(BlocProvider<GenaiBloc>(
-    create: (context) => GenaiBloc(),
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<GenaiBloc>(
+        create: (context) => GenaiBloc(),
+      ),
+      BlocProvider<TranslationMessageBloc>(
+        create: (context) => TranslationMessageBloc(),
+      ),
+    ],
     child: const MainApp(),
   ));
 }

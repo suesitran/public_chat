@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
+import 'package:public_chat/features/translation_message/bloc/translation_message_bloc.dart';
+import 'package:public_chat/utils/locale_support.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
   final String message;
+  final String messageId;
   final String? photoUrl;
   final String? displayName;
   final Map<String, dynamic> translations;
+  final String? selectedLanguageCode;
 
   final double _iconSize = 24.0;
 
-  const ChatBubble(
-      {required this.isMine,
-      required this.message,
-      required this.photoUrl,
-      required this.displayName,
-      this.translations = const {},
-      super.key});
+  const ChatBubble({
+    required this.isMine,
+    required this.message,
+    required this.messageId,
+    required this.photoUrl,
+    required this.displayName,
+    required this.selectedLanguageCode,
+    this.translations = const {},
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +53,7 @@ class ChatBubble extends StatelessWidget {
       constraints:
           BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(16.0),
           color: isMine ? Colors.black26 : Colors.black87),
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -69,34 +77,91 @@ class ChatBubble extends StatelessWidget {
                 .bodyMedium
                 ?.copyWith(color: Colors.white),
           ),
-          // english version (if there is)
-          if (translations.isNotEmpty)
-            ...translations.entries
-                .where(
-                  (element) => element.key != 'original',
-                )
-                .map(
-                  (e) => Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${e.key} ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      isMine ? Colors.black87 : Colors.grey)),
-                      TextSpan(
-                        text: e.value,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: isMine ? Colors.black87 : Colors.grey),
+
+          // Translation section
+          if (selectedLanguageCode != null) ...[
+            const SizedBox(height: 4),
+            BlocBuilder<TranslationMessageBloc, TranslationMessageState>(
+              buildWhen: (previous, current) =>
+                  previous.visibleTranslations != current.visibleTranslations ||
+                  previous.messagesInTranslation !=
+                      current.messagesInTranslation,
+              builder: (context, state) {
+                final bool isTranslationVisible =
+                    state.visibleTranslations.contains(messageId);
+                final bool hasTranslation =
+                    translations.containsKey(selectedLanguageCode);
+
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (hasTranslation && isTranslationVisible)
+                      Flexible(
+                        child: InkWell(
+                          onTap: () {
+                            // Hide translation when tapped
+                            context
+                                .read<TranslationMessageBloc>()
+                                .add(ToggleTranslationVisibility(messageId));
+                          },
+                          child: Text(
+                            translations[selectedLanguageCode],
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    color:
+                                        isMine ? Colors.black87 : Colors.grey),
+                          ),
+                        ),
+                      ),
+                    if (hasTranslation && isTranslationVisible)
+                      const SizedBox(width: 8),
+                    if (
+                        // Show loading indicator when translation is not visible
+                        state.messagesInTranslation.contains(messageId))
+                      const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white70),
+                        ),
                       )
-                    ]),
-                    textAlign: isMine ? TextAlign.right : TextAlign.left,
-                  ),
-                )
+                    else if (!isTranslationVisible)
+                      InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: hasTranslation
+                            ? () {
+                                // Show existing translation
+                                context.read<TranslationMessageBloc>().add(
+                                    ToggleTranslationVisibility(messageId));
+                              }
+                            : () {
+                                // Request translation
+                                context
+                                    .read<TranslationMessageBloc>()
+                                    .add(TranslateMessageRequested(
+                                      messageId: messageId,
+                                      message: message,
+                                    ));
+                              },
+                        child: Text(
+                          context.locale.translate,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ],
         ],
       ),
     ));

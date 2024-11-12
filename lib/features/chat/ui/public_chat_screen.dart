@@ -8,6 +8,8 @@ import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
+import 'package:public_chat/features/translation_message/bloc/translation_message_bloc.dart';
+import 'package:public_chat/features/translation_message/ui/translation_message_screen.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class PublicChatScreen extends StatelessWidget {
@@ -19,15 +21,35 @@ class PublicChatScreen extends StatelessWidget {
 
     return BlocProvider<ChatCubit>(
       create: (context) => ChatCubit(),
-      child: Scaffold(
+      child: Builder(builder: (context) {
+        return Scaffold(
           appBar: AppBar(
             title: Text(context.locale.publicRoomTitle),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.translate),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const TranslationMessageScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
           ),
           body: Column(
             children: [
               Expanded(
-                child: Builder(
-                  builder: (context) {
+                child: BlocBuilder<TranslationMessageBloc,
+                    TranslationMessageState>(
+                  buildWhen: (previous, current) {
+                    // Only rebuild if the selected language changes
+                    return previous.selectedLanguage !=
+                        current.selectedLanguage;
+                  },
+                  builder: (context, translationState) {
                     return FirestoreListView<Message>(
                       query: context.read<ChatCubit>().chatContent,
                       reverse: true,
@@ -39,29 +61,34 @@ class PublicChatScreen extends StatelessWidget {
 
                         final Message message = doc.data();
 
+                        final selectedLanguageCode =
+                            translationState.selectedLanguage?.code;
+
                         return BlocProvider<UserManagerCubit>.value(
-                          value: UserManagerCubit()
-                            ..queryUserDetail(message.sender),
-                          child:
-                              BlocBuilder<UserManagerCubit, UserManagerState>(
-                            builder: (context, state) {
-                              String? photoUrl;
-                              String? displayName;
+                            value: UserManagerCubit()
+                              ..queryUserDetail(message.sender),
+                            child:
+                                BlocBuilder<UserManagerCubit, UserManagerState>(
+                              builder: (context, state) {
+                                String? photoUrl;
+                                String? displayName;
 
-                              if (state is UserDetailState) {
-                                photoUrl = state.photoUrl;
-                                displayName = state.displayName;
-                              }
+                                if (state is UserDetailState) {
+                                  photoUrl = state.photoUrl;
+                                  displayName = state.displayName;
+                                }
 
-                              return ChatBubble(
+                                return ChatBubble(
+                                  messageId: doc.id,
                                   isMine: message.sender == user?.uid,
                                   message: message.message,
                                   photoUrl: photoUrl,
                                   displayName: displayName,
-                                  translations: message.translations);
-                            },
-                          ),
-                        );
+                                  translations: message.translations,
+                                  selectedLanguageCode: selectedLanguageCode,
+                                );
+                              },
+                            ));
                       },
                       emptyBuilder: (context) => const Center(
                         child: Text(
@@ -76,17 +103,17 @@ class PublicChatScreen extends StatelessWidget {
               ),
               MessageBox(
                 onSendMessage: (value) {
-                  if (user == null) {
-                    // do nothing
-                    return;
-                  }
-                  FirebaseFirestore.instance
-                      .collection('public')
-                      .add(Message(sender: user.uid, message: value).toMap());
+                  if (user == null) return;
+                  context.read<ChatCubit>().sendChat(
+                        uid: user.uid,
+                        message: value,
+                      );
                 },
               )
             ],
-          )),
+          ),
+        );
+      }),
     );
   }
 }

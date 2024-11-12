@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 final class Database {
   static Database? _instance;
@@ -53,6 +54,21 @@ final class Database {
             fromFirestore: _userDetailFromFirestore,
             toFirestore: _userDetailToFirestore)
         .snapshots();
+  }
+
+  Future<TranslatedMessage> translateMessage({
+    required String messageId,
+    required String message,
+    required String targetLanguage,
+  }) async {
+    final callable =
+        FirebaseFunctions.instance.httpsCallable('translateMessage');
+    final result = await callable.call({
+      'messageId': messageId,
+      'message': message,
+      'targetLanguage': targetLanguage,
+    });
+    return TranslatedMessage.fromMap(result.data);
   }
 
   /// ###############################################################
