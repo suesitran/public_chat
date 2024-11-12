@@ -38,8 +38,8 @@ async function getSupportedLanguages() {
     const languageSnapshot = await languagesCol.get();
     const languageList = languageSnapshot.docs.map(doc => doc.data().code);
     return languageList;
-  }
-  
+}
+
 // use onDocumentWritten here to prepare to "edit message" feature later
 exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", async (event) => {
     const document = event.data.after.data();
@@ -70,7 +70,7 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", as
         acc[lang] = { type: "string" };
         return acc;
     }, {});
-    console.log(supportedLanguages)
+
     const chatSession = generativeModelPreview.startChat({
         generationConfig: {
             temperature: 1,
@@ -79,21 +79,26 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", as
             maxOutputTokens: 8192,
             responseMimeType: "application/json",
             responseSchema: {
-              type: "object",
-              properties: properties,
-              required: supportedLanguages,
+                type: "object",
+                properties: properties,
+                required: supportedLanguages,
             },
-          }
+        }
     });
-    const result = await chatSession.sendMessage(`translate this text to multiple languages: ${message}`);
-    const response = result.response;
-    console.log('Response:', JSON.stringify(response));
+    let translations = {};
+    try {
+        const result = await chatSession.sendMessage(`translate this text to multiple languages: ${message}`);
+        const response = result.response;
+        console.log('Response:', JSON.stringify(response));
 
-    const jsonTranslated = response.candidates[0].content.parts[0].text;
-    console.log('Translated JSON:', jsonTranslated);
+        const jsonTranslated = response.candidates[0].content.parts[0].text;
+        console.log('Translated JSON:', jsonTranslated);
 
-    const translations = JSON.parse(jsonTranslated);
+        translations = JSON.parse(jsonTranslated);
 
+    } catch (e) {
+        console.log(e);
+    }
     // write to message
     const data = event.data.after.data();
     return event.data.after.ref.set({
