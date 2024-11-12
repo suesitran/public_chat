@@ -131,9 +131,12 @@ final class Database {
             },
             toFirestore: (value, options) => {},
           )
-          .snapshots().map((event) {
-            return event.data() ?? 'en';
-          },);
+          .snapshots()
+          .map(
+        (event) {
+          return event.data() ?? 'en';
+        },
+      );
     }
     return null;
   }
