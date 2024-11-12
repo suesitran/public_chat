@@ -13,10 +13,6 @@ extension GetLanguageSupport on BuildContext {
     return languageUser;
   }
 
-  String get languageUser {
-    return read<UserLanguageCubit>().state;
-  }
-
   LanguageSupport get languageTempUser {
     var languageTempUser = read<LanguageSettingCubit>().state;
     return LanguageSupport(code: languageTempUser);
