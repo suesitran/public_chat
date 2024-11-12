@@ -6,7 +6,7 @@ import 'package:public_chat/features/translation_message/bloc/translation_messag
 import 'package:public_chat/features/translation_message/data/translation_language.dart';
 import 'package:public_chat/features/translation_message/ui/translation_message_screen.dart';
 
-import '../../material_wrapper_extension.dart';
+import '../../../material_wrapper_extension.dart';
 
 class MockTranslationMessageBloc extends Mock
     implements TranslationMessageBloc {}
