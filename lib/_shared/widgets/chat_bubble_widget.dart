@@ -81,8 +81,7 @@ class ChatBubble extends StatelessWidget {
                 ...translations.entries
                     .where(
                       (element) =>
-                          element.key != 'original' &&
-                          element.key == state,
+                          element.key != 'original' && element.key == state,
                     )
                     .map(
                       (e) => Text.rich(
