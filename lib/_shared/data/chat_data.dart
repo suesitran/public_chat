@@ -21,6 +21,9 @@ final class Message {
 
   Map<String, dynamic> toMap() =>
       {'message': message, 'sender': sender, 'time': timestamp};
+  @override
+  String toString() => toMap().toString();
+  // 'Message(id: $id, message: $message, sender: $sender, timestamp: $timestamp, translations: $translations)';
 }
 
 final class UserDetail {

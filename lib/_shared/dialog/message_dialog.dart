@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../config/routes/navigator.dart';
-import '../../../main.dart';
+import '../../config/routes/navigator.dart';
+import '../../main.dart';
 
 class MessageDialog {
   static void showMessageDialog({
@@ -14,6 +14,7 @@ class MessageDialog {
     Widget? titleWidget,
     String? titleText,
     Function()? onTapClose,
+    bool showCloseButton = true,
   }) {
     showCupertinoModalPopup<void>(
       context: globalAppContext!,
@@ -33,31 +34,35 @@ class MessageDialog {
                     textAlign: TextAlign.start,
                     style: const TextStyle(fontSize: 16)),
           ),
-          actions: actions ??
-              [
-                TextButton(
-                    onPressed: onTapClose ??
-                        () {
-                          pop();
-                        },
-                    child: Text(closeText ?? 'OK'))
-              ],
+          actions: showCloseButton
+              ? actions ??
+                  [
+                    TextButton(
+                        onPressed: onTapClose ??
+                            () {
+                              pop();
+                            },
+                        child: Text(closeText ?? 'OK'))
+                  ]
+              : [],
         );
       },
     );
   }
 
-  static void showError({
-    BuildContext? context,
-    String? contentText,
+  static void showError(
+    String err, {
     Widget? contentWidget,
     String? closeText = 'Close',
     List<Widget>? actions,
     bool tapOutsideToClose = false,
+    String? titleText,
   }) {
     showMessageDialog(
         color: Colors.red,
-        contentText: contentText,
+        contentText: err,
+        titleWidget: Text(titleText ?? 'Error',
+            style: const TextStyle(color: Colors.red, fontSize: 20)),
         contentWidget: contentWidget,
         closeText: closeText,
         actions: actions,
