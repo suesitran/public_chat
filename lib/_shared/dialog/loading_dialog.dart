@@ -23,6 +23,6 @@ class LoadingState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoActivityIndicator();
+    return const Center(child: CupertinoActivityIndicator());
   }
 }

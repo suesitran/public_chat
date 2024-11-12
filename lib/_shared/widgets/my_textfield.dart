@@ -25,10 +25,10 @@ class TextFieldInput extends StatelessWidget {
     this.errorText,
     this.onFieldSubmitted,
     this.focusNode,
-    // this.initText,
     this.minLines,
     this.maxLines,
     this.autofocus = false,
+    this.textInputAction,
   });
   final TextInputType? keyboardType;
   final String? labelText, hintText;
@@ -54,9 +54,11 @@ class TextFieldInput extends StatelessWidget {
   final int? maxLines;
   final TextStyle? style;
   final bool autofocus;
+  final TextInputAction? textInputAction;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textInputAction: textInputAction,
       autofocus: autofocus,
       onChanged: onChanged,
       style: style ?? (readOnly ? const TextStyle(color: Colors.grey) : null),
