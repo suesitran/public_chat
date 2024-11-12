@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
 import 'package:public_chat/features/language_setting/constants.dart';
-import 'package:public_chat/features/language_setting/ui/widgets/button_language_setting/button_language_setting.dart';
-import 'package:public_chat/repository/database.dart';
-
-import '../bloc/user_manager/user_manager_cubit.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
