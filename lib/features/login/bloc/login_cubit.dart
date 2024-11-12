@@ -61,8 +61,9 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
 
-      database.saveUser(user);
-      emitSafely(LoginSuccess(user.displayName ?? 'Unknown display name'));
+      var userData = await database.saveUser(user);
+      emitSafely(LoginSuccess(user.displayName ?? 'Unknown display name',
+          userData.language ?? 'en'));
     } on FirebaseAuthException catch (e) {
       emitSafely(LoginFailed(e.toString()));
       return;

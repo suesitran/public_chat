@@ -10,6 +10,8 @@ import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
+import '../../language_setting/ui/widgets/button_language_setting/button_language_setting.dart';
+
 class PublicChatScreen extends StatelessWidget {
   const PublicChatScreen({super.key});
 
@@ -21,7 +23,9 @@ class PublicChatScreen extends StatelessWidget {
       create: (context) => ChatCubit(),
       child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Text(context.locale.publicRoomTitle),
+            actions: const [ButtonLanguageSetting()],
           ),
           body: Column(
             children: [

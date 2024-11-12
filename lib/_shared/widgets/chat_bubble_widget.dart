@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
+import 'package:public_chat/features/language_setting/constants.dart';
+import 'package:public_chat/features/language_setting/ui/widgets/button_language_setting/button_language_setting.dart';
+import 'package:public_chat/repository/database.dart';
+
+import '../bloc/user_manager/user_manager_cubit.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
@@ -10,13 +16,14 @@ class ChatBubble extends StatelessWidget {
 
   final double _iconSize = 24.0;
 
-  const ChatBubble(
-      {required this.isMine,
-      required this.message,
-      required this.photoUrl,
-      required this.displayName,
-      this.translations = const {},
-      super.key});
+  const ChatBubble({
+    required this.isMine,
+    required this.message,
+    required this.photoUrl,
+    required this.displayName,
+    this.translations = const {},
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +80,9 @@ class ChatBubble extends StatelessWidget {
           if (translations.isNotEmpty)
             ...translations.entries
                 .where(
-                  (element) => element.key != 'original',
+                  (element) =>
+                      element.key != 'original' &&
+                      element.key == context.languageUser,
                 )
                 .map(
                   (e) => Text.rich(
