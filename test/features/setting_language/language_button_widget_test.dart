@@ -111,14 +111,17 @@ void main() {
     );
     const Widget widget = ButtonLanguageSetting();
 
-    await widgetTester.wrapAndPumpWithProvider(widget, [
-      BlocProvider<UserLanguageCubit>(
-        create: (context) => languageCubit,
-      ),
-      BlocProvider<LanguageSupportCubit>(
-        create: (context) => supportLanguage,
-      ),
-    ], locale: const Locale('vi'));
+    await widgetTester.wrapAndPumpWithProvider(
+        widget,
+        [
+          BlocProvider<UserLanguageCubit>(
+            create: (context) => languageCubit,
+          ),
+          BlocProvider<LanguageSupportCubit>(
+            create: (context) => supportLanguage,
+          ),
+        ],
+        locale: const Locale('vi'));
 
     final buttonFinder = find.byType(ButtonLanguageSetting);
     await widgetTester.tap(buttonFinder);

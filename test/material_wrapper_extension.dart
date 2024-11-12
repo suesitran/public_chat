@@ -20,7 +20,9 @@ extension MaterialWrapperExtension on WidgetTester {
         ),
       ));
 
-  Future<void> wrapAndPumpWithProvider(Widget widget, List<BlocProvider> providers, {Locale? locale}) =>
+  Future<void> wrapAndPumpWithProvider(
+          Widget widget, List<BlocProvider> providers,
+          {Locale? locale}) =>
       pumpWidget(MultiBlocProvider(
         providers: providers,
         child: MaterialApp(

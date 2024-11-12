@@ -80,8 +80,11 @@ void main() {
     final firstCountryFinder = find.text('🇿🇦');
     expect(firstCountryFinder, findsOneWidget);
     final textFinder = find.text('🇻🇳');
-    await widgetTester.scrollUntilVisible(textFinder, 500.0,
-    scrollable: find.byType(Scrollable),);
+    await widgetTester.scrollUntilVisible(
+      textFinder,
+      500.0,
+      scrollable: find.byType(Scrollable),
+    );
 
     // Verify the text is found
     expect(textFinder, findsOneWidget);
@@ -91,7 +94,8 @@ void main() {
       matching: find.byType(RadioListTile<LanguageSupport>),
     );
 
-    final RadioListTile<LanguageSupport> radioButton = widgetTester.widget(radioButtonFinder);
+    final RadioListTile<LanguageSupport> radioButton =
+        widgetTester.widget(radioButtonFinder);
     expect(radioButton.value, equals(const LanguageSupport(code: 'vi')));
   });
 
@@ -116,8 +120,11 @@ void main() {
     ));
 
     final textFinder = find.text('🇺🇸');
-    await widgetTester.scrollUntilVisible(textFinder, 500.0,
-    scrollable: find.byType(Scrollable),);
+    await widgetTester.scrollUntilVisible(
+      textFinder,
+      500.0,
+      scrollable: find.byType(Scrollable),
+    );
 
     // Verify the text is found
     expect(textFinder, findsOneWidget);
@@ -127,8 +134,8 @@ void main() {
       matching: find.byType(RadioListTile<LanguageSupport>),
     );
 
-    final RadioListTile<LanguageSupport> radioButton = widgetTester.widget(radioButtonFinder);
+    final RadioListTile<LanguageSupport> radioButton =
+        widgetTester.widget(radioButtonFinder);
     expect(radioButton.value, equals(const LanguageSupport(code: 'vi')));
   });
-
 }
