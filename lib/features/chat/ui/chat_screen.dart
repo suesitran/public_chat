@@ -17,14 +17,14 @@ import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
-class PublicChatScreen extends StatefulWidget {
-  const PublicChatScreen({super.key});
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
 
   @override
-  State<PublicChatScreen> createState() => _PublicChatScreenState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _PublicChatScreenState extends State<PublicChatScreen> {
+class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -186,19 +186,20 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
                     return FirestoreListView<Message>(
                       query: chatCubit.chatContent,
                       reverse: true,
-                      itemBuilder: (BuildContext context,
-                          QueryDocumentSnapshot<Message> doc) {
+                      itemBuilder: (
+                        BuildContext context,
+                        QueryDocumentSnapshot<Message> doc,
+                      ) {
                         if (!doc.exists) {
                           return const SizedBox.shrink();
                         }
-
-                        final Message message = doc.data();
-
-                        return BlocProvider<UserManagerCubit>.value(
-                          value: UserManagerCubit()
-                            ..queryUserDetail(message.sender),
-                          child:
-                              BlocBuilder<UserManagerCubit, UserManagerState>(
+                        final message = doc.data();
+                        if (message.sender.isNotEmpty) {
+                          context
+                              .read<UserManagerCubit>()
+                              .queryUserDetail(message.sender);
+                          return BlocBuilder<UserManagerCubit,
+                              UserManagerState>(
                             builder: (context, state) {
                               String? photoUrl;
                               String? displayName;
@@ -217,8 +218,9 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
                                 translations: message.translations,
                               );
                             },
-                          ),
-                        );
+                          );
+                        }
+                        return const SizedBox.shrink();
                       },
                       emptyBuilder: (context) => const Center(
                         child: Text(

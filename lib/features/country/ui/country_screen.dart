@@ -67,7 +67,7 @@ class _CountryScreenState extends State<CountryScreen> {
         context,
         title: 'Confirm',
         description:
-            'Are you sure you want to use\n"$countryNameSelected" language?',
+            'Are you sure you want to use language of \n"$countryNameSelected"?',
         titleButtonClose: 'Close',
         titleButtonSubmit: 'OK',
         callBackClickSubmit: () {
@@ -135,7 +135,7 @@ class _CountryScreenState extends State<CountryScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const PublicChatScreen(),
+                                            const ChatScreen(),
                                       ),
                                     ),
                           child: Text(

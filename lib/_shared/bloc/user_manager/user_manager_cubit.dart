@@ -14,10 +14,12 @@ class UserManagerCubit extends Cubit<UserManagerState> {
   void queryUserDetail(String uid) async {
     final DocumentSnapshot<UserDetail> userDetail =
         await ServiceLocator.instance.get<Database>().getUser(uid);
-
-    emitSafely(UserDetailState(
+    emitSafely(
+      UserDetailState(
         uid: uid,
         photoUrl: userDetail.data()?.photoUrl,
-        displayName: userDetail.data()?.displayName));
+        displayName: userDetail.data()?.displayName,
+      ),
+    );
   }
 }

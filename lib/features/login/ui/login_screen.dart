@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
+import 'package:public_chat/features/chat/ui/chat_screen.dart';
 import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) =>
                   context.read<LoginCubit>().checkCountryCodeLocalExisted()
-                      ? const PublicChatScreen()
+                      ? const ChatScreen()
                       : const CountryScreen(),
             ),
           );
