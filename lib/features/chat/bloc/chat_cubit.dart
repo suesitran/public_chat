@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chat_state.dart';
 
@@ -15,17 +14,14 @@ class ChatCubit extends Cubit<ChatState> {
   String currentCountryCodeSelected = '';
   String currentLanguageCodeSelected = '';
 
-  void getCurrentLanguageCodeSelected() {
-    currentCountryCodeSelected = ServiceLocator.instance
-            .get<SharedPreferences>()
-            .get(Constants.prefCurrentCountryCode)
-            ?.toString() ??
-        '';
+  void getCurrentLanguageCodeSelected(String countryCode) {
+    currentCountryCodeSelected = countryCode;
     currentLanguageCodeSelected = Constants.countries.firstWhere(
-        (el) => el['country_code'] == currentCountryCodeSelected,
-        orElse: () => Constants.countries.firstWhere((el) =>
-            el['country_code'] ==
-            Constants.countryCodeDefault))['language_code'];
+      (el) => el['country_code'] == countryCode,
+      orElse: () => Constants.countries.firstWhere(
+        (el) => el['country_code'] == Constants.countryCodeDefault,
+      ),
+    )['language_code'];
   }
 
   Query<Message> get chatContent =>

@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<CountryCubit>(create: (context) => CountryCubit()),
       ],
       child: MaterialApp(
-        theme: Theme.of(context).copyWith(useMaterial3: false),
+        theme: ThemeData(useMaterial3: false),
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -57,6 +57,12 @@ class MainApp extends StatelessWidget {
                 ? const PublicChatScreen()
                 : const CountryScreen()
             : const LoginScreen(),
+        builder: (_ , child) {
+          ErrorWidget.builder = (_) {
+            return Container();
+          };
+          return child!;
+        },
       ),
     );
   }

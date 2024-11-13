@@ -32,7 +32,9 @@ class _CountryScreenState extends State<CountryScreen> {
 
   Future<void> _handleInCaseHadCountryCodeSelected() async {
     final countryCode = context.read<ChatCubit>().currentCountryCodeSelected;
-    context.read<CountryCubit>().setCountrySelectedInitialIfAny(countryCode);
+    context
+        .read<CountryCubit>()
+        .setCountrySelectedInitial(countryCode: countryCode);
     await _scrollToCountrySelected(countryCode);
   }
 
@@ -58,18 +60,22 @@ class _CountryScreenState extends State<CountryScreen> {
   }
 
   Future<void> _showConfirmDialogSelectCountry() async {
-    await FunctionsAlertDialog.showNoticeAndConfirmDialog(
-      context,
-      title: 'Confirm',
-      description:
-          'Are you sure you want to use\n"${context.read<CountryCubit>().getCountryNameSelected()}" language?',
-      titleButtonClose: 'Close',
-      titleButtonSubmit: 'OK',
-      callBackClickSubmit: () {
-        context.read<CountryCubit>().agreementConfirmSelectCountry();
-        Navigator.of(context).pop();
-      },
-    );
+    final countryNameSelected =
+        context.read<CountryCubit>().getCountryNameSelected();
+    if (countryNameSelected.isNotEmpty) {
+      await FunctionsAlertDialog.showNoticeAndConfirmDialog(
+        context,
+        title: 'Confirm',
+        description:
+            'Are you sure you want to use\n"$countryNameSelected" language?',
+        titleButtonClose: 'Close',
+        titleButtonSubmit: 'OK',
+        callBackClickSubmit: () {
+          context.read<CountryCubit>().agreementConfirmSelectCountry();
+          Navigator.of(context).pop();
+        },
+      );
+    }
   }
 
   Future<void> _scrollToCountrySelected(String countryCodeSelected) async {

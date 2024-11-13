@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:public_chat/l10n/app_localization.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/repository/genai_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,7 @@ class ServiceLocator {
   Future<void> initialise() async {
     registerSingletonIfNeeded(GenAiModel());
     registerSingletonIfNeeded(GoogleTranslator());
+    registerSingletonIfNeeded(AppLocalization());
     registerSingletonIfNeeded(Database.instance);
     await _registerSharePreference();
   }

@@ -28,7 +28,7 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ChatCubit>().getCurrentLanguageCodeSelected();
+      context.read<CountryCubit>().setCountrySelectedInitial();
     });
     super.initState();
   }
@@ -77,8 +77,9 @@ class _PublicChatScreenState extends State<PublicChatScreen> {
           leading: BlocConsumer<CountryCubit, CountryState>(
             listenWhen: (previous, current) =>
                 current is CurrentCountryCodeSelected,
-            listener: (context, state) =>
-                chatCubit.getCurrentLanguageCodeSelected(),
+            listener: (context, state) => state is CurrentCountryCodeSelected
+                ? chatCubit.getCurrentLanguageCodeSelected(state.countryCode)
+                : null,
             buildWhen: (previous, current) =>
                 current is CurrentCountryCodeSelected,
             builder: (context, state) {

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
+import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,21 +13,21 @@ class CountryCubit extends Cubit<CountryState> {
   String currentCountryCodeSelected = '';
   String tempCountryCodeSelected = '';
 
-  void setCountrySelectedInitialIfAny(String countryCode) {
-    currentCountryCodeSelected = Constants.countries.indexWhere(
-                (el) => el['country_code'] == countryCode.toUpperCase()) !=
-            -1
-        ? countryCode
-        : Constants.countryCodeDefault;
+  void setCountrySelectedInitial({String? countryCode}) {
+    if (countryCode.isNotNullAndNotEmpty) {
+      currentCountryCodeSelected = countryCode!;
+    } else {
+      currentCountryCodeSelected = ServiceLocator.instance
+              .get<SharedPreferences>()
+              .get(Constants.prefCurrentCountryCode)
+              ?.toString() ??
+          '';
+    }
     emit(CurrentCountryCodeSelected(countryCode: currentCountryCodeSelected));
   }
 
   Future<void> selectCountry(String countryCode) async {
-    tempCountryCodeSelected = Constants.countries.indexWhere(
-                (el) => el['country_code'] == countryCode.toUpperCase()) !=
-            -1
-        ? countryCode
-        : Constants.countryCodeDefault;
+    tempCountryCodeSelected = countryCode;
     emit(TemporaryCountryCodeSelected(countryCode: tempCountryCodeSelected));
   }
 
@@ -42,8 +43,11 @@ class CountryCubit extends Cubit<CountryState> {
   }
 
   String getCountryNameSelected() {
-    return Constants.countries.firstWhere(
-        (el) => el['country_code'] == tempCountryCodeSelected)['name'];
+    final indexCountryCodeSelectedInList = Constants.countries
+        .indexWhere((el) => el['country_code'] == tempCountryCodeSelected);
+    return indexCountryCodeSelectedInList != -1
+        ? Constants.countries[indexCountryCodeSelectedInList]['name']
+        : '';
   }
 
   bool checkAllowShowButtonAction(bool isHasBackButton) {
