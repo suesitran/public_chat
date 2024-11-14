@@ -1,1 +1,0 @@
-const maxLanguages = 2;
