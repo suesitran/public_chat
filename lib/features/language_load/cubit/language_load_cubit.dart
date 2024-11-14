@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/l10n/language_static.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
@@ -13,35 +12,56 @@ enum LanguageLoadState { initial, inProgress, success, failure }
 class LanguageLoadCubit extends Cubit<LanguageLoadState> {
   LanguageLoadCubit() : super(LanguageLoadState.initial);
 
-  Future<void> loadAllLanguageStatic() async {
-    emit(LanguageLoadState.inProgress);
-    final allLanguage = ServiceLocator.instance.get<LanguageStatic>().languages;
+  Future<Map<String, Map<String, String>>> _translateAllLanguageStatic(
+    String currentLanguageCode,
+    Map<String, Map<String, String>> allLanguageStatic,
+  ) async {
+    final translator = ServiceLocator.instance.get<GoogleTranslator>();
+
     Map<String, Map<String, String>> allLanguageTranslated = {};
-    if (allLanguage.keys.isNotEmpty) {
-      String currentCountryCode = ServiceLocator.instance
-              .get<SharedPreferences>()
-              .get(Constants.prefCurrentCountryCode)
-              ?.toString() ??
-          '';
-      if (currentCountryCode.isEmpty) {
-        currentCountryCode =
-            WidgetsBinding.instance.platformDispatcher.locale.countryCode ??
-                Constants.countryCodeDefault;
-      }
-      String currentLanguageCode = Constants.countries.firstWhere(
-          (el) => el['country_code'] == currentCountryCode)['language_code'];
-      final translator = ServiceLocator.instance.get<GoogleTranslator>();
-      await Future.forEach(allLanguage.keys, (key) async {
-        if (!allLanguage[key]!.keys.contains(currentLanguageCode)) {
+
+    await Future.forEach(allLanguageStatic.keys, (key) async {
+      if (!allLanguageStatic[key]!.keys.contains(currentLanguageCode)) {
+        try {
           Translation messageTranslated = await translator.translate(
-            allLanguage[key]![Constants.languageCodeDefault]!,
+            allLanguageStatic[key]![Constants.languageCodeDefault]!,
             from: Constants.languageCodeDefault,
             to: currentLanguageCode,
           );
           allLanguageTranslated[key]![currentLanguageCode] =
               messageTranslated.text;
+        } catch (e) {
+          null;
         }
-      });
+      }
+    });
+    return allLanguageTranslated;
+  }
+
+  // Check has country code in local and != "US" => translate by language code
+  // Opposite use text with language code "en" and navigate to another screen
+  Future<void> loadAllLanguageStatic() async {
+    emit(LanguageLoadState.inProgress);
+    String currentCountryCode = ServiceLocator.instance
+            .get<SharedPreferences>()
+            .get(Constants.prefCurrentCountryCode)
+            ?.toString() ??
+        '';
+    if (currentCountryCode.isNotEmpty &&
+        currentCountryCode.toUpperCase() != Constants.countryCodeDefault) {
+      final languageStatic = ServiceLocator.instance.get<LanguageStatic>();
+
+      String currentLanguageCode = Constants.countries.firstWhere(
+          (el) => el['country_code'] == currentCountryCode)['language_code'];
+
+      Map<String, Map<String, String>> allLanguageTranslated =
+          await _translateAllLanguageStatic(
+        currentLanguageCode,
+        languageStatic.languages,
+      );
+
+      languageStatic.updateDataLanguages(allLanguageTranslated);
     }
+    emit(LanguageLoadState.success);
   }
 }

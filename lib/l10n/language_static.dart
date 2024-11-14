@@ -19,4 +19,7 @@ class LanguageStatic {
     'buttonSelectTitle': {},
     'buttonGoTitle': {},
   };
+
+  void updateDataLanguages(Map<String, Map<String, String>> newLanguages) =>
+      languages = newLanguages;
 }
