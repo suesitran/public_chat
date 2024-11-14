@@ -1,0 +1,1 @@
+const maxLanguages = 2;

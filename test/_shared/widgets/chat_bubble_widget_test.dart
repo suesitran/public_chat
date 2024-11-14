@@ -1,17 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:public_chat/_shared/button/button_with_popup.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
-
+import 'package:public_chat/features/translate_settings/trans_bloc.dart';
+import 'package:public_chat/main.dart';
 import '../../material_wrapper_extension.dart';
 
+class MockTransBloc extends Mock implements TransBloc {}
+
 void main() {
+  final MockTransBloc transBloc = MockTransBloc();
+
+  setUp(
+    () {
+      when(
+        () => transBloc.state,
+      ).thenAnswer(
+        (_) => ChangeLangState(
+          selectedLanguages: [defaultLanguageCode],
+        ),
+      );
+      when(
+        () => transBloc.stream,
+      ).thenAnswer(
+        (_) => const Stream.empty(),
+      );
+      when(
+        () => transBloc.close(),
+      ).thenAnswer(
+        (invocation) => Future.value(),
+      );
+    },
+  );
+
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = BlocProvider<TransBloc>(
+      create: (context) => transBloc,
+      child: ChatBubble(
+        isMine: true,
+        message: 'message',
+        displayName: 'displayName',
+        photoUrl: null,
+        id: 'id',
+      ),
     );
 
     await widgetTester.wrapAndPump(widget);
@@ -63,11 +97,15 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = BlocProvider<TransBloc>(
+      create: (context) => transBloc,
+      child: ChatBubble(
+        isMine: true,
+        message: 'message',
+        displayName: 'displayName',
+        photoUrl: null,
+        id: 'id',
+      ),
     );
 
     // when
@@ -89,11 +127,15 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    Widget widget = BlocProvider<TransBloc>(
+      create: (context) => transBloc,
+      child: ChatBubble(
+        isMine: true,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName',
+        id: 'id',
+      ),
     );
 
     // when
@@ -110,11 +152,16 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
+    Widget widget = BlocProvider<TransBloc>(
+      create: (context) => transBloc,
+      child: ChatBubble(
         isMine: true,
         photoUrl: 'photoUrl',
         message: 'message',
-        displayName: 'displayName');
+        displayName: 'displayName',
+        id: 'id',
+      ),
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -132,7 +179,7 @@ void main() {
 
     expect(row.children.length, 2);
     // verify Container wrapper for Text is present
-    expect(row.children.first, isA<Container>());
+    expect(row.children.first, isA<ButtonWithPopup>());
     // verify Padding wrapper for ClipRRect is preset
     expect(row.children.last, isA<Padding>());
   });
@@ -144,11 +191,16 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
+    Widget widget = BlocProvider<TransBloc>(
+      create: (context) => transBloc,
+        child: ChatBubble(
         isMine: false,
         photoUrl: 'photoUrl',
         message: 'message',
-        displayName: 'displayName');
+        displayName: 'displayName',
+        id: 'id',
+      ),
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -168,6 +220,6 @@ void main() {
     // verify Padding wrapper for ClipRRect is preset
     expect(row.children.first, isA<Padding>());
     // verify Container wrapper for Text is present
-    expect(row.children.last, isA<Container>());
+    expect(row.children.last, isA<ButtonWithPopup>());
   });
 }
