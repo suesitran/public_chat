@@ -24,6 +24,7 @@ void showSelectLang() {
   List<String> _getHistoryLanguages() {
     return LocalSharedData().getListHistoryLanguages();
   }
+
   MessageDialog.showMessageDialog(
     titleText: 'Chọn ngôn ngữ dịch cho toàn bộ tin nhắn',
     contentWidget: BlocBuilder<TransBloc, TransState>(
@@ -41,7 +42,9 @@ void showSelectLang() {
             // if (languages.length > maxLanguages) {
             //   languages.sublist(0, maxLanguages);
             // }
-            context.read<TransBloc>().add(SelectLanguageEvent(languages));
+            context.read<TransBloc>().add(SelectLanguageEvent(
+                  languages: languages,
+                ));
             LocalSharedData().setChatLanguagesAndHistoryLanguages(languages);
           },
           fetchListHistoryLanguages: () async => _getHistoryLanguages(),

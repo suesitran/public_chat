@@ -6,7 +6,7 @@ import 'widgets/switch_button.dart';
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({super.key});
 
-  bool autoTranslate = false;
+  bool autoTranslate = true;
   bool useDefaultLocale = true;
   bool useFavoriteLang = false;
   @override

@@ -91,10 +91,8 @@ class TextFieldInput extends StatelessWidget {
         border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey)),
         filled: filled ?? true,
-        fillColor: readOnly
-            ? (fillColor ?? Colors.grey)
-            : fillColor ??
-                Colors.white,
+        fillColor:
+            readOnly ? (fillColor ?? Colors.grey) : fillColor ?? Colors.white,
       ),
     );
   }

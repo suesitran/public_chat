@@ -6,18 +6,30 @@ class TransInit extends TransState {
   TransInit();
 }
 
-class SelectLangError extends TransState {
+class TransLoading extends TransState {
+  TransLoading();
+}
+
+class TransError extends TransState {
   final String message;
-  SelectLangError({
+  TransError({
     required this.message,
   });
 }
 
 class ChangeLangState extends TransState {
   final List<String> selectedLanguages;
-
+  // final Map<String, dynamic> resultTranslations;
   ChangeLangState({
     required this.selectedLanguages,
+    // required this.resultTranslations,
+  });
+}
+
+class TransResult extends TransState {
+  final Map<String, dynamic> resultTranslations;
+  TransResult({
+    required this.resultTranslations,
   });
 }
 

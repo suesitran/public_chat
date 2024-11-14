@@ -7,6 +7,7 @@ import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:public_chat/utils/local_shared_data.dart';
 import 'features/login/ui/login_screen.dart';
 import 'features/translate_settings/trans_bloc.dart';
 import 'utils/global.dart';
@@ -24,7 +25,11 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<GenaiBloc>(create: (context) => GenaiBloc()),
-        BlocProvider<TransBloc>(create: (context) => TransBloc()),
+        BlocProvider<TransBloc>(create: (context) {
+          final languages =
+              LocalSharedData().getChatLanguages() ?? [defaultLanguageCode];
+          return TransBloc()..add(SelectLanguageEvent(languages: languages));
+        }),
       ],
       child: const MainApp(),
     ),

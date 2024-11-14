@@ -39,7 +39,7 @@ void main() {
   testWidgets('verify UI component', (widgetTester) async {
     Widget widget = BlocProvider<TransBloc>(
       create: (context) => transBloc,
-      child: ChatBubble(
+      child: const ChatBubble(
         isMine: true,
         message: 'message',
         displayName: 'displayName',
@@ -99,7 +99,7 @@ void main() {
     // given
     Widget widget = BlocProvider<TransBloc>(
       create: (context) => transBloc,
-      child: ChatBubble(
+      child: const ChatBubble(
         isMine: true,
         message: 'message',
         displayName: 'displayName',
@@ -129,7 +129,7 @@ void main() {
     // given
     Widget widget = BlocProvider<TransBloc>(
       create: (context) => transBloc,
-      child: ChatBubble(
+      child: const ChatBubble(
         isMine: true,
         photoUrl: 'photoUrl',
         message: 'message',
@@ -154,7 +154,7 @@ void main() {
     // given
     Widget widget = BlocProvider<TransBloc>(
       create: (context) => transBloc,
-      child: ChatBubble(
+      child: const ChatBubble(
         isMine: true,
         photoUrl: 'photoUrl',
         message: 'message',
@@ -193,7 +193,7 @@ void main() {
     // given
     Widget widget = BlocProvider<TransBloc>(
       create: (context) => transBloc,
-        child: ChatBubble(
+        child: const ChatBubble(
         isMine: false,
         photoUrl: 'photoUrl',
         message: 'message',
