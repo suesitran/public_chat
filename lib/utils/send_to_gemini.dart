@@ -51,8 +51,7 @@ Future<Map<String, dynamic>> sendToGenmini({
   Map<String, String>? translated;
   if (jsonTranslated != null) {
     translated = jsonDecode(jsonTranslated)['translations'];
-    print(
-        'final result: $translated'); //{en: Hello, this is a test. I am Dương}
+//{en: Hello, this is a test. I am Dương}
   } else {
     MessageDialog.showError('Gemini trả về phản hồi null');
   }
