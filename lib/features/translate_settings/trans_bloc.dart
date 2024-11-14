@@ -34,7 +34,7 @@ class TransBloc extends Bloc<TransEvent, TransState> {
       required List<String> selectedLanguages,
       required String messageID}) async {
     emitSafely(TransLoading());
-    final _firebaseInstance = FirebaseFirestore.instance;
+    final firebaseInstance = FirebaseFirestore.instance;
     // final _firebaseInstance = ServiceLocator.get<FirebaseFirestore>();
     //nếu có lang dịch rồi, lang chưa: vẫn lấy "translations" từ firestore vì lang dịch rồi đó sẽ có trên firebase
     if (_previousLanguages.equal(selectedLanguages)) {
@@ -46,14 +46,14 @@ class TransBloc extends Bloc<TransEvent, TransState> {
     //get translations from firestore
     //TODO: use ServiceLocator
     DocumentSnapshot<Map<String, dynamic>> data =
-        await _firebaseInstance.collection('translations').doc(messageID).get();
+        await firebaseInstance.collection('translations').doc(messageID).get();
     //neu id chua exist, them vao firestore
     if (!data.exists) {
-      await _firebaseInstance
+      await firebaseInstance
           .collection('translations')
           .doc(messageID)
           .set({'id ko ton tai': 'id ko ton tai => them moi'});
-      data = await _firebaseInstance
+      data = await firebaseInstance
           .collection('translations')
           .doc(messageID)
           .get();
@@ -64,8 +64,8 @@ class TransBloc extends Bloc<TransEvent, TransState> {
       bool hasTranslated = false;
       for (var e in translations.entries) {
         if (lang.toLowerCase() == e.key.toLowerCase()) {
-          _resultTranslations[lang] = "translated: " +
-              e.value; //đã có trên firestore rồi, ko cần dịch nữa
+          _resultTranslations[lang] =
+              'translated: ${e.value}'; //đã có trên firestore rồi, ko cần dịch nữa
           hasTranslated = true;
           break;
         }
@@ -81,7 +81,7 @@ class TransBloc extends Bloc<TransEvent, TransState> {
           //_resultTranslations add them data
           _resultTranslations[e.key] = e.value;
         }
-        _firebaseInstance.collection('translations').doc(messageID).set(
+        firebaseInstance.collection('translations').doc(messageID).set(
             map,
             SetOptions(
                 merge: true)); //nếu key đã có rồi thì ko thay đổi, chưa thì add

@@ -22,7 +22,7 @@ class _MySwitchButtonState extends State<MySwitchButton> {
 
   @override
   Widget build(BuildContext context) {
-    bool _toggle = widget.toggle;
+    bool toggle = widget.toggle;
     return CupertinoSwitch(
       // overrides the default green color of the track
       // activeColor: Colors.pink.shade200,
@@ -31,11 +31,11 @@ class _MySwitchButtonState extends State<MySwitchButton> {
       // when the switch is off
       // trackColor: Colors.black12,
       // boolean variable value
-      value: _toggle, //only do when not null
+      value: toggle, //only do when not null
       // changes the state of the switch
       onChanged: (value) {
         setState(() {
-          _toggle = value;
+          toggle = value;
         });
         widget.onChange?.call(value);
       },
