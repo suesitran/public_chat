@@ -36,7 +36,6 @@ class _MySwitchButtonState extends State<MySwitchButton> {
       onChanged: (value) {
         setState(() {
           _toggle = value;
-          print(_toggle);
         });
         widget.onChange?.call(value);
       },

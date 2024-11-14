@@ -39,8 +39,6 @@ class PublicChatScreen extends StatelessWidget {
                         shrinkWrap: true,
                         itemBuilder: (BuildContext context,
                             QueryDocumentSnapshot<Message> doc) {
-                          print(
-                              'build FirestoreListView:${doc.data().toString()}');
                           if (!doc.exists) {
                             return const SizedBox.shrink();
                           }

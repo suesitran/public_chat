@@ -11,9 +11,6 @@ Future<String> translate(String text,
             from: from))
         .text;
   } catch (e) {
-    print('translate error: $e');
-    // MessageDialog.showError("Không tìm thấy ngôn ngữ '$to'\n${e}",
-    //     titleText: 'Dịch thất bại (dịch từ ngôn ngữ "$from")');
     return "Không tìm thấy ngôn ngữ '$to' (dịch từ ngôn ngữ '$from')";
   }
 }

@@ -47,8 +47,7 @@ Future<Map<String, dynamic>> sendToGenmini({
   final chatSession = model.startChat(generationConfig: generationConfig);
   final result = await chatSession.sendMessage(Content.text(prompt));
   final jsonTranslated = result.text;
-  print(
-      'translated json: $jsonTranslated'); // {"translations": {"en": "Hello, this is a test. I am Dương"}}
+  // {"translations": {"en": "Hello, this is a test. I am Dương"}}
   Map<String, String>? translated;
   if (jsonTranslated != null) {
     translated = jsonDecode(jsonTranslated)['translations'];

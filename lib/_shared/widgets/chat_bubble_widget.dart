@@ -57,7 +57,6 @@ class ChatBubble extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<TransBloc, TransState>(builder: (context, state) {
           if (!isMine && state is ChangeLangState) {
-            print('state: ${state.selectedLanguages}');
             context.read<TransBloc>().getTranslations(
                 message: message,
                 selectedLanguages: state.selectedLanguages,

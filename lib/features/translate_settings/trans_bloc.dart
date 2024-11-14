@@ -59,7 +59,6 @@ class TransBloc extends Bloc<TransEvent, TransState> {
           .get();
     }
     Map<String, dynamic> translations = data.data() ?? {};
-    print('translations: $translations');
     List<String> listLangSendToGemini = [];
     for (String lang in selectedLanguages) {
       bool hasTranslated = false;
@@ -133,14 +132,12 @@ class TransBloc extends Bloc<TransEvent, TransState> {
     You must return the translations in JSON format with language codes as keys, e.g: {"en": "English translation", "fr": "French translation"}''';
     final chatSession = model.startChat(generationConfig: generationConfig);
     final result = await chatSession.sendMessage(Content.text(prompt));
-    final jsonTranslated = result.text;
-    print(
-        'translated json: $jsonTranslated'); // {"translations": {"en": "Hello, this is a test. I am Dương"}}
+    final jsonTranslated = result
+        .text; // {"translations": {"en": "Hello, this is a test. I am Dương"}}
     Map<String, String>? translated;
     if (jsonTranslated != null) {
       translated = jsonDecode(jsonTranslated)['translations'];
-      print(
-          'final result: $translated'); //{en: Hello, this is a test. I am Dương}
+//{en: Hello, this is a test. I am Dương}
     } else {
       MessageDialog.showError('Gemini trả về phản hồi null');
     }
@@ -149,7 +146,6 @@ class TransBloc extends Bloc<TransEvent, TransState> {
 
   FutureOr<void> _onLoadHistoryLanguages(
       LoadHistoryLanguagesEvent event, Emitter<TransState> emit) {
-    print('onLoadHistoryLanguages');
     emitSafely(TransInit());
     final listHistoryLanguages = _localSharedData.getListHistoryLanguages();
     emitSafely(
@@ -160,14 +156,12 @@ class TransBloc extends Bloc<TransEvent, TransState> {
 extension on List<String> {
   //tính luôn cả trường hợp giống nhau nhưng ko đúng thứ tự
   bool equal(List<String> selectedLanguages) {
-    // if (this == null) return false;
     if (isEmpty || selectedLanguages.isEmpty) return false;
     for (String e in this) {
       if (!selectedLanguages.contains(e)) {
         return false;
       }
     }
-    print('equal: $selectedLanguages');
     return true;
   }
 }

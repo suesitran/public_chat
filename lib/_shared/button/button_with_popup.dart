@@ -2,43 +2,37 @@ import 'package:flutter/material.dart';
 
 class ButtonWithPopup<T> extends StatefulWidget {
   const ButtonWithPopup(
-      {
-      // required this.onChanged,
-      required this.items,
-      this.onTap,
-      required this.child});
-  // final Function(T) onChanged;
+      {super.key, required this.items, this.onTap, required this.child});
   final List<DropdownMenuItem<T>> items;
   final Widget child;
   final Function()? onTap;
+
   @override
-  _ButtonWithPopupState<T> createState() => _ButtonWithPopupState<T>();
+  State<ButtonWithPopup<T>> createState() => _ButtonWithPopupState<T>();
 }
 
 class _ButtonWithPopupState<T> extends State<ButtonWithPopup<T>> {
   String? selectedItem;
+
   final LayerLink _layerLink = LayerLink();
 
   void _onDropdownTap() async {
-    print('onDropdownTap');
     // Khi đã có dữ liệu, hiển thị dropdown items
     if (widget.items.isNotEmpty) {
-      print('items không rỗng');
       _showOverlay(); //ko do day
     } else {
-      print('items rỗng');
       // MsgDialog.showError(msg: 'Không tải được dữ liệu!');
     }
   }
 
   final GlobalKey _key = GlobalKey();
+
   OverlayEntry? _overlayEntry;
+
   void _showOverlay() {
-    print('show overlay');
 //null check
     final renderBox = _key.currentContext!.findRenderObject() as RenderBox;
     final size = renderBox.size;
-    print('size (dropdownNoFetchItems): $size');
     final position = renderBox.localToGlobal(Offset.zero);
 
     // Tính chiều cao của popup dựa trên số lượng items

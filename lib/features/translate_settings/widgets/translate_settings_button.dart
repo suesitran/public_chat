@@ -21,7 +21,7 @@ class TranslateSettingsButton extends StatelessWidget {
 }
 
 void showSelectLang() {
-  List<String> _getHistoryLanguages() {
+  List<String> getHistoryLanguages() {
     return LocalSharedData().getListHistoryLanguages();
   }
 
@@ -38,16 +38,12 @@ void showSelectLang() {
                 .map((e) => e.trim().toLowerCase())
                 .toList();
             languages.removeWhere((e) => e.isEmpty);
-            print('languages: $languages');
-            // if (languages.length > maxLanguages) {
-            //   languages.sublist(0, maxLanguages);
-            // }
             context.read<TransBloc>().add(SelectLanguageEvent(
                   languages: languages,
                 ));
             LocalSharedData().setChatLanguagesAndHistoryLanguages(languages);
           },
-          fetchListHistoryLanguages: () async => _getHistoryLanguages(),
+          fetchListHistoryLanguages: () async => getHistoryLanguages(),
         );
       },
     ),

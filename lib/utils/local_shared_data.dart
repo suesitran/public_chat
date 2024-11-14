@@ -50,7 +50,6 @@ class LocalSharedData {
     List<String> list =
         sharedPreferences.getStringList(keyListHistoryLanguages) ??
             [defaultLanguageCode, 'en'];
-    print('getListHistoryLanguages: $list');
     return list;
   }
 
