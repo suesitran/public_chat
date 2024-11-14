@@ -193,7 +193,7 @@ void main() {
     // given
     Widget widget = BlocProvider<TransBloc>(
       create: (context) => transBloc,
-        child: const ChatBubble(
+      child: const ChatBubble(
         isMine: false,
         photoUrl: 'photoUrl',
         message: 'message',
