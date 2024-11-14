@@ -13,18 +13,12 @@ import '../../../_shared/widgets/message_box_widget.dart';
 import '../../app_settings/widgets/settings_button.dart';
 import '../../translate_settings/widgets/translate_settings_button.dart';
 
-class PublicChatScreen extends StatefulWidget {
+class PublicChatScreen extends StatelessWidget {
   const PublicChatScreen({super.key});
 
   @override
-  State<PublicChatScreen> createState() => _PublicChatScreenState();
-}
-
-class _PublicChatScreenState extends State<PublicChatScreen> {
-  @override
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
-    print('build PublicChatScreen:${user?.displayName}');
     return BlocProvider<ChatCubit>(
       create: (context) => ChatCubit(),
       child: Scaffold(
