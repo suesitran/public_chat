@@ -1,5 +1,9 @@
 {
     "login":"Đăng nhập",
-    "publicRoomTitle": "Phòng chat công cộng"
-
+    "publicRoomTitle": "Phòng chat công cộng",
+    "selectLanguage": "Chọn ngôn ngữ",
+    "searchLanguage": "Nhập ngôn ngữ, quốc gia",
+    "languagesLoadFailed": "Xảy ra lỗi khi tải ngôn ngữ",
+    "appLanguage": "Ngôn ngữ ứng dụng",
+    "messageLanguage": "Ngôn ngữ tin nhắn"
 }

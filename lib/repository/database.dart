@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
+import 'package:public_chat/_shared/data/language.dart';
 
 final class Database {
   static Database? _instance;
@@ -14,6 +15,8 @@ final class Database {
 
   final String _publicRoom = 'public';
   final String _userList = 'users';
+  final String _languageList = 'languages';
+
   void writePublicMessage(Message message) {
     FirebaseFirestore.instance.collection(_publicRoom).add(message.toMap());
   }
@@ -28,12 +31,15 @@ final class Database {
         .withConverter(fromFirestore: fromFirestore, toFirestore: toFirestore);
   }
 
-  void saveUser(User user) {
-    final UserDetail userDetail = UserDetail.fromFirebaseUser(user);
+  UserDetail saveUser(User user, [Language? language]) {
+    final UserDetail userDetail = UserDetail.fromFirebaseUser(user, language);
+
     FirebaseFirestore.instance
         .collection(_userList)
         .doc(user.uid)
         .set(userDetail.toMap(), SetOptions(merge: true));
+
+    return userDetail;
   }
 
   Future<DocumentSnapshot<UserDetail>> getUser(String uid) {
@@ -53,6 +59,17 @@ final class Database {
             fromFirestore: _userDetailFromFirestore,
             toFirestore: _userDetailToFirestore)
         .snapshots();
+  }
+
+  void addLanguage(Language language) async {
+    final collection = FirebaseFirestore.instance.collection(_languageList);
+
+    final existingLanguage =
+        await collection.where('code', isEqualTo: language.code).get();
+
+    if (existingLanguage.docs.isEmpty) {
+      collection.add(language.toMap(importCountry: false));
+    }
   }
 
   /// ###############################################################
