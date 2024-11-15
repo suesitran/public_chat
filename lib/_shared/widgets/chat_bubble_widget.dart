@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
+import 'package:public_chat/_shared/bloc/language_cubit.dart/language_cubit.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
@@ -69,34 +71,56 @@ class ChatBubble extends StatelessWidget {
                 .bodyMedium
                 ?.copyWith(color: Colors.white),
           ),
-          // english version (if there is)
+          // translations version (if there is)
           if (translations.isNotEmpty)
-            ...translations.entries
-                .where(
-                  (element) => element.key != 'original',
-                )
-                .map(
-                  (e) => Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${e.key} ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      isMine ? Colors.black87 : Colors.grey)),
-                      TextSpan(
-                        text: e.value,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: isMine ? Colors.black87 : Colors.grey),
+            BlocBuilder<LanguageCubit, LanguageState>(
+              buildWhen: (previous, current) =>
+                  previous.messageLanguage != current.messageLanguage,
+              builder: (context, state) {
+                return Column(
+                  children: translations.entries
+                      .where(
+                        (element) =>
+                            element.value != message &&
+                            element.key ==
+                                context
+                                    .read<LanguageCubit>()
+                                    .state
+                                    .messageLanguage
+                                    ?.code,
                       )
-                    ]),
-                    textAlign: isMine ? TextAlign.right : TextAlign.left,
-                  ),
-                )
+                      .map(
+                        (e) => Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                                text: '${e.key} ',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: isMine
+                                            ? Colors.black87
+                                            : Colors.grey)),
+                            TextSpan(
+                              text: e.value,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontStyle: FontStyle.italic,
+                                      color: isMine
+                                          ? Colors.black87
+                                          : Colors.grey),
+                            )
+                          ]),
+                          textAlign: isMine ? TextAlign.right : TextAlign.left,
+                        ),
+                      )
+                      .toList(),
+                );
+              },
+            ),
         ],
       ),
     ));

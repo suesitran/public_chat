@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:public_chat/_shared/data/language.dart';
 
 final class Message {
   final String id;
@@ -23,20 +25,43 @@ final class Message {
       {'message': message, 'sender': sender, 'time': timestamp};
 }
 
-final class UserDetail {
+final class UserDetail extends Equatable {
   final String displayName;
   final String? photoUrl;
   final String uid;
+  final Language? messageLanguage;
 
-  UserDetail.fromFirebaseUser(User user)
+  const UserDetail({
+    required this.uid,
+    required this.displayName,
+    required this.photoUrl,
+    required this.messageLanguage,
+  });
+
+  UserDetail.fromFirebaseUser(User user, [this.messageLanguage])
       : displayName = user.displayName ?? 'Unknown',
         photoUrl = user.photoURL,
         uid = user.uid;
 
-  UserDetail.fromMap(this.uid, Map<String, dynamic> map)
-      : displayName = map['displayName'],
-        photoUrl = map['photoUrl'];
+  factory UserDetail.fromMap(String uid, Map<String, dynamic> map) {
+    final messageLanguageData = map['messageLanguage'];
 
-  Map<String, dynamic> toMap() =>
-      {'displayName': displayName, 'photoUrl': photoUrl};
+    return UserDetail(
+      uid: uid,
+      displayName: map['displayName'],
+      photoUrl: map['photoUrl'],
+      messageLanguage: messageLanguageData is Map
+          ? Language.fromMap(messageLanguageData)
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
+        'displayName': displayName,
+        'photoUrl': photoUrl,
+        if (messageLanguage != null) 'messageLanguage': messageLanguage!.toMap()
+      };
+
+  @override
+  List<Object?> get props => [displayName, photoUrl, uid, messageLanguage];
 }
