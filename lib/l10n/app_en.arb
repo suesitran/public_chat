@@ -1,4 +1,10 @@
 {
-    "login":"Login",
-    "publicRoomTitle": "Public Room"
+  "login": "Login",
+  "publicRoomTitle": "Public Room",
+  "setting": "Setting",
+  "appLanguage": "App language",
+  "chatLanguage": "Chat language",
+  "selectLanguage": "Select language",
+  "welcome": "Welcome",
+  "chatLanguageDialogMessage": "For the best experience please select the language you will use in this chat."
 }

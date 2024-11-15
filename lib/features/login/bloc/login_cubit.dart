@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
@@ -12,7 +13,9 @@ import 'package:public_chat/utils/bloc_extensions.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial()) {
+  final UserManagerCubit userManagerCubit;
+
+  LoginCubit({required this.userManagerCubit}) : super(LoginInitial()) {
     userSubscription = googleSignIn.onCurrentUserChanged.listen(
       (user) {
         if (user != null) {
@@ -62,6 +65,7 @@ class LoginCubit extends Cubit<LoginState> {
       }
 
       database.saveUser(user);
+      await userManagerCubit.queryUserDetail(user.uid);
       emitSafely(LoginSuccess(user.displayName ?? 'Unknown display name'));
     } on FirebaseAuthException catch (e) {
       emitSafely(LoginFailed(e.toString()));

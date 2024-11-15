@@ -12,6 +12,7 @@ void main() {
       message: 'message',
       displayName: 'displayName',
       photoUrl: null,
+      id: 'id',
     );
 
     await widgetTester.wrapAndPump(widget);
@@ -68,6 +69,7 @@ void main() {
       message: 'message',
       displayName: 'displayName',
       photoUrl: null,
+      id: 'id',
     );
 
     // when
@@ -94,6 +96,7 @@ void main() {
       photoUrl: 'photoUrl',
       message: 'message',
       displayName: 'displayName',
+      id: 'id',
     );
 
     // when
@@ -111,10 +114,12 @@ void main() {
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
     const Widget widget = ChatBubble(
-        isMine: true,
-        photoUrl: 'photoUrl',
-        message: 'message',
-        displayName: 'displayName');
+      isMine: true,
+      photoUrl: 'photoUrl',
+      message: 'message',
+      displayName: 'displayName',
+      id: 'id',
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -145,10 +150,12 @@ void main() {
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
     const Widget widget = ChatBubble(
-        isMine: false,
-        photoUrl: 'photoUrl',
-        message: 'message',
-        displayName: 'displayName');
+      isMine: false,
+      photoUrl: 'photoUrl',
+      message: 'message',
+      displayName: 'displayName',
+      id: 'id',
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);

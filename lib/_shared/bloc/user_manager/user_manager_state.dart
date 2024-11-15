@@ -1,22 +1,32 @@
 part of 'user_manager_cubit.dart';
 
-abstract class UserManagerState extends Equatable {
-  const UserManagerState();
-}
-
-class UserManagerInitial extends UserManagerState {
-  @override
-  List<Object> get props => [];
-}
-
-final class UserDetailState extends UserManagerState {
-  final String uid;
+final class UserManagerState extends Equatable {
+  final String? uid;
   final String? photoUrl;
   final String? displayName;
+  final LanguageEntity? chatLanguage;
 
-  const UserDetailState(
-      {required this.uid, required this.photoUrl, required this.displayName});
+  const UserManagerState({
+    this.uid,
+    this.photoUrl,
+    this.displayName,
+    this.chatLanguage,
+  });
 
   @override
-  List<Object?> get props => [uid, photoUrl, displayName];
+  List<Object?> get props => [uid, photoUrl, displayName, chatLanguage];
+
+  UserManagerState copyWith({
+    String? uid,
+    String? photoUrl,
+    String? displayName,
+    LanguageEntity? chatLanguage,
+  }) {
+    return UserManagerState(
+      uid: uid ?? this.uid,
+      photoUrl: photoUrl ?? this.photoUrl,
+      displayName: displayName ?? this.displayName,
+      chatLanguage: chatLanguage ?? this.chatLanguage,
+    );
+  }
 }

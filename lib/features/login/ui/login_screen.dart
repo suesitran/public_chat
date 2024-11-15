@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
@@ -10,7 +11,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocProvider<LoginCubit>(
-        create: (context) => LoginCubit(),
+        create: (context) => LoginCubit(
+            userManagerCubit: BlocProvider.of<UserManagerCubit>(context)),
         child: const _LoginScreenBody(),
       );
 }

@@ -14,8 +14,17 @@ final class Database {
 
   final String _publicRoom = 'public';
   final String _userList = 'users';
+
   void writePublicMessage(Message message) {
     FirebaseFirestore.instance.collection(_publicRoom).add(message.toMap());
+  }
+
+  Future<void> updatePublicMessage(
+      String messageId, Map<String, dynamic> data) {
+    return FirebaseFirestore.instance
+        .collection(_publicRoom)
+        .doc(messageId)
+        .set(data, SetOptions(merge: true));
   }
 
   Query<T> getPublicChatContents<T>({
@@ -29,11 +38,22 @@ final class Database {
   }
 
   void saveUser(User user) {
-    final UserDetail userDetail = UserDetail.fromFirebaseUser(user);
+    final Map<String, dynamic> userMap = {
+      "displayName": user.displayName ?? "",
+      "uid": user.uid,
+      "photoUrl": user.photoURL,
+    };
     FirebaseFirestore.instance
         .collection(_userList)
         .doc(user.uid)
-        .set(userDetail.toMap(), SetOptions(merge: true));
+        .set(userMap, SetOptions(merge: true));
+  }
+
+  Future<void> updateUser(String uid, Map<String, dynamic> data) {
+    return FirebaseFirestore.instance
+        .collection(_userList)
+        .doc(uid)
+        .set(data, SetOptions(merge: true));
   }
 
   Future<DocumentSnapshot<UserDetail>> getUser(String uid) {
@@ -62,6 +82,7 @@ final class Database {
     SnapshotOptions? options,
   ) =>
       UserDetail.fromMap(snapshot.id, snapshot.data() ?? {});
+
   Map<String, Object?> _userDetailToFirestore(
     UserDetail value,
     SetOptions? options,

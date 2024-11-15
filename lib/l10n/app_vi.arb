@@ -1,5 +1,10 @@
 {
-    "login":"Đăng nhập",
-    "publicRoomTitle": "Phòng chat công cộng"
-
+  "login": "Đăng nhập",
+  "publicRoomTitle": "Phòng chat công cộng",
+  "setting": "Cài đặt",
+  "appLanguage": "Ngôn ngữ ứng dụng",
+  "chatLanguage": "Ngôn ngữ chat",
+  "selectLanguage": "Chọn ngôn ngữ",
+  "welcome": "Xin chào",
+  "chatLanguageDialogMessage": "Để có trải nghiệm tốt nhất hãy chọn ngôn ngữ mà bạn sẽ sử dụng trong đoạn chat."
 }
