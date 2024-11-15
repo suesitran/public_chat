@@ -14,8 +14,7 @@ void main() {
         'test en',
         (widgetTester) async {
           Widget widget = BlocProvider(
-              create: (context) => LanguageCubit()..init(context),
-              child: const LoginScreen());
+              create: (context) => LanguageCubit(), child: const LoginScreen());
 
           await widgetTester.wrapAndPump(widget, locale: const Locale('en'));
 
@@ -27,8 +26,7 @@ void main() {
         'test vi',
         (widgetTester) async {
           Widget widget = BlocProvider(
-              create: (context) => LanguageCubit()..init(context),
-              child: const LoginScreen());
+              create: (context) => LanguageCubit(), child: const LoginScreen());
 
           await widgetTester.wrapAndPump(widget, locale: const Locale('vi'));
 
