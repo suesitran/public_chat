@@ -59,7 +59,8 @@ final class UserDetail extends Equatable {
   Map<String, dynamic> toMap() => {
         'displayName': displayName,
         'photoUrl': photoUrl,
-        if (messageLanguage != null) 'messageLanguage': messageLanguage!.toMap()
+        if (messageLanguage != null)
+          'messageLanguage': messageLanguage!.toMap(importCountry: false)
       };
 
   @override
