@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:public_chat/_shared/widgets/message_box_widget.dart';
+import 'package:public_chat/_shared/widgets/chat/message_box_widget.dart';
 
 import '../../material_wrapper_extension.dart';
 

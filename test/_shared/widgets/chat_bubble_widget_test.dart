@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
-import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
+import 'package:public_chat/_shared/data/chat_data.dart';
+import 'package:public_chat/_shared/widgets/chat/chat_bubble_widget.dart';
 
 import '../../material_wrapper_extension.dart';
 
 void main() {
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = ChatBubble(
+      user: null,
+      message: Message(
+        message: 'message',
+        sender: 'sender',
+      ),
+      iconSize: 24.0,
     );
 
     await widgetTester.wrapAndPump(widget);
@@ -63,11 +66,13 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = ChatBubble(
+      user: null,
+      message: Message(
+        message: 'message',
+        sender: 'sender',
+      ),
+      iconSize: 24,
     );
 
     // when
@@ -89,11 +94,13 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    Widget widget = ChatBubble(
+      user: null,
+      message: Message(
+        message: 'message',
+        sender: 'sender',
+      ),
+      iconSize: 24.0,
     );
 
     // when
@@ -110,11 +117,14 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-        isMine: true,
-        photoUrl: 'photoUrl',
+    Widget widget = ChatBubble(
+      user: null,
+      message: Message(
         message: 'message',
-        displayName: 'displayName');
+        sender: 'sender',
+      ),
+      iconSize: 24.0,
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -144,11 +154,14 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-        isMine: false,
-        photoUrl: 'photoUrl',
+    Widget widget = ChatBubble(
+      user: null,
+      message: Message(
         message: 'message',
-        displayName: 'displayName');
+        sender: 'sender',
+      ),
+      iconSize: 24.0,
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
