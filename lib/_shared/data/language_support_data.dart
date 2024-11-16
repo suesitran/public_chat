@@ -1,3 +1,4 @@
+// 30 languages have ​​supported on Gemini in Android, ios devices and in Gemini Prompt
 final List<Map<String, String>> supportedLanguages = [
   {"name": "English", "flagUrl": "https://flagcdn.com/w80/gb.png"},
   {"name": "Arabic", "flagUrl": "https://flagcdn.com/w80/sa.png"},

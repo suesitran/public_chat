@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 
 final class Database {
@@ -14,6 +15,8 @@ final class Database {
 
   final String _publicRoom = 'public';
   final String _userList = 'users';
+  final String _textDisplayed = "displayed";
+
   void writePublicMessage(Message message) {
     FirebaseFirestore.instance.collection(_publicRoom).add(message.toMap());
   }
@@ -37,18 +40,11 @@ final class Database {
   }
 
   Future<void> saveUser(User user) async {
-    final userDoc = await FirebaseFirestore.instance
-        .collection(_userList)
-        .doc(user.uid)
-        .get();
-
-    final existingUserLanguage = userDoc.data()?['userLanguage'];
-
-    final userDetail = UserDetail.fromFirebaseUser(user, existingUserLanguage);
+    final userDetail = UserDetail.fromFirebaseUser(user);
     FirebaseFirestore.instance
         .collection(_userList)
         .doc(user.uid)
-        .set(userDetail.toMap(), SetOptions(merge: true));
+        .set(userDetail.toFirestoreMap(), SetOptions(merge: true));
   }
 
   Future<void> updateUserLanguage(String uid, String language) async {
@@ -75,6 +71,51 @@ final class Database {
             fromFirestore: _userDetailFromFirestore,
             toFirestore: _userDetailToFirestore)
         .snapshots();
+  }
+
+  // Save application text data to Firestore
+  Future<void> setTextDisplayApplication(
+      String language, Map<String, dynamic> textData) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection(_textDisplayed)
+          .doc(language) // Use the language code as the document ID
+          .set(textData, SetOptions(merge: true));
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error updating text data for $language: $e");
+      }
+    }
+  }
+
+  // get application text data from Firestore
+  Future<Map<String, dynamic>?> getTextDisplayApplication(
+      String language) async {
+    try {
+      // Fetch the document for the user language
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection(_textDisplayed)
+          .doc(language)
+          .get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null) {
+          if (kDebugMode) {
+            print("Text data for $language fetched successfully: $data");
+          }
+        }
+        return data;
+      } else {
+        // Return null if no data exists for the given language
+        return null;
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching text data for $language: $e");
+      }
+      return null;
+    }
   }
 
   /// ###############################################################

@@ -5,7 +5,9 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:public_chat/constants/app_texts.dart';
 import 'package:public_chat/repository/database.dart';
+import 'package:public_chat/repository/preferences_manager.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/bloc_extensions.dart';
 
@@ -56,8 +58,13 @@ class LoginCubit extends Cubit<LoginState> {
           await firebaseAuth.signInWithCredential(oAuthCredential);
       final User? user = userCredential.user;
 
+      // Use the language set during the previous login, default is English
+      final String messLoginFailed = await PreferencesManager.instance
+              .getAppText(AppTexts.unableGetUser) ??
+          AppTexts.unableGetUser;
+
       if (user == null) {
-        emitSafely(const LoginFailed('Unable to get user credential'));
+        emitSafely(LoginFailed(messLoginFailed));
         return;
       }
 

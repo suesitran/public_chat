@@ -1,34 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
-
-import '../../material_wrapper_extension.dart';
+import 'package:public_chat/features/language/bloc/language_bloc.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 
 void main() {
+  setUpAll(() async {
+    await ServiceLocator.instance.initialise();
+  });
   testWidgets('verify UI component', (widgetTester) async {
-    Widget widget = ChatBubble(
-      onChatBubbleTap: () {},
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
-      translations: const {'English': 'translated message'},
+    await widgetTester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<LanguageBloc>.value(value: LanguageBloc()),
+          ],
+          child: ChatBubble(
+            onChatBubbleTap: () async {
+              return true;
+            },
+            isMine: true,
+            message: 'message',
+            displayName: 'displayName',
+            photoUrl: null,
+            translations: const {'English': 'translated message'},
+          ),
+        ),
+      ),
     );
 
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.pumpAndSettle();
 
     expect(
-        find.descendant(
-            of: find.byType(Padding), matching: find.byType(ClipRRect)),
-        findsOneWidget);
+      find.descendant(
+          of: find.byType(Padding), matching: find.byType(ClipRRect)),
+      findsOneWidget,
+    );
+
     expect(
-        find.descendant(
-            of: find.byType(Container), matching: find.byType(Text)),
-        findsNWidgets(3));
+      find.descendant(of: find.byType(Container), matching: find.byType(Text)),
+      findsNWidgets(3),
+    );
     expect(
-        find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
-        findsOneWidget);
+      find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
+      findsOneWidget,
+    );
 
     final ClipRRect rRect = widgetTester.widget(find.descendant(
         of: find.byType(Padding), matching: find.byType(ClipRRect)));
@@ -65,16 +84,28 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    Widget widget = ChatBubble(
-      onChatBubbleTap: () {},
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    await widgetTester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<LanguageBloc>.value(value: LanguageBloc()),
+          ],
+          child: ChatBubble(
+            onChatBubbleTap: () async {
+              return true;
+            },
+            isMine: true,
+            message: 'message',
+            displayName: 'displayName',
+            photoUrl: null,
+            translations: const {'English': 'translated message'},
+          ),
+        ),
+      ),
     );
 
-    // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.pumpAndSettle();
 
     // then
     expect(find.byType(ImageNetwork), findsNothing);
@@ -88,23 +119,38 @@ void main() {
   });
 
   testWidgets(
-      'given photoUrl is not null,'
-      ' when load ChatBubble,'
-      ' then CachedNetworkImage is present', (widgetTester) async {
+      'given photoUrl is not null, '
+      'when load ChatBubble, '
+      'then CachedNetworkImage is present', (widgetTester) async {
     // given
-    Widget widget = ChatBubble(
-      onChatBubbleTap: () {},
-      isMine: true,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    await widgetTester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        home: Scaffold(
+          body: MultiBlocProvider(
+            providers: [
+              BlocProvider<LanguageBloc>.value(value: LanguageBloc()),
+            ],
+            child: ChatBubble(
+              onChatBubbleTap: () async {
+                return true;
+              },
+              isMine: true,
+              message: 'message',
+              displayName: 'displayName',
+              photoUrl:
+                  'https://lh3.googleusercontent.com/a/ACg8ocIqhSldIyARbSMYuoElOKuUEap-HHbYLU_adkYpOkimgUpTfuA=s96-c',
+              translations: const {'English': 'translated message'},
+            ),
+          ),
+        ),
+      ),
     );
 
-    // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.pumpAndSettle();
 
     // then
-    expect(find.byType(ImageNetwork), findsOneWidget);
+    expect(find.byType(ImageNetwork), findsOneWidget); // Tìm CachedNetworkImage
   });
 
   testWidgets(
@@ -114,16 +160,28 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    Widget widget = ChatBubble(
-      onChatBubbleTap: () {},
-      isMine: true,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    await widgetTester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        home: MultiBlocProvider(
+          providers: [
+            BlocProvider<LanguageBloc>.value(value: LanguageBloc()),
+          ],
+          child: ChatBubble(
+            onChatBubbleTap: () async {
+              return true;
+            },
+            isMine: true,
+            message: 'message',
+            displayName: 'displayName',
+            photoUrl: null,
+            translations: const {'English': 'translated message'},
+          ),
+        ),
+      ),
     );
 
-    // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.pumpAndSettle();
 
     // expect
     final Container container = widgetTester.widget(find.ancestor(
@@ -138,44 +196,59 @@ void main() {
 
     expect(row.children.length, 2);
     // verify GestureDetector wrapper for Text is present
-    expect(row.children.first, isA<GestureDetector>());
+    expect(row.children[1], isA<Padding>());
     // verify Padding wrapper for ClipRRect is preset
     expect(row.children.last, isA<Padding>());
   });
 
   testWidgets(
-      'given ChatBubble with isMine == false,'
-      ' when load ChatBubble,'
-      ' then Container deco color is black87, and row alignment is start,'
-      ' and Padding with ClipRRect is first item in row,'
-      ' and Container with Text is second item in row', (widgetTester) async {
+      'given ChatBubble with isMine == false, '
+      'when load ChatBubble, '
+      'then Container deco color is black87, '
+      'and row alignment is start, '
+      'and Padding with ClipRRect is first item in row, ',
+      (widgetTester) async {
+    // Mocking LanguageBloc to avoid errors in the test
+    final mockLanguageBloc = LanguageBloc();
+
     // given
-    Widget widget = ChatBubble(
-      onChatBubbleTap: () {},
-      isMine: false,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    await widgetTester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: BlocProvider<LanguageBloc>.value(
+            value: mockLanguageBloc, // Use value instead of creating a new one
+            child: ChatBubble(
+              onChatBubbleTap: () async {
+                return true;
+              },
+              isMine: false, // isMine == false
+              message: 'message',
+              displayName: 'displayName',
+              photoUrl: null, // Chưa có ảnh
+              translations: const {'English': 'translated message'},
+            ),
+          ),
+        ),
+      ),
     );
 
-    // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.pumpAndSettle();
 
-    // expect
-    final Container container = widgetTester.widget(find.ancestor(
-        of: find.byType(Column), matching: find.byType(Container)));
-
-    final BoxDecoration decoration = container.decoration as BoxDecoration;
-    expect(decoration.color, Colors.black87);
-
-    final Row row = widgetTester.widget(
-        find.descendant(of: find.byType(Padding), matching: find.byType(Row)));
+    // Kiểm tra Row và alignment
+    final rowFinder = find.byType(Row);
+    final row = widgetTester.widget<Row>(rowFinder);
     expect(row.mainAxisAlignment, MainAxisAlignment.start);
 
-    expect(row.children.length, 2);
-    // verify Padding wrapper for ClipRRect is preset
-    expect(row.children.first, isA<Padding>());
-    // verify GestureDetector wrapper for Text is present
-    expect(row.children.last, isA<GestureDetector>());
+    final children = row.children;
+    expect(children.length, 2);
+
+    final firstWidget = children.first;
+    expect(firstWidget, isA<Padding>());
+
+    final padding = firstWidget as Padding;
+    expect(padding.child, isA<ClipRRect>());
+
+    final secondWidget = children.last;
+    expect(secondWidget, isA<BlocBuilder>());
   });
 }

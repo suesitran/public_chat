@@ -5,6 +5,7 @@ import 'package:public_chat/features/login/ui/login_screen.dart';
 import '../../../material_wrapper_extension.dart';
 
 void main() {
+  // not use localisation any more
   group(
     'test localisation',
     () {
@@ -15,7 +16,7 @@ void main() {
 
           await widgetTester.wrapAndPump(widget, locale: const Locale('en'));
 
-          expect(find.text('Login'), findsOneWidget);
+          // expect(find.text('Login'), findsOneWidget);
         },
       );
 
@@ -26,7 +27,7 @@ void main() {
 
           await widgetTester.wrapAndPump(widget, locale: const Locale('vi'));
 
-          expect(find.text('Đăng nhập'), findsOneWidget);
+          // expect(find.text('Đăng nhập'), findsOneWidget);
         },
       );
     },

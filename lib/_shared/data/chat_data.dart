@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:public_chat/_shared/data/language_support_data.dart';
 
 final class Message {
   final String id;
@@ -32,6 +31,8 @@ final class Message {
       };
 }
 
+// model to handle translation of message
+// used to update translate message to firestore
 final class MessageTranslate {
   final String id;
   final Map<String, dynamic> translations;
@@ -48,13 +49,12 @@ final class UserDetail {
   final String displayName;
   final String? photoUrl;
   final String uid;
-  final String userLanguage;
+  String? userLanguage;
 
-  UserDetail.fromFirebaseUser(User user, String? existingUserLanguage)
+  UserDetail.fromFirebaseUser(User user)
       : displayName = user.displayName ?? 'Unknown',
         photoUrl = user.photoURL,
-        uid = user.uid,
-        userLanguage = existingUserLanguage ?? defaultLanguage;
+        uid = user.uid;
 
   UserDetail.fromMap(this.uid, Map<String, dynamic> map)
       : displayName = map['displayName'],
@@ -65,5 +65,10 @@ final class UserDetail {
         'displayName': displayName,
         'photoUrl': photoUrl,
         'userLanguage': userLanguage
+      };
+
+  Map<String, dynamic> toFirestoreMap() => {
+        'displayName': displayName,
+        'photoUrl': photoUrl,
       };
 }

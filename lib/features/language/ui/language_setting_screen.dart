@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/constants/app_texts.dart';
 import 'package:public_chat/features/language/bloc/language_bloc.dart';
 import 'package:public_chat/_shared/data/language_support_data.dart';
 
@@ -27,7 +28,10 @@ class _LanguageSettingScreenState extends State<LanguageSettingScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search language...',
+                    // Update hint to match user language
+                    hintText: state.textApp.containsKey(AppTexts.searchLanguage)
+                        ? state.textApp[AppTexts.searchLanguage]
+                        : AppTexts.searchLanguage,
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),

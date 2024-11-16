@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:public_chat/constants/app_texts.dart';
 import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
-import 'package:public_chat/utils/locale_support.dart';
+import 'package:public_chat/repository/preferences_manager.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -15,8 +16,35 @@ class LoginScreen extends StatelessWidget {
       );
 }
 
-class _LoginScreenBody extends StatelessWidget {
+class _LoginScreenBody extends StatefulWidget {
   const _LoginScreenBody();
+
+  @override
+  State<_LoginScreenBody> createState() => _LoginScreenBodyState();
+}
+
+class _LoginScreenBodyState extends State<_LoginScreenBody> {
+  String loginButtonText = '';
+  String loginErrorText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeTexts();
+  }
+
+  // Use the language set at the previous login.
+  // default is english
+  Future<void> _initializeTexts() async {
+    loginButtonText =
+        await PreferencesManager.instance.getAppText(AppTexts.loginButton) ??
+            AppTexts.loginButton;
+    loginErrorText =
+        await PreferencesManager.instance.getAppText(AppTexts.loginErrorText) ??
+            AppTexts.loginErrorText;
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) => BlocConsumer<LoginCubit, LoginState>(
@@ -32,19 +60,21 @@ class _LoginScreenBody extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          Text(loginErrorText);
+
           final Widget content = state is LoginFailed
               ? Column(
                   children: [
-                    const Text('Login failed. Try again'),
+                    Text(loginErrorText),
                     buildSignInButton(
-                      label: context.locale.login,
+                      label: loginButtonText,
                       onPressed: () =>
                           context.read<LoginCubit>().requestLogin(),
                     )
                   ],
                 )
               : buildSignInButton(
-                  label: context.locale.login,
+                  label: loginButtonText,
                   onPressed: () => context.read<LoginCubit>().requestLogin(),
                 );
 

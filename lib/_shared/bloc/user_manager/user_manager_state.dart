@@ -13,7 +13,7 @@ final class UserDetailState extends UserManagerState {
   final String uid;
   final String? photoUrl;
   final String? displayName;
-  final String? userLanguage;
+  final String? userLanguage; // variable user's preferred language
 
   const UserDetailState(
       {required this.uid,
