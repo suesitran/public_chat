@@ -18,7 +18,7 @@ class UserMessageModel extends Equatable {
   final Map<String, dynamic> translations;
 
   String get name {
-    return this.displayName ?? 'Unknown';
+    return displayName ?? 'Unknown';
   }
 
   @override

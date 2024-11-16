@@ -20,7 +20,6 @@ class TranslateTextImpl extends TranslateText {
       to: toLocale.languageCode,
     )
         .then((Translation result) {
-      print("Source: $original\nTranslated: $result");
       return result;
     });
   }

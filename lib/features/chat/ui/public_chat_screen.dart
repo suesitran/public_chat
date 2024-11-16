@@ -3,12 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/chat/message_box_widget.dart';
 import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
-import 'package:public_chat/features/genai_setting/data/user_message_model.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class PublicChatScreen extends StatelessWidget {
