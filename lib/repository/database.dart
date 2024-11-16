@@ -55,6 +55,22 @@ final class Database {
         .snapshots();
   }
 
+  Future<void> saveTranslatedText(
+      String messageId, String translatedText, String locale) {
+    final docsRef =
+        FirebaseFirestore.instance.collection(_publicRoom).doc(messageId);
+    return docsRef.set(
+      {
+        'translated': {
+          locale: translatedText,
+        }
+      },
+      SetOptions(
+        merge: true,
+      ),
+    );
+  }
+
   /// ###############################################################
   /// fromFirestore and toFirestore
   UserDetail _userDetailFromFirestore(
