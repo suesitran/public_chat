@@ -31,8 +31,10 @@ class _MessageBoxState extends State<MessageBox> {
             contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
             suffixIcon: IconButton(
               onPressed: () {
-                widget.onSendMessage(_controller.text);
-                _controller.text = '';
+                if (_controller.text.isNotEmpty) {
+                  widget.onSendMessage(_controller.text);
+                  _controller.text = '';
+                }
               },
               icon: const Icon(Icons.send),
             ),
