@@ -15,5 +15,14 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if request.time < timestamp.date(2024, 10, 19);
     }
+
+    match /users/{allDocs=**}{
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
   }
 }
