@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
@@ -100,7 +101,7 @@ void main() {
     await widgetTester.wrapAndPump(widget);
 
     // then
-    expect(find.byType(ImageNetwork), findsOneWidget);
+    expect(find.byType(CachedNetworkImage), findsOneWidget);
   });
 
   testWidgets(
