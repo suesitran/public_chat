@@ -8,13 +8,14 @@
  */
 const v2 = require("firebase-functions/v2");
 const vertexAIApi = require("@google-cloud/vertexai");
+const {supportedLanguages} = require('./languageConfig');
 
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
 
 const project = 'proj-atc';
 const location = 'us-central1';
-const textModel =  'gemini-1.5-flash';
+const textModel = 'gemini-1.5-flash';
 const visionModel = 'gemini-1.0-pro-vision';
 
 const vertexAI = new vertexAIApi.VertexAI({project: project, location: location});
@@ -34,39 +35,56 @@ const generationConfig = {
     maxOutputTokens: 8192,
     responseMimeType: "application/json",
     responseSchema: {
-      type: "object",
-      properties: {
-        en: {
-          type: "string"
-        }
-      },
-      required: [
-        "en"
-      ]
+        type: "object",
+        properties: {
+            translations: {
+                type: "object",
+                properties: Object.fromEntries(
+                    Object.keys(supportedLanguages).map(lang => [
+                        lang,
+                        {type: "string"}
+                    ])
+                ),
+                required: Object.keys(supportedLanguages)
+            }
+        },
+        required: ["translations"]
     },
-  };
-  
+};
+
+exports.getSupportedLanguages = v2.https.onCall(async (data, context) => {
+    try {
+        return Object.entries(supportedLanguages).map(([_, details]) => ({
+            ...details
+        }));
+    } catch (error) {
+        console.error('Error getting supported languages:', error);
+        throw new v2.https.HttpsError('internal', 'Failed to get supported languages');
+    }
+});
+
 // use onDocumentWritten here to prepare to "edit message" feature later
-exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",async (event) => {
+exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", async (event) => {
     const document = event.data.after.data();
     const message = document["message"];
     console.log(`message: ${message}`);
 
     // no message? do nothing
-    if (message == undefined) {
+    if (message === undefined) {
         return;
     }
+
     const curTranslated = document["translated"];
 
     // check if message is translated
-    if (curTranslated != undefined) {
-        // message is translated before, 
+    if (curTranslated !== undefined) {
+        // message is translated before,
         // check the original message
         const original = curTranslated["original"];
 
         console.log('Original: ', original);
         // message is same as original, meaning it's already translated. Do nothing
-        if (message == original) {
+        if (message === original) {
             return;
         }
     }
@@ -74,22 +92,32 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}",asy
     const chatSession = generativeModelPreview.startChat({
         generationConfig: generationConfig
     });
-    const result = await chatSession.sendMessage(`translate this text to English: ${message}`);
+
+    // Create prompt with supportedLanguages
+    const languageList = Object.values(supportedLanguages)
+        .map(lang => `${lang.name} (${lang.code})`)
+        .join(", ");
+
+    const prompt = `Translate this text to all following languages: ${languageList}
+    Original text: "${message}"
+    Please return the translations in JSON format with language codes as keys.`;
+
+    const result = await chatSession.sendMessage(prompt);
     const response = result.response;
     console.log('Response:', JSON.stringify(response));
 
     const jsonTranslated = response.candidates[0].content.parts[0].text;
     console.log('translated json: ', jsonTranslated);
+
     // parse this json to get translated text out
     const translated = JSON.parse(jsonTranslated);
-    console.log('final result: ', translated.en);
+    console.log('final result: ', translated.translations);
 
     // write to message
-    const data = event.data.after.data();
     return event.data.after.ref.set({
         'translated': {
-            'original':message,
-            'en': translated.en
+            'original': message,
+            ...translated.translations
         }
     }, {merge: true});
 })

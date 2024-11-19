@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
+import 'package:public_chat/features/settings/chat_language/bloc/chat_language_bloc.dart';
 import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,8 +15,15 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   ServiceLocator.instance.initialise();
 
-  runApp(BlocProvider<GenaiBloc>(
-    create: (context) => GenaiBloc(),
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<GenaiBloc>(
+        create: (context) => GenaiBloc(),
+      ),
+      BlocProvider<ChatLanguageBloc>(
+        create: (context) => ChatLanguageBloc()..add(ChatLoadLanguageEvent()),
+      ),
+    ],
     child: const MainApp(),
   ));
 }

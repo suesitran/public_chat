@@ -1,17 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
+import 'package:public_chat/features/settings/chat_language/bloc/chat_language_bloc.dart';
+import 'package:public_chat/features/settings/chat_language/data/chat_language.dart';
 
 import '../../material_wrapper_extension.dart';
 
+class MockChatLanguageBloc extends Mock implements ChatLanguageBloc {}
+
 void main() {
+  final MockChatLanguageBloc chatLanguageBloc = MockChatLanguageBloc();
+
+  setUp(
+    () {
+      when(
+        () => chatLanguageBloc.state,
+      ).thenAnswer(
+        (_) => ChatLanguageChanged(
+          supportedLanguages: [],
+          selectedLanguage: ChatLanguage.defaultLanguage(),
+        ),
+      );
+      when(
+        () => chatLanguageBloc.stream,
+      ).thenAnswer(
+        (_) => const Stream.empty(),
+      );
+      when(
+        () => chatLanguageBloc.close(),
+      ).thenAnswer(
+        (invocation) => Future.value(),
+      );
+    },
+  );
+
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = BlocProvider<ChatLanguageBloc>(
+      create: (context) => chatLanguageBloc,
+      child: const ChatBubble(
+        isMine: true,
+        message: 'message',
+        displayName: 'displayName',
+        photoUrl: null,
+      ),
     );
 
     await widgetTester.wrapAndPump(widget);
@@ -63,11 +97,14 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = BlocProvider<ChatLanguageBloc>(
+      create: (context) => chatLanguageBloc,
+      child: const ChatBubble(
+        isMine: true,
+        message: 'message',
+        displayName: 'displayName',
+        photoUrl: null,
+      ),
     );
 
     // when
@@ -89,11 +126,14 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    Widget widget = BlocProvider<ChatLanguageBloc>(
+      create: (context) => chatLanguageBloc,
+      child: const ChatBubble(
+        isMine: true,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName',
+      ),
     );
 
     // when
@@ -110,11 +150,14 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-        isMine: true,
-        photoUrl: 'photoUrl',
-        message: 'message',
-        displayName: 'displayName');
+    Widget widget = BlocProvider<ChatLanguageBloc>(
+      create: (context) => chatLanguageBloc,
+      child: const ChatBubble(
+          isMine: true,
+          photoUrl: 'photoUrl',
+          message: 'message',
+          displayName: 'displayName'),
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
@@ -144,11 +187,14 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-        isMine: false,
-        photoUrl: 'photoUrl',
-        message: 'message',
-        displayName: 'displayName');
+    Widget widget = BlocProvider<ChatLanguageBloc>(
+      create: (context) => chatLanguageBloc,
+      child: const ChatBubble(
+          isMine: false,
+          photoUrl: 'photoUrl',
+          message: 'message',
+          displayName: 'displayName'),
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);

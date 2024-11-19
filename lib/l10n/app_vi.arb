@@ -1,5 +1,9 @@
 {
     "login":"Đăng nhập",
-    "publicRoomTitle": "Phòng chat công cộng"
-
+    "publicRoomTitle": "Phòng chat công cộng",
+    "settingTitle": "Cài Đặt",
+    "somethingError": "Đã có một số lỗi xảy ra!",
+    "tryAgain": "Thử lại.",
+    "loading": "Đang tải...",
+    "settingTranslationLanguage": "Ngôn ngữ dịch Tin Nhắn"
 }
