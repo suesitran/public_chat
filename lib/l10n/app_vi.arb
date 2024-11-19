@@ -5,7 +5,5 @@
     "somethingError": "Đã có một số lỗi xảy ra!",
     "tryAgain": "Thử lại.",
     "loading": "Đang tải...",
-    "settingAppLanguage": "Ngôn ngữ Ứng Dụng",
-    "settingTranslationLanguage": "Ngôn ngữ dịch Tin Nhắn",
-    "localeSettingTitle": "Thay Đổi Ngôn Ngữ"
+    "settingTranslationLanguage": "Ngôn ngữ dịch Tin Nhắn"
 }

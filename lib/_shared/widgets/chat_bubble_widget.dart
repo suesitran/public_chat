@@ -78,7 +78,7 @@ class ChatBubble extends StatelessWidget {
                     .bodyMedium
                     ?.copyWith(color: Colors.white),
               ),
-              // english version (if there is)
+              // Show only translated languages in selected chat language
               if (translations.isNotEmpty && state is ChatLanguageChanged)
                 ...translations.entries
                     .where(

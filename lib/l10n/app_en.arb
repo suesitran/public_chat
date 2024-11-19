@@ -5,7 +5,5 @@
     "somethingError": "Something error!",
     "tryAgain": "Try again.",
     "loading": "Loading...",
-    "settingAppLanguage": "Application Language",
-    "settingTranslationLanguage": "Message Translation Language",
-    "localeSettingTitle": "Change Language"
+    "settingTranslationLanguage": "Message Translation Language"
 }

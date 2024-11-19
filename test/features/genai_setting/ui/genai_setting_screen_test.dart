@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
+import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
 import 'package:public_chat/features/genai_setting/data/chat_content.dart';
 import 'package:public_chat/features/genai_setting/ui/genai_setting_screen.dart';
@@ -59,9 +60,9 @@ void main() {
 
     final Column column = widgetTester.widget(find.descendant(
         of: find.byType(Center), matching: find.byType(Column)));
-    expect(column.children.length, 3);
+    expect(column.children.length, 2);
     expect(column.children.first, isA<Expanded>());
-    expect(column.children.last, isA<SizedBox>());
+    expect(column.children.last, isA<MessageBox>());
 
     expect(
         find.descendant(

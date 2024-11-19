@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/settings/chat_language/bloc/chat_language_bloc.dart';
 import 'package:public_chat/features/settings/chat_language/ui/chat_language_setting_screen.dart';
-import 'package:public_chat/features/settings/locale/bloc/locale_bloc.dart';
-import 'package:public_chat/features/settings/locale/data/locale_info.dart';
-import 'package:public_chat/features/settings/locale/ui/locale_setting_screen.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -20,29 +17,14 @@ class SettingsScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildAppLanguageItem(context),
-          const Padding(
-            padding: EdgeInsets.only(left: 72, right: 16),
-            child: Divider(height: 1, color: Colors.black12),
-          ),
-          _buildGenaiLanguageItem(context),
+          _buildChatLanguageItem(context),
+          const Spacer(),
         ],
       ),
     );
   }
 
-  _buildAppLanguageItem(BuildContext context) {
-    return BlocBuilder<LocaleBloc, LocaleState>(
-      builder: (context, state) => _buildSettingItem(
-        context: context,
-        title: context.locale.settingAppLanguage,
-        subtitle: LocaleInfo.from(languageCode: state.locale.languageCode).name,
-        onPressed: () => _goToAppLanguage(context),
-      ),
-    );
-  }
-
-  _buildGenaiLanguageItem(BuildContext context) {
+  _buildChatLanguageItem(BuildContext context) {
     return BlocBuilder<ChatLanguageBloc, ChatLanguageState>(
       builder: (context, state) {
         final subtitle = switch (state) {
@@ -86,15 +68,6 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  _goToAppLanguage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LocaleSettingScreen(),
       ),
     );
   }

@@ -69,15 +69,21 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", as
     const message = document["message"];
     console.log(`message: ${message}`);
 
+    // no message? do nothing
     if (message === undefined) {
         return;
     }
 
     const curTranslated = document["translated"];
 
+    // check if message is translated
     if (curTranslated !== undefined) {
+        // message is translated before,
+        // check the original message
         const original = curTranslated["original"];
+
         console.log('Original: ', original);
+        // message is same as original, meaning it's already translated. Do nothing
         if (message === original) {
             return;
         }
@@ -103,9 +109,11 @@ exports.onChatWritten = v2.firestore.onDocumentWritten("/public/{messageId}", as
     const jsonTranslated = response.candidates[0].content.parts[0].text;
     console.log('translated json: ', jsonTranslated);
 
+    // parse this json to get translated text out
     const translated = JSON.parse(jsonTranslated);
     console.log('final result: ', translated.translations);
 
+    // write to message
     return event.data.after.ref.set({
         'translated': {
             'original': message,

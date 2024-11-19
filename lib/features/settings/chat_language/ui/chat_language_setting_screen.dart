@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/settings/chat_language/bloc/chat_language_bloc.dart';
 import 'package:public_chat/features/settings/chat_language/data/chat_language.dart';
-import 'package:public_chat/features/settings/locale/ui/widgets/locale_icon.dart';
+import 'package:public_chat/features/settings/chat_language/ui/widgets/locale_icon.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 const kLanguageItemHeight = 56.0;
