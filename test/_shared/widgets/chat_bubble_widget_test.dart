@@ -1,60 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
-
+import 'package:public_chat/features/translate_message.dart/bloc/translate_message_bloc.dart';
+import 'package:public_chat/utils/local_shared_data.dart';
 import '../../material_wrapper_extension.dart';
+import 'package:network_image_mock/network_image_mock.dart';
+
+class MockTransBloc extends Mock implements TranslateMessageBloc {}
 
 void main() {
+  final MockTransBloc transBloc = MockTransBloc();
+
+  setUp(
+    () {
+      when(
+        () => transBloc.state,
+      ).thenAnswer(
+        (_) => EnableTranslateState(
+          selectedLanguages: [deviceLocale],
+        ),
+      );
+      when(
+        () => transBloc.stream,
+      ).thenAnswer(
+        (_) => const Stream.empty(),
+      );
+      when(
+        () => transBloc.close(),
+      ).thenAnswer(
+        (invocation) => Future.value(),
+      );
+    },
+  );
+
   testWidgets('verify UI component', (widgetTester) async {
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
-    );
+    await mockNetworkImagesFor(() async {
+      Widget widget = BlocProvider<TranslateMessageBloc>(
+        create: (context) => transBloc,
+        child: const ChatBubble(
+          isMine: true,
+          message: 'message',
+          displayName: 'displayName',
+          photoUrl: null,
+        ),
+      );
 
-    await widgetTester.wrapAndPump(widget);
+      await widgetTester.wrapAndPump(widget);
 
-    expect(
-        find.descendant(
-            of: find.byType(Padding), matching: find.byType(ClipRRect)),
-        findsOneWidget);
-    expect(
-        find.descendant(
-            of: find.byType(Container), matching: find.byType(Text)),
-        findsNWidgets(2));
-    expect(
-        find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
-        findsOneWidget);
+      expect(
+          find.descendant(
+              of: find.byType(Padding), matching: find.byType(ClipRRect)),
+          findsOneWidget);
+      expect(
+          find.descendant(
+              of: find.byType(Container), matching: find.byType(Text)),
+          findsNWidgets(2));
+      expect(
+          find.descendant(of: find.byType(Padding), matching: find.byType(Row)),
+          findsOneWidget);
 
-    final ClipRRect rRect = widgetTester.widget(find.descendant(
-        of: find.byType(Padding), matching: find.byType(ClipRRect)));
-    expect(rRect.borderRadius, BorderRadius.circular(24));
+      final ClipRRect rRect = widgetTester.widget(find.descendant(
+          of: find.byType(Padding), matching: find.byType(ClipRRect)));
+      expect(rRect.borderRadius, BorderRadius.circular(24));
 
-    final Padding padding = widgetTester.widget(find.descendant(
-        of: find.byType(Row),
-        matching: find.ancestor(
-            of: find.byType(ClipRRect), matching: find.byType(Padding))));
-    expect(padding.padding, const EdgeInsets.all(8.0));
+      final Padding padding = widgetTester.widget(find.descendant(
+          of: find.byType(Row),
+          matching: find.ancestor(
+              of: find.byType(ClipRRect), matching: find.byType(Padding))));
+      expect(padding.padding, const EdgeInsets.all(8.0));
 
-    expect(
-        find.descendant(
-            of: find.byType(Container), matching: find.text('message')),
-        findsOneWidget);
-    expect(
-        find.descendant(
-            of: find.byType(Container), matching: find.text('displayName')),
-        findsOneWidget);
+      expect(
+          find.descendant(
+              of: find.byType(Container), matching: find.text('message')),
+          findsOneWidget);
+      expect(
+          find.descendant(
+              of: find.byType(Container), matching: find.text('displayName')),
+          findsOneWidget);
 
-    final Container container = widgetTester.widget(find.ancestor(
-        of: find.byType(Column), matching: find.byType(Container)));
-    expect(container.decoration, isNotNull);
-    expect(container.decoration, isA<BoxDecoration>());
+      final Container container = widgetTester.widget(find
+          .ancestor(
+              of: find.byType(Column),
+              matching: find.byWidgetPredicate(
+                  (widget) => widget is Container && widget.decoration != null))
+          .first);
+      expect(container.decoration, isNotNull);
+      expect(container.decoration, isA<BoxDecoration>());
 
-    final BoxDecoration decoration = container.decoration as BoxDecoration;
-    expect(decoration.borderRadius, BorderRadius.circular(16));
-    expect(container.padding, const EdgeInsets.all(8));
+      final BoxDecoration decoration = container.decoration as BoxDecoration;
+      expect(decoration.borderRadius, BorderRadius.circular(16));
+      expect(container.padding, const EdgeInsets.all(8));
+    });
   });
 
   testWidgets(
@@ -63,11 +102,14 @@ void main() {
       ' then CachedNetworkImage is not present, and Icon with data Icons.person is present',
       (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      message: 'message',
-      displayName: 'displayName',
-      photoUrl: null,
+    Widget widget = BlocProvider<TranslateMessageBloc>(
+      create: (context) => transBloc,
+      child: const ChatBubble(
+        isMine: true,
+        message: 'message',
+        displayName: 'displayName',
+        photoUrl: null,
+      ),
     );
 
     // when
@@ -89,11 +131,14 @@ void main() {
       ' when load ChatBubble,'
       ' then CachedNetworkImage is present', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
-      isMine: true,
-      photoUrl: 'photoUrl',
-      message: 'message',
-      displayName: 'displayName',
+    Widget widget = BlocProvider<TranslateMessageBloc>(
+      create: (context) => transBloc,
+      child: const ChatBubble(
+        isMine: true,
+        photoUrl: 'photoUrl',
+        message: 'message',
+        displayName: 'displayName',
+      ),
     );
 
     // when
@@ -110,18 +155,32 @@ void main() {
       ' and Container with Text is first item in row,'
       ' and Padding with ClipRRect is last item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
+    Widget widget = BlocProvider<TranslateMessageBloc>(
+      create: (context) => transBloc,
+      child: const ChatBubble(
         isMine: true,
         photoUrl: 'photoUrl',
         message: 'message',
-        displayName: 'displayName');
+        displayName: 'displayName',
+      ),
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // expect
-    final Container container = widgetTester.widget(find.ancestor(
-        of: find.byType(Column), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find
+        .ancestor(
+            of: find.byType(Column),
+            matching: find.byWidgetPredicate((widget) {
+              return widget is Container &&
+                  widget.decoration != null &&
+                  widget.decoration is BoxDecoration &&
+                  (widget.decoration as BoxDecoration).color ==
+                      Colors.black26 &&
+                  widget.padding == const EdgeInsets.all(8);
+            }))
+        .first);
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.black26);
@@ -144,18 +203,32 @@ void main() {
       ' and Padding with ClipRRect is first item in row,'
       ' and Container with Text is second item in row', (widgetTester) async {
     // given
-    const Widget widget = ChatBubble(
+    Widget widget = BlocProvider<TranslateMessageBloc>(
+      create: (context) => transBloc,
+      child: const ChatBubble(
         isMine: false,
         photoUrl: 'photoUrl',
         message: 'message',
-        displayName: 'displayName');
+        displayName: 'displayName',
+      ),
+    );
 
     // when
     await widgetTester.wrapAndPump(widget);
 
     // expect
-    final Container container = widgetTester.widget(find.ancestor(
-        of: find.byType(Column), matching: find.byType(Container)));
+    final Container container = widgetTester.widget(find
+        .ancestor(
+            of: find.byType(Column),
+            matching: find.byWidgetPredicate((widget) {
+              return widget is Container &&
+                  widget.decoration != null &&
+                  widget.decoration is BoxDecoration &&
+                  (widget.decoration as BoxDecoration).color ==
+                      Colors.black87 &&
+                  widget.padding == const EdgeInsets.all(8);
+            }))
+        .first);
 
     final BoxDecoration decoration = container.decoration as BoxDecoration;
     expect(decoration.color, Colors.black87);

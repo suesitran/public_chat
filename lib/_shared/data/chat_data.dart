@@ -6,18 +6,21 @@ final class Message {
   final String message;
   final String sender;
   final Timestamp timestamp;
-  final Map<String, dynamic> translations;
+  final List<TranslationModel> translations;
 
   Message({required this.message, required this.sender})
       : id = '',
         timestamp = Timestamp.now(),
-        translations = {};
+        translations = [];
 
   Message.fromMap(this.id, Map<String, dynamic> map)
       : message = map['message'] ?? '',
         sender = map['sender'],
         timestamp = map['time'],
-        translations = map['translated'] as Map<String, dynamic>? ?? {};
+        translations = (map['translated'] as List<Map<String, dynamic>>?)
+                ?.map((e) => TranslationModel.fromMap(e))
+                .toList() ??
+            [];
 
   Map<String, dynamic> toMap() =>
       {'message': message, 'sender': sender, 'time': timestamp};
@@ -39,4 +42,24 @@ final class UserDetail {
 
   Map<String, dynamic> toMap() =>
       {'displayName': displayName, 'photoUrl': photoUrl};
+  @override
+  String toString() => toMap().toString();
+}
+
+class TranslationModel {
+  final String translation;
+  final String code;
+  final List<String> languages;
+  TranslationModel(
+      {required this.translation, required this.code, required this.languages});
+  TranslationModel.fromMap(Map<String, dynamic> map)
+      : translation = map['translation'],
+        code = map['code'],
+        languages = map['languages'] as List<String>? ?? [];
+  Map<String, dynamic> toMap() =>
+      {'translation': translation, 'code': code, 'languages': languages};
+  @override
+  String toString() {
+    return toMap().toString();
+  }
 }
