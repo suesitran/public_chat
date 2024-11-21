@@ -34,10 +34,10 @@ final class Database {
       if (!translated.keys.contains(languageCode)) {
         final translator = ServiceLocator.instance.get<GoogleTranslator>();
         late Translation messageTranslated;
-        if (translated.keys.contains(Constants.languageCodeDefault)) {
+        if (translated.keys.contains('en')) {
           messageTranslated = await translator.translate(
-            translated[Constants.languageCodeDefault]!,
-            from: Constants.languageCodeDefault,
+            translated['en']!,
+            from: 'en',
             to: languageCode,
           );
         } else {

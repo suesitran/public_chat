@@ -1,8 +1,7 @@
 class Constants {
   static const String prefCurrentCountryCode = 'current_country_code_selected';
 
-  static const String countryCodeDefault = 'US';
-  static const String languageCodeDefault = 'en';
+  static const String textSplitListTextTranslate = '****';
 
   static const int lengthBatchUpdateTranslateMessage = 500;
 

@@ -14,7 +14,7 @@ class ChatCubit extends Cubit<ChatState> {
   String currentCountryCodeSelected = '';
   String currentLanguageCodeSelected = '';
 
-  void getCurrentLanguageCodeSelected(String countryCode) {
+  void setCountryCodeSelected(String countryCode) {
     currentCountryCodeSelected = countryCode;
     currentLanguageCodeSelected = Constants.countries
         .firstWhere((el) => el['country_code'] == countryCode)['language_code'];

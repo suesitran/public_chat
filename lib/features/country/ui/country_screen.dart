@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/cubit/country_cubit.dart';
-import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class CountryScreen extends StatefulWidget {
-  const CountryScreen({super.key, this.isHasBackButton});
+  const CountryScreen({
+    super.key,
+    this.isHasBackButton,
+    required this.currentCountryCode,
+  });
 
   final bool? isHasBackButton;
+  final String currentCountryCode;
 
   @override
   State<CountryScreen> createState() => _CountryScreenState();
@@ -23,31 +27,18 @@ class _CountryScreenState extends State<CountryScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      widget.isHasBackButton ?? false
-          ? await _handleInCaseHadCountryCodeSelected()
-          : await _handleInCaseNotYetCountryCodeSelected();
+      if (!(widget.isHasBackButton ?? false)) {
+        await _showNoticeDialogSelectCountry();
+      }
+      await _setCurrentCountryCode();
     });
     super.initState();
   }
 
-  Future<void> _handleInCaseHadCountryCodeSelected() async {
-    final countryCode = context.read<ChatCubit>().currentCountryCodeSelected;
-    context
-        .read<CountryCubit>()
-        .setCountrySelectedInitial(countryCode: countryCode);
-    await _scrollToCountrySelected(countryCode);
-  }
-
-  Future<void> _handleInCaseNotYetCountryCodeSelected() async {
-    await _showNoticeDialogSelectCountry();
-    final countryCode =
-        WidgetsBinding.instance.platformDispatcher.locale.countryCode;
-    if (!(widget.isHasBackButton ?? false) &&
-        countryCode.isNotNullAndNotEmpty &&
-        mounted) {
-      context.read<CountryCubit>().selectCountry(countryCode!);
-      await _scrollToCountrySelected(countryCode);
-    }
+  Future<void> _setCurrentCountryCode() async {
+    final currentCountryCode = widget.currentCountryCode;
+    context.read<CountryCubit>().setCountrySelectedInitial(currentCountryCode);
+    await _scrollToCountrySelected(currentCountryCode);
   }
 
   Future<void> _showNoticeDialogSelectCountry() async {
@@ -126,18 +117,23 @@ class _CountryScreenState extends State<CountryScreen> {
                   final isShowButtonAction =
                       countryCubit.checkAllowShowButtonAction(
                           widget.isHasBackButton ?? false);
+                  final currentCountryCode =
+                      state is TemporaryCountryCodeSelected
+                          ? state.countryCode
+                          : countryCubit.tempCountryCodeSelected;
                   return isShowButtonAction
                       ? GestureDetector(
-                          onTap: () async =>
-                              countryCubit.checkNeedConfirmSelectCountry()
-                                  ? await _showConfirmDialogSelectCountry()
-                                  : Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ChatScreen(),
-                                      ),
+                          onTap: () async => countryCubit
+                                  .checkNeedConfirmSelectCountry()
+                              ? await _showConfirmDialogSelectCountry()
+                              : Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      currentCountryCode: currentCountryCode,
                                     ),
+                                  ),
+                                ),
                           child: Text(
                             countryCubit.checkNeedConfirmSelectCountry()
                                 ? 'Select'

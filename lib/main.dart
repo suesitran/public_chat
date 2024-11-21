@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
@@ -12,10 +13,6 @@ import 'package:public_chat/features/language_load/language_load.dart';
 import 'package:public_chat/features/login/login.dart';
 import 'package:public_chat/firebase_options.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:public_chat/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,16 +50,7 @@ class MainApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: AppLocalizations.supportedLocales,
-        home: FirebaseAuth.instance.currentUser != null
-            ? (ServiceLocator.instance
-                            .get<SharedPreferences>()
-                            .get(Constants.prefCurrentCountryCode)
-                            ?.toString() ??
-                        '')
-                    .isNotEmpty
-                ? const ChatScreen()
-                : const CountryScreen()
-            : const LoginScreen(),
+        home: const LanguageLoadScreen(),
         builder: (_, child) {
           ErrorWidget.builder = (_) {
             return Container(

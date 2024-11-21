@@ -8,7 +8,9 @@ import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.currentCountryCode});
+
+  final String currentCountryCode;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +36,8 @@ class LoginScreen extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) =>
                   context.read<LoginCubit>().checkCountryCodeLocalExisted()
-                      ? const ChatScreen()
-                      : const CountryScreen(),
+                      ? ChatScreen(currentCountryCode: currentCountryCode)
+                      : CountryScreen(currentCountryCode: currentCountryCode),
             ),
           );
         }

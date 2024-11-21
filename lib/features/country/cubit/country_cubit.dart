@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
-import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,16 +12,8 @@ class CountryCubit extends Cubit<CountryState> {
   String currentCountryCodeSelected = '';
   String tempCountryCodeSelected = '';
 
-  void setCountrySelectedInitial({String? countryCode}) {
-    if (countryCode.isNotNullAndNotEmpty) {
-      currentCountryCodeSelected = countryCode!;
-    } else {
-      currentCountryCodeSelected = ServiceLocator.instance
-              .get<SharedPreferences>()
-              .get(Constants.prefCurrentCountryCode)
-              ?.toString() ??
-          '';
-    }
+  void setCountrySelectedInitial(String countryCode) {
+    currentCountryCodeSelected = countryCode;
     emit(CurrentCountryCodeSelected(countryCode: currentCountryCodeSelected));
   }
 

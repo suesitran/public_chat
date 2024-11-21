@@ -13,12 +13,16 @@ import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
 import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/login_screen.dart';
+import 'package:public_chat/l10n/text_ui_static.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({super.key, required this.currentCountryCode});
+
+  final String currentCountryCode;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -28,15 +32,21 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CountryCubit>().setCountrySelectedInitial();
+      context
+          .read<ChatCubit>()
+          .setCountryCodeSelected(widget.currentCountryCode);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>().texts;
     final chatCubit = context.read<ChatCubit>();
     final User? user = FirebaseAuth.instance.currentUser;
+    final currentCountryCode = chatCubit.currentCountryCodeSelected.isNotEmpty
+        ? chatCubit.currentCountryCodeSelected
+        : widget.currentCountryCode;
 
     return BlocListener<LoginCubit, LoginState>(
       listenWhen: (previous, current) =>
@@ -58,7 +68,9 @@ class _ChatScreenState extends State<ChatScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const LoginScreen(),
+              builder: (context) => LoginScreen(
+                currentCountryCode: chatCubit.currentCountryCodeSelected,
+              ),
             ),
           );
         }
@@ -78,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
             listenWhen: (previous, current) =>
                 current is CurrentCountryCodeSelected,
             listener: (context, state) => state is CurrentCountryCodeSelected
-                ? chatCubit.getCurrentLanguageCodeSelected(state.countryCode)
+                ? chatCubit.setCountryCodeSelected(state.countryCode)
                 : null,
             buildWhen: (previous, current) =>
                 current is CurrentCountryCodeSelected,
@@ -89,14 +101,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   state is CurrentCountryCodeSelected &&
                           state.countryCode.isNotNullAndNotEmpty
                       ? state.countryCode
-                      : chatCubit.currentCountryCodeSelected,
+                      : currentCountryCode,
                   shape: const Circle(),
                 ),
               );
             },
           ),
           title: Text(
-            context.locale.publicRoomTitle,
+            textsUIStatic['chatScreenTitle']![
+                chatCubit.currentLanguageCodeSelected] as String,
+            // context.locale.publicRoomTitle,
             style: const TextStyle(color: Colors.black, fontSize: 24),
           ),
           actions: [
@@ -163,8 +177,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const CountryScreen(
+                          builder: (context) => CountryScreen(
                             isHasBackButton: true,
+                            currentCountryCode: currentCountryCode,
                           ),
                         ),
                       );

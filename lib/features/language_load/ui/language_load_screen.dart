@@ -5,10 +5,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/language_load/cubit/language_load_cubit.dart';
+import 'package:public_chat/features/language_load/cubit/language_load_state.dart';
 import 'package:public_chat/features/login/login.dart';
-import 'package:public_chat/service_locator/service_locator.dart';
-import 'package:public_chat/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LanguageLoadScreen extends StatefulWidget {
   const LanguageLoadScreen({super.key});
@@ -21,7 +19,8 @@ class _LanguageLoadScreenState extends State<LanguageLoadScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LanguageLoadCubit>().loadAllLanguageStatic();
+      context.read<LanguageLoadCubit>().loadAllLanguageStatic(
+          WidgetsBinding.instance.platformDispatcher.locale.countryCode);
     });
     super.initState();
   }
@@ -29,31 +28,26 @@ class _LanguageLoadScreenState extends State<LanguageLoadScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LanguageLoadCubit, LanguageLoadState>(
-      listenWhen: (previous, current) =>
-          current == LanguageLoadState.success ||
-          current == LanguageLoadState.failure,
+      listenWhen: (previous, current) => current is LanguageLoadSuccess,
       listener: (context, state) {
-        final screen = FirebaseAuth.instance.currentUser != null
-            ? (ServiceLocator.instance
-                            .get<SharedPreferences>()
-                            .get(Constants.prefCurrentCountryCode)
-                            ?.toString() ??
-                        '')
-                    .isNotEmpty
-                ? const ChatScreen()
-                : const CountryScreen()
-            : const LoginScreen();
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => screen),
-        );
+        if (state is LanguageLoadSuccess) {
+          final currentCountryCode = state.countryCodeSelected;
+          final screen = FirebaseAuth.instance.currentUser != null
+              ? currentCountryCode.isNotEmpty
+                  ? ChatScreen(currentCountryCode: currentCountryCode)
+                  : CountryScreen(currentCountryCode: currentCountryCode)
+              : LoginScreen(currentCountryCode: currentCountryCode);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => screen),
+          );
+        }
       },
       builder: (context, state) {
         return Container(
           alignment: Alignment.center,
           color: Colors.white,
-          child: state == LanguageLoadState.inProgress
+          child: state is LanguageLoadInProgress
               ? const SpinKitCircle(color: Colors.grey, size: 36)
               : const SizedBox(),
         );
