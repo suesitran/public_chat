@@ -11,11 +11,12 @@ class LoginInitial extends LoginState {
 
 class LoginSuccess extends LoginState {
   final String displayName;
+  final String languageCode;
 
-  const LoginSuccess(this.displayName);
+  const LoginSuccess(this.displayName, this.languageCode);
 
   @override
-  List<Object?> get props => [displayName];
+  List<Object?> get props => [displayName, languageCode];
 }
 
 class LoginFailed extends LoginState {

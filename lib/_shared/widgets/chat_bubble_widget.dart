@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
+
+import '../../features/language_setting/bloc/user_language_cubit.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
@@ -10,13 +13,14 @@ class ChatBubble extends StatelessWidget {
 
   final double _iconSize = 24.0;
 
-  const ChatBubble(
-      {required this.isMine,
-      required this.message,
-      required this.photoUrl,
-      required this.displayName,
-      this.translations = const {},
-      super.key});
+  const ChatBubble({
+    required this.isMine,
+    required this.message,
+    required this.photoUrl,
+    required this.displayName,
+    this.translations = const {},
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -48,56 +52,66 @@ class ChatBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
           color: isMine ? Colors.black26 : Colors.black87),
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment:
-            isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          // display name
-          Text(
-            displayName ?? 'Unknown',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: isMine ? Colors.black87 : Colors.grey,
-                fontWeight: FontWeight.bold),
-          ),
-          // original language
-          Text(
-            message,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Colors.white),
-          ),
-          // english version (if there is)
-          if (translations.isNotEmpty)
-            ...translations.entries
-                .where(
-                  (element) => element.key != 'original',
-                )
-                .map(
-                  (e) => Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${e.key} ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      isMine ? Colors.black87 : Colors.grey)),
-                      TextSpan(
-                        text: e.value,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: isMine ? Colors.black87 : Colors.grey),
-                      )
-                    ]),
-                    textAlign: isMine ? TextAlign.right : TextAlign.left,
-                  ),
-                )
-        ],
+      child: BlocBuilder<UserLanguageCubit, String>(
+        builder: (context, state) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment:
+                isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              // display name
+              Text(
+                displayName ?? 'Unknown',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: isMine ? Colors.black87 : Colors.grey,
+                    fontWeight: FontWeight.bold),
+              ),
+              // original language
+              Text(
+                message,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(color: Colors.white),
+              ),
+              // english version (if there is)
+              if (translations.isNotEmpty)
+                ...translations.entries
+                    .where(
+                      (element) =>
+                          element.key != 'original' && element.key == state,
+                    )
+                    .map(
+                      (e) => Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                              text: '${e.key} ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: isMine
+                                          ? Colors.black87
+                                          : Colors.grey)),
+                          TextSpan(
+                            text: e.value,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    color:
+                                        isMine ? Colors.black87 : Colors.grey),
+                          )
+                        ]),
+                        textAlign: isMine ? TextAlign.right : TextAlign.left,
+                      ),
+                    )
+            ],
+          );
+        },
       ),
     ));
     return Padding(

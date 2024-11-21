@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
+import 'package:public_chat/features/language_setting/bloc/user_language_cubit.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
 import 'package:public_chat/utils/locale_support.dart';
@@ -24,6 +25,7 @@ class _LoginScreenBody extends StatelessWidget {
           if (state is LoginSuccess) {
             // open public chat screen
             // use Navigator temporary, will be changed later
+            context.read<UserLanguageCubit>().startListen();
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -36,10 +38,14 @@ class _LoginScreenBody extends StatelessWidget {
               ? Column(
                   children: [
                     const Text('Login failed. Try again'),
-                    buildSignInButton(
-                      label: context.locale.login,
-                      onPressed: () =>
-                          context.read<LoginCubit>().requestLogin(),
+                    Expanded(
+                      child: Center(
+                        child: buildSignInButton(
+                          label: context.locale.login,
+                          onPressed: () =>
+                              context.read<LoginCubit>().requestLogin(),
+                        ),
+                      ),
                     )
                   ],
                 )

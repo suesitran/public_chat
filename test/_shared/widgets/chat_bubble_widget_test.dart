@@ -1,11 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
+import 'package:public_chat/features/language_setting/bloc/user_language_cubit.dart';
 
 import '../../material_wrapper_extension.dart';
 
+class MockUserLanguageCubit extends Mock implements UserLanguageCubit {}
+
 void main() {
+  final MockUserLanguageCubit languageCubit = MockUserLanguageCubit();
+
+  setUp(
+    () async {
+      when(
+        () => languageCubit.state,
+      ).thenAnswer(
+        (_) => 'vi',
+      );
+      when(
+        () => languageCubit.stream,
+      ).thenAnswer(
+        (_) => const Stream<String>.empty(),
+      );
+      when(
+        () => languageCubit.close(),
+      ).thenAnswer(
+        (invocation) => Future.value(),
+      );
+    },
+  );
+
+  tearDown(() {
+    reset(languageCubit);
+  });
   testWidgets('verify UI component', (widgetTester) async {
     const Widget widget = ChatBubble(
       isMine: true,
@@ -14,7 +44,10 @@ void main() {
       photoUrl: null,
     );
 
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.wrapAndPump(BlocProvider<UserLanguageCubit>(
+      create: (context) => languageCubit,
+      child: widget,
+    ));
 
     expect(
         find.descendant(
@@ -71,7 +104,10 @@ void main() {
     );
 
     // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.wrapAndPump(BlocProvider<UserLanguageCubit>(
+      create: (context) => languageCubit,
+      child: widget,
+    ));
 
     // then
     expect(find.byType(ImageNetwork), findsNothing);
@@ -97,7 +133,10 @@ void main() {
     );
 
     // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.wrapAndPump(BlocProvider<UserLanguageCubit>(
+      create: (context) => languageCubit,
+      child: widget,
+    ));
 
     // then
     expect(find.byType(ImageNetwork), findsOneWidget);
@@ -117,7 +156,10 @@ void main() {
         displayName: 'displayName');
 
     // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.wrapAndPump(BlocProvider<UserLanguageCubit>(
+      create: (context) => languageCubit,
+      child: widget,
+    ));
 
     // expect
     final Container container = widgetTester.widget(find.ancestor(
@@ -151,7 +193,10 @@ void main() {
         displayName: 'displayName');
 
     // when
-    await widgetTester.wrapAndPump(widget);
+    await widgetTester.wrapAndPump(BlocProvider<UserLanguageCubit>(
+      create: (context) => languageCubit,
+      child: widget,
+    ));
 
     // expect
     final Container container = widgetTester.widget(find.ancestor(
