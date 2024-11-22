@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/cubit/country_cubit.dart';
+import 'package:public_chat/l10n/text_ui_static.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -12,10 +14,12 @@ class CountryScreen extends StatefulWidget {
     super.key,
     this.isHasBackButton,
     required this.currentCountryCode,
+    required this.currentLanguageCode,
   });
 
   final bool? isHasBackButton;
   final String currentCountryCode;
+  final String currentLanguageCode;
 
   @override
   State<CountryScreen> createState() => _CountryScreenState();
@@ -82,6 +86,7 @@ class _CountryScreenState extends State<CountryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>().texts;
     final countryCubit = context.read<CountryCubit>();
     return Scaffold(
       appBar: AppBar(
@@ -100,9 +105,18 @@ class _CountryScreenState extends State<CountryScreen> {
                 ),
               )
             : null,
-        title: const Text(
-          'Countries',
-          style: TextStyle(color: Colors.black, fontSize: 24),
+        title: BlocBuilder<CountryCubit, CountryState>(
+          buildWhen: (previous, current) =>
+              current is CurrentLanguageCodeSelected,
+          builder: (context, state) {
+            return Text(
+              textsUIStatic['countryScreenTitle']![
+                  state is CurrentLanguageCodeSelected
+                      ? state.languageCode
+                      : widget.currentLanguageCode] as String,
+              style: const TextStyle(color: Colors.black, fontSize: 24),
+            );
+          },
         ),
         actions: [
           Align(

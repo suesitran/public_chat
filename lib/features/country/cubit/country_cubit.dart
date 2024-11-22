@@ -31,6 +31,10 @@ class CountryCubit extends Cubit<CountryState> {
         );
     emit(TemporaryCountryCodeSelected(countryCode: tempCountryCodeSelected));
     emit(CurrentCountryCodeSelected(countryCode: currentCountryCodeSelected));
+    emit(CurrentLanguageCodeSelected(
+        languageCode: Constants.countries.firstWhere((el) =>
+            el['country_code'] ==
+            currentCountryCodeSelected)['language_code']));
   }
 
   String getCountryNameSelected() {
