@@ -14,6 +14,8 @@ final class Database {
 
   final String _publicRoom = 'public';
   final String _userList = 'users';
+  final String _languageList = 'languages';
+
   void writePublicMessage(Message message) {
     FirebaseFirestore.instance.collection(_publicRoom).add(message.toMap());
   }
@@ -53,6 +55,18 @@ final class Database {
             fromFirestore: _userDetailFromFirestore,
             toFirestore: _userDetailToFirestore)
         .snapshots();
+  }
+
+  void addLanguage(List<String> languages) async {
+    final collection = FirebaseFirestore.instance.collection(_languageList);
+    for (var language in languages) {
+      final existingLanguage =
+          await collection.where('language', isEqualTo: language).get();
+
+      if (existingLanguage.docs.isEmpty) {
+        collection.add({'language': language});
+      }
+    }
   }
 
   /// ###############################################################
