@@ -3,17 +3,17 @@ import 'list_hint_widget.dart';
 import 'my_textfield.dart';
 
 class TranslatePopup extends StatelessWidget {
-  TranslatePopup({
+  const TranslatePopup({
     super.key,
     required this.onSubmit,
     required this.fetchListHistoryLanguages,
+    // required this.controller,
   });
   final void Function(String value) onSubmit;
   final Future<List<String>> Function() fetchListHistoryLanguages;
-
-  final _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final controller = TextEditingController();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -22,21 +22,21 @@ class TranslatePopup extends StatelessWidget {
         ListHintWidget<String>(
           fetchListData: fetchListHistoryLanguages,
           onSelect: (value) {
-            _controller.text += '$value ';
+            controller.text += '$value,';
           },
           onUnSelect: (value) {
-            _controller.text = _controller.text.replaceAll('$value ', '');
+            controller.text = controller.text.replaceAll('$value,', '');
           },
         ),
         const SizedBox(height: 10),
         Text(
-          'ví dụ: vi en... (cách nhau bởi dấu cách)',
+          'Example: vi, en... (separated by commas)',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         TextFieldInput(
           autofocus: true,
-          hintText: "Nhập 1 hoặc nhiều ngôn ngữ/mã ngôn ngữ/đất nước...",
-          controller: _controller,
+          hintText: "Enter languages/language codes...",
+          controller: controller,
           textInputAction: TextInputAction.done,
           onFieldSubmitted: (value) {
             onSubmit(value);

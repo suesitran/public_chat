@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
-import '../../features/translate_message.dart/bloc/translate_message_bloc.dart';
-import '../../features/translate_message.dart/widgets/translation_widget.dart';
+import 'package:public_chat/features/translate_message/bloc/translate_message_bloc.dart';
+import 'package:public_chat/features/translate_message/widgets/translation_widget.dart';
 import '../data/chat_data.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -45,7 +45,6 @@ class ChatBubble extends StatelessWidget {
 
     // message bubble
     widgets.add(Container(
-        key: const Key('message_bubble'),
         constraints:
             BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
         decoration: BoxDecoration(
@@ -53,36 +52,40 @@ class ChatBubble extends StatelessWidget {
             color: isMine ? Colors.black26 : Colors.black87),
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<TranslateMessageBloc, TranslateMessageState>(
+            buildWhen: (previous, current) =>
+                current is EnableTranslateState ||
+                current is DisableTranslateState,
             builder: (context, state) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment:
-                isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-            children: [
-              // display name
-              Text(
-                displayName ?? 'Unknown',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: isMine ? Colors.black87 : Colors.grey,
-                    fontWeight: FontWeight.bold),
-              ),
-              // original language
-              Text(
-                message,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.copyWith(color: Colors.white),
-              ),
-              if (state is EnableTranslateState)
-                TranslationsWidget(
-                  translations: getTranslations(state.selectedLanguages),
-                  widget: this,
-                )
-            ],
-          );
-        })));
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment:
+                    isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  // display name
+                  Text(
+                    displayName ?? 'Unknown',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: isMine ? Colors.black87 : Colors.grey,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  // original language
+                  Text(
+                    message,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.white),
+                  ),
+                  if (state is EnableTranslateState)
+                    TranslationsWidget(
+                      translations:
+                          buildTranslations(state.props[0] as List<String>),
+                      widget: this,
+                    )
+                ],
+              );
+            })));
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -95,16 +98,12 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-  List<TranslationModel> getTranslations(List<String> selectedLanguages) {
-    List<TranslationModel> result = [];
-    for (var selectedLanguage in selectedLanguages) {
-      for (var translation in translations) {
-        if (translation.languages.contains(selectedLanguage)) {
-          result.add(translation);
-        }
-      }
-    }
-    return result;
+  List<TranslationModel> buildTranslations(List<String> selectedLanguages) {
+    return translations
+        .where((translation) => selectedLanguages.any(
+            (lang) => translation.languageNames.contains(lang.toLowerCase())))
+        .toSet()
+        .toList();
   }
 }
 

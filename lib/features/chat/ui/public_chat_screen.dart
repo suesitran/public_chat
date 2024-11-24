@@ -10,7 +10,7 @@ import 'package:public_chat/_shared/widgets/message_box_widget.dart';
 import 'package:public_chat/features/chat/bloc/chat_cubit.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
-import '../../translate_message.dart/ui/translate_settings_button.dart';
+import '../../translate_message/ui/translate_settings_button.dart';
 
 class PublicChatScreen extends StatelessWidget {
   const PublicChatScreen({super.key});

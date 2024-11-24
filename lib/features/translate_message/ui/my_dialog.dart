@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../main.dart';
 import 'navigator.dart';
 
 class MyDialog {
-  static void showMyDialog({
+  static void showMyDialog(
+    BuildContext context, {
     Widget? contentWidget,
     String? contentText,
     String? closeText = 'Close',
@@ -14,10 +14,10 @@ class MyDialog {
     Widget? titleWidget,
     String? titleText,
     Function()? onTapClose,
-    bool showCloseButton = true,
+    bool showActions = true,
   }) {
     showCupertinoModalPopup<void>(
-      context: globalAppContext!,
+      context: context,
       barrierDismissible: tapOutsideToClose,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
@@ -34,7 +34,7 @@ class MyDialog {
                     textAlign: TextAlign.start,
                     style: const TextStyle(fontSize: 16)),
           ),
-          actions: showCloseButton
+          actions: showActions
               ? actions ??
                   [
                     TextButton(
@@ -48,24 +48,5 @@ class MyDialog {
         );
       },
     );
-  }
-
-  static void showError(
-    String err, {
-    Widget? contentWidget,
-    String? closeText = 'Close',
-    List<Widget>? actions,
-    bool tapOutsideToClose = false,
-    String? titleText,
-  }) {
-    showMyDialog(
-        color: Colors.red,
-        contentText: err,
-        titleWidget: Text(titleText ?? 'Error',
-            style: const TextStyle(color: Colors.red, fontSize: 20)),
-        contentWidget: contentWidget,
-        closeText: closeText,
-        actions: actions,
-        tapOutsideToClose: tapOutsideToClose);
   }
 }

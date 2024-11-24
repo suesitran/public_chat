@@ -7,7 +7,7 @@ import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'features/login/ui/login_screen.dart';
-import 'features/translate_message.dart/bloc/translate_message_bloc.dart';
+import 'features/translate_message/bloc/translate_message_bloc.dart';
 import 'utils/local_shared_data.dart';
 
 BuildContext? get globalAppContext => navigatorKey.currentContext;

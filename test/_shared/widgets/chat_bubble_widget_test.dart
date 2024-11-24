@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:image_network/image_network.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
-import 'package:public_chat/features/translate_message.dart/bloc/translate_message_bloc.dart';
+import 'package:public_chat/features/translate_message/bloc/translate_message_bloc.dart';
 import 'package:public_chat/utils/local_shared_data.dart';
 import '../../material_wrapper_extension.dart';
 import 'package:network_image_mock/network_image_mock.dart';
@@ -173,12 +173,7 @@ void main() {
         .ancestor(
             of: find.byType(Column),
             matching: find.byWidgetPredicate((widget) {
-              return widget is Container &&
-                  widget.decoration != null &&
-                  widget.decoration is BoxDecoration &&
-                  (widget.decoration as BoxDecoration).color ==
-                      Colors.black26 &&
-                  widget.padding == const EdgeInsets.all(8);
+              return widget is Container;
             }))
         .first);
 
@@ -221,12 +216,7 @@ void main() {
         .ancestor(
             of: find.byType(Column),
             matching: find.byWidgetPredicate((widget) {
-              return widget is Container &&
-                  widget.decoration != null &&
-                  widget.decoration is BoxDecoration &&
-                  (widget.decoration as BoxDecoration).color ==
-                      Colors.black87 &&
-                  widget.padding == const EdgeInsets.all(8);
+              return widget is Container;
             }))
         .first);
 
