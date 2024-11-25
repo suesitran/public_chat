@@ -11,7 +11,10 @@ void main() {
       testWidgets(
         'test en',
         (widgetTester) async {
-          const Widget widget = LoginScreen(currentCountryCode: '');
+          const Widget widget = LoginScreen(
+            currentCountryCode: '',
+            currentLanguageCode: '',
+          );
 
           await widgetTester.wrapAndPump(widget, locale: const Locale('en'));
 
@@ -22,7 +25,10 @@ void main() {
       testWidgets(
         'test vi',
         (widgetTester) async {
-          const Widget widget = LoginScreen(currentCountryCode: '');
+          const Widget widget = LoginScreen(
+            currentCountryCode: '',
+            currentLanguageCode: '',
+          );
 
           await widgetTester.wrapAndPump(widget, locale: const Locale('vi'));
 

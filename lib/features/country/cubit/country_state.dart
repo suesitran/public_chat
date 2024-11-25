@@ -11,24 +11,18 @@ final class CountryInitial extends CountryState {
 
 class CurrentCountryCodeSelected extends CountryState {
   const CurrentCountryCodeSelected({required this.countryCode});
+
   final String countryCode;
 
   @override
-  List<Object> get props => [countryCode];
+  List<Object?> get props => [countryCode];
 }
 
 class TemporaryCountryCodeSelected extends CountryState {
   const TemporaryCountryCodeSelected({required this.countryCode});
+
   final String countryCode;
 
   @override
-  List<Object> get props => [countryCode];
-}
-
-class CurrentLanguageCodeSelected extends CountryState {
-  const CurrentLanguageCodeSelected({required this.languageCode});
-  final String languageCode;
-
-  @override
-  List<Object> get props => [languageCode];
+  List<Object?> get props => [countryCode];
 }

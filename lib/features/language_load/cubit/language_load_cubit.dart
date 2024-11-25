@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/l10n/text_ui_static.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/constants.dart';
+import 'package:public_chat/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:translator/translator.dart';
 
@@ -73,13 +74,13 @@ class LanguageLoadCubit extends Cubit<LanguageLoadState> {
             .get(Constants.prefCurrentCountryCode)
             ?.toString() ??
         (countryCodeDevice ?? '');
-
+    String currentLanguageCode = '';
     if (currentCountryCode.isNotEmpty &&
         currentCountryCode.toUpperCase() != 'US') {
       final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>();
       // Get language code from list country
-      String currentLanguageCode = Constants.countries.firstWhere(
-          (el) => el['country_code'] == currentCountryCode)['language_code'];
+      currentLanguageCode =
+          Helper.getLanguageCodeByCountryCode(currentCountryCode);
 
       Map<String, Map<String, String>> textsTranslated =
           await _matchListTextTranslated(
@@ -89,6 +90,8 @@ class LanguageLoadCubit extends Cubit<LanguageLoadState> {
 
       textsUIStatic.setTexts = textsTranslated;
     }
-    emit(LanguageLoadSuccess(countryCodeSelected: currentCountryCode));
+    emit(LanguageLoadSuccess(
+        countryCodeSelected: currentCountryCode,
+        languageCodeSelected: currentLanguageCode));
   }
 }

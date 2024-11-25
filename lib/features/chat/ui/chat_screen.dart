@@ -20,9 +20,14 @@ import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/locale_support.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key, required this.currentCountryCode});
+  const ChatScreen({
+    super.key,
+    required this.currentCountryCode,
+    required this.currentLanguageCode,
+  });
 
   final String currentCountryCode;
+  final String currentLanguageCode;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -39,14 +44,23 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
+  String _getCurrentCountryCode(ChatCubit chatCubit) {
+    return chatCubit.currentCountryCodeSelected.isNotEmpty
+        ? chatCubit.currentCountryCodeSelected
+        : widget.currentCountryCode;
+  }
+
+  String _getCurrentLanguageCode(ChatCubit chatCubit) {
+    return chatCubit.currentLanguageCodeSelected.isNotEmpty
+        ? chatCubit.currentLanguageCodeSelected
+        : widget.currentLanguageCode;
+  }
+
   @override
   Widget build(BuildContext context) {
     final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>().texts;
     final chatCubit = context.read<ChatCubit>();
     final User? user = FirebaseAuth.instance.currentUser;
-    final currentCountryCode = chatCubit.currentCountryCodeSelected.isNotEmpty
-        ? chatCubit.currentCountryCodeSelected
-        : widget.currentCountryCode;
 
     return BlocListener<LoginCubit, LoginState>(
       listenWhen: (previous, current) =>
@@ -69,7 +83,8 @@ class _ChatScreenState extends State<ChatScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => LoginScreen(
-                currentCountryCode: chatCubit.currentCountryCodeSelected,
+                currentCountryCode: _getCurrentCountryCode(chatCubit),
+                currentLanguageCode: _getCurrentLanguageCode(chatCubit),
               ),
             ),
           );
@@ -101,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   state is CurrentCountryCodeSelected &&
                           state.countryCode.isNotNullAndNotEmpty
                       ? state.countryCode
-                      : currentCountryCode,
+                      : _getCurrentCountryCode(chatCubit),
                   shape: const Circle(),
                 ),
               );
@@ -109,7 +124,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           title: Text(
             textsUIStatic['chatScreenTitle']![
-                chatCubit.currentLanguageCodeSelected] as String,
+                _getCurrentLanguageCode(chatCubit)] as String,
             // context.locale.publicRoomTitle,
             style: const TextStyle(color: Colors.black, fontSize: 24),
           ),
@@ -179,7 +194,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         MaterialPageRoute(
                           builder: (context) => CountryScreen(
                             isHasBackButton: true,
-                            currentCountryCode: currentCountryCode,
+                            currentCountryCode:
+                                _getCurrentCountryCode(chatCubit),
+                            currentLanguageCode:
+                                _getCurrentLanguageCode(chatCubit),
                           ),
                         ),
                       );

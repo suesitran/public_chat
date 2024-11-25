@@ -32,11 +32,21 @@ class _LanguageLoadScreenState extends State<LanguageLoadScreen> {
       listener: (context, state) {
         if (state is LanguageLoadSuccess) {
           final currentCountryCode = state.countryCodeSelected;
+          final languageCodeSelected = state.languageCodeSelected;
           final screen = FirebaseAuth.instance.currentUser != null
               ? currentCountryCode.isNotEmpty
-                  ? ChatScreen(currentCountryCode: currentCountryCode)
-                  : CountryScreen(currentCountryCode: currentCountryCode)
-              : LoginScreen(currentCountryCode: currentCountryCode);
+                  ? ChatScreen(
+                      currentCountryCode: currentCountryCode,
+                      currentLanguageCode: languageCodeSelected,
+                    )
+                  : CountryScreen(
+                      currentCountryCode: currentCountryCode,
+                      currentLanguageCode: languageCodeSelected,
+                    )
+              : LoginScreen(
+                  currentCountryCode: currentCountryCode,
+                  currentLanguageCode: languageCodeSelected,
+                );
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => screen),

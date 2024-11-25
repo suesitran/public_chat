@@ -15,10 +15,14 @@ class LanguageLoadInProgress extends LanguageLoadState {
 }
 
 class LanguageLoadSuccess extends LanguageLoadState {
-  const LanguageLoadSuccess({required this.countryCodeSelected});
+  const LanguageLoadSuccess({
+    required this.countryCodeSelected,
+    required this.languageCodeSelected,
+  });
 
   final String countryCodeSelected;
+  final String languageCodeSelected;
 
   @override
-  List<Object> get props => [countryCodeSelected];
+  List<Object> get props => [countryCodeSelected, languageCodeSelected];
 }

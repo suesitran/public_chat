@@ -107,13 +107,11 @@ class _CountryScreenState extends State<CountryScreen> {
             : null,
         title: BlocBuilder<CountryCubit, CountryState>(
           buildWhen: (previous, current) =>
-              current is CurrentLanguageCodeSelected,
+              current is CurrentCountryCodeSelected,
           builder: (context, state) {
             return Text(
               textsUIStatic['countryScreenTitle']![
-                  state is CurrentLanguageCodeSelected
-                      ? state.languageCode
-                      : widget.currentLanguageCode] as String,
+                  countryCubit.currentLanguageCodeSelected] as String,
               style: const TextStyle(color: Colors.black, fontSize: 24),
             );
           },
@@ -145,6 +143,8 @@ class _CountryScreenState extends State<CountryScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => ChatScreen(
                                       currentCountryCode: currentCountryCode,
+                                      currentLanguageCode: countryCubit
+                                          .currentLanguageCodeSelected,
                                     ),
                                   ),
                                 ),

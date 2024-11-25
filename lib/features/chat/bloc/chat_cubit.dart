@@ -5,6 +5,7 @@ import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/constants.dart';
+import 'package:public_chat/utils/helper.dart';
 
 part 'chat_state.dart';
 
@@ -16,8 +17,8 @@ class ChatCubit extends Cubit<ChatState> {
 
   void setCountryCodeSelected(String countryCode) {
     currentCountryCodeSelected = countryCode;
-    currentLanguageCodeSelected = Constants.countries
-        .firstWhere((el) => el['country_code'] == countryCode)['language_code'];
+    currentLanguageCodeSelected =
+        Helper.getLanguageCodeByCountryCode(countryCode);
   }
 
   Query<Message> get chatContent =>

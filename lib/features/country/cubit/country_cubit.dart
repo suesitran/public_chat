@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
 import 'package:public_chat/utils/constants.dart';
+import 'package:public_chat/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'country_state.dart';
@@ -11,9 +12,12 @@ class CountryCubit extends Cubit<CountryState> {
 
   String currentCountryCodeSelected = '';
   String tempCountryCodeSelected = '';
+  String currentLanguageCodeSelected = '';
 
   void setCountrySelectedInitial(String countryCode) {
     currentCountryCodeSelected = countryCode;
+    currentLanguageCodeSelected =
+        Helper.getLanguageCodeByCountryCode(countryCode);
     emit(CurrentCountryCodeSelected(countryCode: currentCountryCodeSelected));
   }
 
@@ -25,16 +29,14 @@ class CountryCubit extends Cubit<CountryState> {
   Future<void> agreementConfirmSelectCountry() async {
     currentCountryCodeSelected = tempCountryCodeSelected;
     tempCountryCodeSelected = '';
+    currentLanguageCodeSelected =
+        Helper.getLanguageCodeByCountryCode(currentCountryCodeSelected);
     await ServiceLocator.instance.get<SharedPreferences>().setString(
           Constants.prefCurrentCountryCode,
           currentCountryCodeSelected,
         );
     emit(TemporaryCountryCodeSelected(countryCode: tempCountryCodeSelected));
     emit(CurrentCountryCodeSelected(countryCode: currentCountryCodeSelected));
-    emit(CurrentLanguageCodeSelected(
-        languageCode: Constants.countries.firstWhere((el) =>
-            el['country_code'] ==
-            currentCountryCodeSelected)['language_code']));
   }
 
   String getCountryNameSelected() {
