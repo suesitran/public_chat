@@ -1,12 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:image_network/image_network.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
   final String message;
   final String? photoUrl;
   final String? displayName;
-  final Map<String, dynamic> translations;
 
   final double _iconSize = 24.0;
 
@@ -15,7 +14,6 @@ class ChatBubble extends StatelessWidget {
       required this.message,
       required this.photoUrl,
       required this.displayName,
-      this.translations = const {},
       super.key});
 
   @override
@@ -29,14 +27,14 @@ class ChatBubble extends StatelessWidget {
         borderRadius: BorderRadius.circular(_iconSize),
         child: photoUrl == null
             ? const _DefaultPersonWidget()
-            : ImageNetwork(
-                image: photoUrl!,
+            : CachedNetworkImage(
+                imageUrl: photoUrl!,
+                placeholder: (context, url) => const _DefaultPersonWidget(),
+                errorWidget: (context, url, _) => const _DefaultPersonWidget(),
                 width: _iconSize,
                 height: _iconSize,
-                fitAndroidIos: BoxFit.fitWidth,
-                fitWeb: BoxFitWeb.contain,
-                onError: const _DefaultPersonWidget(),
-                onLoading: const _DefaultPersonWidget()),
+                fit: BoxFit.fitWidth,
+              ),
       ),
     ));
 
@@ -61,7 +59,6 @@ class ChatBubble extends StatelessWidget {
                 color: isMine ? Colors.black87 : Colors.grey,
                 fontWeight: FontWeight.bold),
           ),
-          // original language
           Text(
             message,
             style: Theme.of(context)
@@ -69,34 +66,6 @@ class ChatBubble extends StatelessWidget {
                 .bodyMedium
                 ?.copyWith(color: Colors.white),
           ),
-          // english version (if there is)
-          if (translations.isNotEmpty)
-            ...translations.entries
-                .where(
-                  (element) => element.key != 'original',
-                )
-                .map(
-                  (e) => Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                          text: '${e.key} ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      isMine ? Colors.black87 : Colors.grey)),
-                      TextSpan(
-                        text: e.value,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontStyle: FontStyle.italic,
-                            color: isMine ? Colors.black87 : Colors.grey),
-                      )
-                    ]),
-                    textAlign: isMine ? TextAlign.right : TextAlign.left,
-                  ),
-                )
         ],
       ),
     ));

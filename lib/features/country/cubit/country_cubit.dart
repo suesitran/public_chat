@@ -13,6 +13,7 @@ class CountryCubit extends Cubit<CountryState> {
   String currentCountryCodeSelected = '';
   String tempCountryCodeSelected = '';
   String currentLanguageCodeSelected = '';
+  String previousLanguageCodeSelected = '';
 
   void setCountrySelectedInitial(String countryCode) {
     currentCountryCodeSelected = countryCode;
@@ -29,6 +30,7 @@ class CountryCubit extends Cubit<CountryState> {
   Future<void> agreementConfirmSelectCountry() async {
     currentCountryCodeSelected = tempCountryCodeSelected;
     tempCountryCodeSelected = '';
+    previousLanguageCodeSelected = currentLanguageCodeSelected;
     currentLanguageCodeSelected =
         Helper.getLanguageCodeByCountryCode(currentCountryCodeSelected);
     await ServiceLocator.instance.get<SharedPreferences>().setString(

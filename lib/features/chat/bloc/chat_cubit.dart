@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
-import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/helper.dart';
 
 part 'chat_state.dart';

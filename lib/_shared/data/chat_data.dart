@@ -5,7 +5,7 @@ final class Message {
   final String id;
   final String sender;
   final Timestamp timestamp;
-  final Map<String, String> translations;
+  final Map<String, dynamic> translations;
 
   Message({required this.sender, required this.translations})
       : id = '',
@@ -14,7 +14,7 @@ final class Message {
   Message.fromMap(this.id, Map<String, dynamic> map)
       : sender = map['sender'],
         timestamp = map['time'],
-        translations = map['translated'] as Map<String, String>? ?? {};
+        translations = map['translated'] as Map<String, dynamic>? ?? {};
 
   Map<String, dynamic> toMap() =>
       {'sender': sender, 'time': timestamp, 'translated': translations};

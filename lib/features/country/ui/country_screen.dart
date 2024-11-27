@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/cubit/country_cubit.dart';
-import 'package:public_chat/l10n/text_ui_static.dart';
-import 'package:public_chat/service_locator/service_locator.dart';
+import 'package:public_chat/features/language_load/language_load.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
+import 'package:public_chat/utils/helper.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class CountryScreen extends StatefulWidget {
@@ -45,26 +45,61 @@ class _CountryScreenState extends State<CountryScreen> {
     await _scrollToCountrySelected(currentCountryCode);
   }
 
+  String _getCurrentLanguageCode(CountryCubit countryCubit) {
+    return countryCubit.currentLanguageCodeSelected.isNotEmpty
+        ? countryCubit.currentLanguageCodeSelected
+        : widget.currentLanguageCode;
+  }
+
   Future<void> _showNoticeDialogSelectCountry() async {
+    final countryCubit = context.read<CountryCubit>();
     await FunctionsAlertDialog.showNoticeAndConfirmDialog(
       context,
-      title: 'Notification',
-      description: 'Select country or use country default to use app',
-      titleButtonClose: 'Close',
+      title: Helper.getTextTranslated(
+        'notificationTitle',
+        _getCurrentLanguageCode(countryCubit),
+        previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+      ),
+      description: Helper.getTextTranslated(
+        'noticeSelectCountryText',
+        _getCurrentLanguageCode(countryCubit),
+        previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+      ),
+      titleButtonClose: Helper.getTextTranslated(
+        'buttonCloseTitle',
+        _getCurrentLanguageCode(countryCubit),
+        previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+      ),
     );
   }
 
   Future<void> _showConfirmDialogSelectCountry() async {
+    final countryCubit = context.read<CountryCubit>();
     final countryNameSelected =
         context.read<CountryCubit>().getCountryNameSelected();
     if (countryNameSelected.isNotEmpty) {
       await FunctionsAlertDialog.showNoticeAndConfirmDialog(
         context,
-        title: 'Confirm',
-        description:
-            'Are you sure you want to use language of \n"$countryNameSelected"?',
-        titleButtonClose: 'Close',
-        titleButtonSubmit: 'OK',
+        title: Helper.getTextTranslated(
+          'confirmTitle',
+          _getCurrentLanguageCode(countryCubit),
+          previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+        ),
+        description: '${Helper.getTextTranslated(
+          'confirmSelectCountryText',
+          _getCurrentLanguageCode(countryCubit),
+          previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+        )}\n"$countryNameSelected"?',
+        titleButtonClose: Helper.getTextTranslated(
+          'buttonCloseTitle',
+          _getCurrentLanguageCode(countryCubit),
+          previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+        ),
+        titleButtonSubmit: Helper.getTextTranslated(
+          'buttonOKTitle',
+          _getCurrentLanguageCode(countryCubit),
+          previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+        ),
         callBackClickSubmit: () {
           context.read<CountryCubit>().agreementConfirmSelectCountry();
           Navigator.of(context).pop();
@@ -86,161 +121,202 @@ class _CountryScreenState extends State<CountryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>().texts;
     final countryCubit = context.read<CountryCubit>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
-        leading: (widget.isHasBackButton ?? false)
-            ? GestureDetector(
-                onTap: () {
-                  countryCubit.resetValueTempCountryCodeSelected();
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(
-                  Icons.arrow_back_ios_new,
-                  color: Colors.black,
-                  size: 24,
-                ),
-              )
-            : null,
-        title: BlocBuilder<CountryCubit, CountryState>(
-          buildWhen: (previous, current) =>
-              current is CurrentCountryCodeSelected,
-          builder: (context, state) {
-            return Text(
-              textsUIStatic['countryScreenTitle']![
-                  countryCubit.currentLanguageCodeSelected] as String,
-              style: const TextStyle(color: Colors.black, fontSize: 24),
-            );
-          },
-        ),
-        actions: [
-          Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16),
-              child: BlocBuilder<CountryCubit, CountryState>(
-                buildWhen: (previous, current) =>
-                    current is CurrentCountryCodeSelected ||
-                    current is TemporaryCountryCodeSelected,
-                builder: (context, state) {
-                  final isShowButtonAction =
-                      countryCubit.checkAllowShowButtonAction(
-                          widget.isHasBackButton ?? false);
-                  final currentCountryCode =
-                      state is TemporaryCountryCodeSelected
-                          ? state.countryCode
-                          : countryCubit.tempCountryCodeSelected;
-                  return isShowButtonAction
-                      ? GestureDetector(
-                          onTap: () async => countryCubit
-                                  .checkNeedConfirmSelectCountry()
-                              ? await _showConfirmDialogSelectCountry()
-                              : Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChatScreen(
-                                      currentCountryCode: currentCountryCode,
-                                      currentLanguageCode: countryCubit
-                                          .currentLanguageCodeSelected,
-                                    ),
-                                  ),
-                                ),
-                          child: Text(
-                            countryCubit.checkNeedConfirmSelectCountry()
-                                ? 'Select'
-                                : 'Go',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                            ),
-                          ),
-                        )
-                      : const SizedBox();
-                },
-              ),
-            ),
-          ),
-        ],
+        leading: _buildLeadingButtonBack(countryCubit),
+        title: _buildTitleAppBar(countryCubit),
+        actions: [_buildButtonActionAppBar(countryCubit)],
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-          child: BlocBuilder<CountryCubit, CountryState>(
-            buildWhen: (previous, current) =>
-                current is CurrentCountryCodeSelected ||
-                current is TemporaryCountryCodeSelected,
-            builder: (context, state) {
-              final countryCodeSelected =
-                  countryCubit.currentCountryCodeSelected;
-              final tempCountryCodeSelected =
-                  countryCubit.tempCountryCodeSelected;
-              return ScrollablePositionedList.builder(
-                itemScrollController: _scrollController,
-                itemCount: Constants.countries.length - 1,
-                itemBuilder: (_, index) {
-                  final countryCode =
-                      Constants.countries[index]['country_code'];
-                  final countryName = Constants.countries[index]['name'];
-                  final isSelected = countryCode == countryCodeSelected;
-                  final isSelectedTemp = countryCode == tempCountryCodeSelected;
-                  return GestureDetector(
-                    onTap: () => context.read<CountryCubit>().selectCountry(
-                          countryCode,
-                        ),
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.only(bottom: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          width: 2,
-                          color: isSelected
-                              ? Colors.green
-                              : isSelectedTemp
-                                  ? Colors.brown
-                                  : Colors.grey.withOpacity(0.3),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          CountryFlag.fromCountryCode(
-                            countryCode,
-                            shape: const Circle(),
-                            width: 32,
-                            height: 32,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              countryName,
-                              style: TextStyle(
-                                color: isSelected || isSelectedTemp
-                                    ? Colors.black
-                                    : Colors.black54,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          if (isSelected)
-                            const Icon(
-                              Icons.check_circle,
-                              size: 24,
-                              color: Colors.green,
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+          child: _buildListCountry(countryCubit),
         ),
       ),
+    );
+  }
+
+  Widget? _buildLeadingButtonBack(CountryCubit countryCubit) {
+    return (widget.isHasBackButton ?? false)
+        ? GestureDetector(
+            onTap: () {
+              countryCubit.resetValueTempCountryCodeSelected();
+              Navigator.of(context).pop();
+            },
+            child: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Colors.black,
+              size: 24,
+            ),
+          )
+        : null;
+  }
+
+  Widget _buildTitleAppBar(CountryCubit countryCubit) {
+    return BlocConsumer<CountryCubit, CountryState>(
+      listenWhen: (previous, current) => current is CurrentCountryCodeSelected,
+      listener: (context, state) => state is CurrentCountryCodeSelected
+          ? context
+              .read<LanguageLoadCubit>()
+              .loadAllLanguageStatic(state.countryCode)
+          : null,
+      buildWhen: (previous, current) => current is CurrentCountryCodeSelected,
+      builder: (context, state) {
+        return BlocConsumer<LanguageLoadCubit, LanguageLoadState>(
+          listenWhen: (previous, current) =>
+              current is LanguageLoadSuccess ||
+              current is LanguageLoadInProgress,
+          listener: (context, state) async {
+            if (state is LanguageLoadInProgress) {
+              await FunctionsAlertDialog.showLoadingDialog(context);
+            } else {
+              Navigator.of(context).pop();
+            }
+          },
+          buildWhen: (previous, current) => current is LanguageLoadSuccess,
+          builder: (context, state) {
+            return Text(
+              Helper.getTextTranslated(
+                'countryScreenTitle',
+                _getCurrentLanguageCode(countryCubit),
+                previousLanguageCode: countryCubit.previousLanguageCodeSelected,
+              ),
+              style: const TextStyle(color: Colors.black, fontSize: 24),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildButtonActionAppBar(CountryCubit countryCubit) {
+    return Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 16),
+        child: BlocBuilder<CountryCubit, CountryState>(
+          buildWhen: (previous, current) =>
+              current is CurrentCountryCodeSelected ||
+              current is TemporaryCountryCodeSelected,
+          builder: (context, state) {
+            final isShowButtonAction = countryCubit
+                .checkAllowShowButtonAction(widget.isHasBackButton ?? false);
+            final currentCountryCode = state is TemporaryCountryCodeSelected
+                ? state.countryCode
+                : countryCubit.tempCountryCodeSelected;
+            return isShowButtonAction
+                ? GestureDetector(
+                    onTap: () async =>
+                        countryCubit.checkNeedConfirmSelectCountry()
+                            ? await _showConfirmDialogSelectCountry()
+                            : Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatScreen(
+                                    currentCountryCode: currentCountryCode,
+                                    currentLanguageCode: countryCubit
+                                        .currentLanguageCodeSelected,
+                                  ),
+                                ),
+                              ),
+                    child: Text(
+                      countryCubit.checkNeedConfirmSelectCountry()
+                          ? Helper.getTextTranslated(
+                              'buttonSelectTitle',
+                              _getCurrentLanguageCode(countryCubit),
+                              previousLanguageCode:
+                                  countryCubit.previousLanguageCodeSelected,
+                            )
+                          : Helper.getTextTranslated(
+                              'buttonGoTitle',
+                              _getCurrentLanguageCode(countryCubit),
+                              previousLanguageCode:
+                                  countryCubit.previousLanguageCodeSelected,
+                            ),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                    ),
+                  )
+                : const SizedBox();
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListCountry(CountryCubit countryCubit) {
+    return BlocBuilder<CountryCubit, CountryState>(
+      buildWhen: (previous, current) =>
+          current is CurrentCountryCodeSelected ||
+          current is TemporaryCountryCodeSelected,
+      builder: (context, state) {
+        final countryCodeSelected = countryCubit.currentCountryCodeSelected;
+        final tempCountryCodeSelected = countryCubit.tempCountryCodeSelected;
+        return ScrollablePositionedList.builder(
+          itemScrollController: _scrollController,
+          itemCount: Constants.countries.length - 1,
+          itemBuilder: (_, index) {
+            final countryCode = Constants.countries[index]['country_code'];
+            final countryName = Constants.countries[index]['name'];
+            final isSelected = countryCode == countryCodeSelected;
+            final isSelectedTemp = countryCode == tempCountryCodeSelected;
+            return GestureDetector(
+              onTap: () => context.read<CountryCubit>().selectCountry(
+                    countryCode,
+                  ),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    width: 2,
+                    color: isSelected
+                        ? Colors.green
+                        : isSelectedTemp
+                            ? Colors.brown
+                            : Colors.grey.withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    CountryFlag.fromCountryCode(
+                      countryCode,
+                      shape: const Circle(),
+                      width: 32,
+                      height: 32,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        countryName,
+                        style: TextStyle(
+                          color: isSelected || isSelectedTemp
+                              ? Colors.black
+                              : Colors.black54,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    if (isSelected)
+                      const Icon(
+                        Icons.check_circle,
+                        size: 24,
+                        color: Colors.green,
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

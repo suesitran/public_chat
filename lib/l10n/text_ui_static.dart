@@ -31,10 +31,10 @@ class TextsUIStatic {
       'en': 'Countries',
     },
     'notificationTitle': {
-      'en': 'Logout',
+      'en': 'Notification',
     },
-    'ConfirmTitle': {
-      'en': 'Logout',
+    'confirmTitle': {
+      'en': 'Confirm',
     },
     'noticeSelectCountryText': {
       'en': 'Select country or use country default to use app',
@@ -43,7 +43,7 @@ class TextsUIStatic {
       'en': 'Are you sure you want to use language of',
     },
     'buttonCloseTitle': {
-      'en': 'Logout',
+      'en': 'Close',
     },
     'buttonOKTitle': {
       'en': 'OK',

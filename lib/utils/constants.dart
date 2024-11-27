@@ -1,8 +1,6 @@
 class Constants {
   static const String prefCurrentCountryCode = 'current_country_code_selected';
 
-  static const String textSplitListTextTranslate = '****';
-
   static const int lengthBatchUpdateTranslateMessage = 500;
 
   static const List<Map<String, dynamic>> countries = [

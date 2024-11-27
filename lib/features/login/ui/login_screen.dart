@@ -5,7 +5,7 @@ import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
-import 'package:public_chat/utils/locale_support.dart';
+import 'package:public_chat/utils/helper.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({
@@ -33,7 +33,10 @@ class LoginScreen extends StatelessWidget {
         if (state is LoginSuccess && context.mounted) {
           FunctionsAlertDialog.showAlertFlushBar(
             context,
-            'Login successfully',
+            Helper.getTextTranslated(
+              'loginSuccessMessage',
+              currentLanguageCode,
+            ),
             true,
           );
           Navigator.pushReplacement(
@@ -55,7 +58,10 @@ class LoginScreen extends StatelessWidget {
         if (state is LoginFailed && context.mounted) {
           FunctionsAlertDialog.showAlertFlushBar(
             context,
-            'Login failed. Try again',
+            Helper.getTextTranslated(
+              'loginFailMessage',
+              currentLanguageCode,
+            ),
             false,
           );
         }
@@ -63,7 +69,10 @@ class LoginScreen extends StatelessWidget {
       child: Scaffold(
         body: Center(
           child: buildSignInButton(
-            label: context.locale.login,
+            label: Helper.getTextTranslated(
+              'loginTitle',
+              currentLanguageCode,
+            ),
             onPressed: () => context.read<LoginCubit>().requestLogin(),
           ),
         ),

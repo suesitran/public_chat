@@ -27,19 +27,19 @@ class LoginCubit extends Cubit<LoginState> {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   late final StreamSubscription userSubscription;
 
-  void requestLogin() async {
+  Future<void> requestLogin() async {
     emitSafely(LoginLoading());
     GoogleSignInAccount? googleUser;
     try {
       googleUser = await googleSignIn.signIn();
     } on PlatformException catch (e) {
       emitSafely(LoginFailed(e.toString()));
-      return null;
+      return;
     }
 
     if (googleUser == null) {
       emitSafely(const LoginFailed('User cancelled'));
-      return null;
+      return;
     }
 
     await _authenticateToFirebase(googleUser);

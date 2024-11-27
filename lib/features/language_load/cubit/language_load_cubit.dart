@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/l10n/text_ui_static.dart';
+import 'package:public_chat/repository/database.dart';
 import 'package:public_chat/service_locator/service_locator.dart';
+import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,15 +30,17 @@ class LanguageLoadCubit extends Cubit<LanguageLoadState> {
     List<String> listTextLanguageDefault,
   ) async {
     final translator = ServiceLocator.instance.get<GoogleTranslator>();
+    List<String> listTextTranslated = [];
     try {
-      print(DateTime.now().toString());
-      Translation translation = await translator.translate(
-        listTextLanguageDefault.join(Constants.textSplitListTextTranslate),
-        from: 'en',
-        to: languageCode,
-      );
-      print(DateTime.now().toString());
-      return translation.text.split(Constants.textSplitListTextTranslate);
+      await Future.forEach(listTextLanguageDefault, (text) async {
+        Translation translation = await translator.translate(
+          text,
+          from: 'en',
+          to: languageCode,
+        );
+        listTextTranslated.add(translation.text);
+      });
+      return listTextTranslated;
     } catch (e) {
       return null;
     }
@@ -50,17 +54,45 @@ class LanguageLoadCubit extends Cubit<LanguageLoadState> {
       languageCode,
       _getListTextLanguageDefault(listTextStatic),
     );
-    if (listTextTranslated != null &&
-        listTextTranslated.length == listTextStatic.keys.length) {
+    if (listTextTranslated.isNotNullAndNotEmpty) {
       Map<String, Map<String, String>> listTextConverted = listTextStatic;
       for (int i = 0; i < listTextStatic.keys.length; i++) {
         String key = listTextStatic.keys.toList()[i];
-        listTextConverted[key]![languageCode] = listTextTranslated[i];
+        listTextConverted[key]![languageCode] =
+            i <= listTextTranslated!.length - 1
+                ? listTextTranslated[i]
+                : listTextConverted[key]!['en']!;
       }
       return listTextConverted;
-    } else {
-      return listTextStatic;
     }
+    return listTextStatic;
+  }
+
+  FutureOr<void> _translateAllTextStatic(
+    String currentCountryCode,
+    String currentLanguageCode,
+  ) async {
+    if (currentCountryCode.isNotEmpty &&
+        currentCountryCode.toUpperCase() != 'US') {
+      final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>();
+
+      // Check no has language code in value text static => translate
+      if (!textsUIStatic.texts.values.first.keys
+          .contains(currentLanguageCode)) {
+        Map<String, Map<String, String>> textsTranslated =
+            await _matchListTextTranslated(
+          currentLanguageCode,
+          textsUIStatic.texts,
+        );
+        textsUIStatic.setTexts = textsTranslated;
+      }
+    }
+  }
+
+  Future<void> _translateAllChatMessage(String currentLanguageCode) async {
+    await ServiceLocator.instance
+        .get<Database>()
+        .translateMessageByCurrentLanguageCode(currentLanguageCode);
   }
 
   // Check has country code in local and != "US" => translate by language code
@@ -74,24 +106,17 @@ class LanguageLoadCubit extends Cubit<LanguageLoadState> {
             .get(Constants.prefCurrentCountryCode)
             ?.toString() ??
         (countryCodeDevice ?? '');
-    String currentLanguageCode = '';
-    if (currentCountryCode.isNotEmpty &&
-        currentCountryCode.toUpperCase() != 'US') {
-      final textsUIStatic = ServiceLocator.instance.get<TextsUIStatic>();
-      // Get language code from list country
-      currentLanguageCode =
-          Helper.getLanguageCodeByCountryCode(currentCountryCode);
+    String currentLanguageCode =
+        Helper.getLanguageCodeByCountryCode(currentCountryCode);
 
-      Map<String, Map<String, String>> textsTranslated =
-          await _matchListTextTranslated(
-        currentLanguageCode,
-        textsUIStatic.texts,
-      );
+    await _translateAllTextStatic(currentCountryCode, currentLanguageCode);
+    await _translateAllChatMessage(currentLanguageCode);
 
-      textsUIStatic.setTexts = textsTranslated;
-    }
-    emit(LanguageLoadSuccess(
+    emit(
+      LanguageLoadSuccess(
         countryCodeSelected: currentCountryCode,
-        languageCodeSelected: currentLanguageCode));
+        languageCodeSelected: currentLanguageCode,
+      ),
+    );
   }
 }

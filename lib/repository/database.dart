@@ -24,39 +24,43 @@ final class Database {
     CollectionReference collectionRef =
         FirebaseFirestore.instance.collection(_publicRoom);
     QuerySnapshot querySnapshot = await collectionRef.get();
+    if (querySnapshot.docs.isNotEmpty) {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
 
-    WriteBatch batch = FirebaseFirestore.instance.batch();
+      int batchLength = 0;
+      await Future.forEach(querySnapshot.docs, (doc) async {
+        Map<String, dynamic> translated =
+            (doc.data() as Map<String, dynamic>)['translated'];
 
-    int batchLength = 0;
-    await Future.forEach(querySnapshot.docs, (doc) async {
-      Map<String, String> translated =
-          (doc.data() as Map<String, dynamic>)['translated'];
-      if (!translated.keys.contains(languageCode)) {
-        final translator = ServiceLocator.instance.get<GoogleTranslator>();
-        late Translation messageTranslated;
-        if (translated.keys.contains('en')) {
-          messageTranslated = await translator.translate(
-            translated['en']!,
-            from: 'en',
-            to: languageCode,
-          );
-        } else {
-          messageTranslated = await translator.translate(
-            translated.values.first,
-            from: translated.keys.first,
-            to: languageCode,
-          );
+        if (!translated.keys.contains(languageCode)) {
+          final translator = ServiceLocator.instance.get<GoogleTranslator>();
+          late Translation messageTranslated;
+
+          if (translated.keys.contains('en')) {
+            messageTranslated = await translator.translate(
+              translated['en']!,
+              from: 'en',
+              to: languageCode,
+            );
+          } else {
+            messageTranslated = await translator.translate(
+              translated.values.first,
+              from: translated.keys.first,
+              to: languageCode,
+            );
+          }
+
+          translated[languageCode] = messageTranslated.text;
+          batch.update(doc.reference, {'translated': translated});
+          batchLength++;
         }
-        translated[languageCode] = messageTranslated.text;
-        batch.update(doc.reference, {'translated': translated});
-        batchLength++;
-      }
-      if (batchLength == Constants.lengthBatchUpdateTranslateMessage) {
-        await batch.commit();
-        batch = FirebaseFirestore.instance.batch();
-      }
-    });
-    await batch.commit();
+        if (batchLength == Constants.lengthBatchUpdateTranslateMessage) {
+          await batch.commit();
+          batch = FirebaseFirestore.instance.batch();
+        }
+      });
+      await batch.commit();
+    }
   }
 
   void writePublicMessage(Message message) {
