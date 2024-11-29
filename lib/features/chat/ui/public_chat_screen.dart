@@ -57,11 +57,14 @@ class PublicChatScreen extends StatelessWidget {
                               }
 
                               return ChatBubble(
-                                  isMine: message.sender == user?.uid,
-                                  message: message.message,
-                                  photoUrl: photoUrl,
-                                  displayName: displayName,
-                                  translations: message.translations);
+                                messageId: doc.id,
+                                isMine: message.sender == user?.uid,
+                                message: message.message,
+                                photoUrl: photoUrl,
+                                displayName: displayName,
+                                translationsNoStream:
+                                    message.translationsNoStream,
+                              );
                             },
                           ),
                         );
@@ -79,13 +82,13 @@ class PublicChatScreen extends StatelessWidget {
               ),
               MessageBox(
                 onSendMessage: (value) {
-                  // if (user == null) {
-                  //   // do nothing
-                  //   return;
-                  // }//TODO
-                  FirebaseFirestore.instance.collection('public').add(
-                      Message(sender: user?.uid ?? 'uid', message: value)
-                          .toMap());
+                  if (user == null) {
+                    // do nothing
+                    return;
+                  }
+                  FirebaseFirestore.instance
+                      .collection('public')
+                      .add(Message(sender: user.uid, message: value).toMap());
                 },
               )
             ],

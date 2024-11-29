@@ -27,7 +27,7 @@ class EnableTranslateState extends TranslateMessageState {
     required this.selectedLanguages,
   });
   @override
-  List<Object?> get props => [selectedLanguages, selectedLanguages.length];
+  List<Object?> get props => [selectedLanguages, selectedLanguages.length, ...selectedLanguages];
 
   EnableTranslateState copyWith({
     List<String>? selectedLanguages,

@@ -3,29 +3,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_network/image_network.dart';
 import 'package:public_chat/features/translate_message/bloc/translate_message_bloc.dart';
 import 'package:public_chat/features/translate_message/widgets/translation_widget.dart';
-import '../data/chat_data.dart';
+import 'package:public_chat/repository/database.dart';
+import 'package:public_chat/service_locator/service_locator.dart';
 
 class ChatBubble extends StatelessWidget {
   final bool isMine;
   final String message;
   final String? photoUrl;
   final String? displayName;
-  final List<TranslationModel> translations;
-
+  final String? translationsNoStream;
+  final String messageId;
   const ChatBubble({
+    required this.messageId,
     required this.isMine,
     required this.message,
     required this.photoUrl,
     required this.displayName,
-    this.translations = const [],
+    required this.translationsNoStream,
     super.key,
   });
 
   final double _iconSize = 24.0;
+
   @override
   Widget build(BuildContext context) {
     // user avatar
-    final List<Widget> widgets = []; //cp at here
+    final List<Widget> widgets = [];
     widgets.add(Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipRRect(
@@ -53,7 +56,8 @@ class ChatBubble extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<TranslateMessageBloc, TranslateMessageState>(
             buildWhen: (previous, current) =>
-                current is EnableTranslateState ||
+                (current is EnableTranslateState &&
+                    previous.props != current.props) ||
                 current is DisableTranslateState,
             builder: (context, state) {
               return Column(
@@ -79,9 +83,12 @@ class ChatBubble extends StatelessWidget {
                   ),
                   if (state is EnableTranslateState)
                     TranslationsWidget(
-                      translations:
-                          buildTranslations(state.props[0] as List<String>),
-                      widget: this,
+                      translationsNoStream: translationsNoStream,
+                      subscription: ServiceLocator.instance
+                          .get<Database>()
+                          .getTranslationStream(messageId),
+                      isMine: isMine,
+                      selectedLanguages: state.props[0] as List<String>,
                     )
                 ],
               );
@@ -96,14 +103,6 @@ class ChatBubble extends StatelessWidget {
         children: isMine ? widgets.reversed.toList() : widgets,
       ),
     );
-  }
-
-  List<TranslationModel> buildTranslations(List<String> selectedLanguages) {
-    return translations
-        .where((translation) => selectedLanguages.any(
-            (lang) => translation.languageNames.contains(lang.toLowerCase())))
-        .toSet()
-        .toList();
   }
 }
 

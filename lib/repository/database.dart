@@ -57,16 +57,48 @@ final class Database {
         .snapshots();
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> getTranslationStream(
+      String messageId) {
+    return FirebaseFirestore.instance
+        .collection('public')
+        .doc(messageId)
+        .collection('translations')
+        .orderBy('index')
+        .snapshots();
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getTranslationNoStream(
+      String messageId) {
+    return FirebaseFirestore.instance
+        .collection('public')
+        .doc(messageId)
+        .collection('translations_nostream')
+        .get();
+  }
+  Future<bool> checkTranslationNoStreamExists(String messageId) async {
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('public')
+        .doc(messageId)
+        .get(); // Lấy tài liệu chính
+
+    // Kiểm tra xem tài liệu có tồn tại và trường translations_nostream có giá trị không
+    if (docSnapshot.exists) {
+        final translationsNoStream = docSnapshot.data()?['translations_nostream'];
+        return translationsNoStream != null && translationsNoStream is String && translationsNoStream.isNotEmpty;
+    }
+    return false; // Tài liệu không tồn tại
+}
+
   void addLanguage(List<String> languages) async {
     final collection = FirebaseFirestore.instance.collection(_languageList);
-    for (var language in languages) {
+    // collection.add({'language_list': languages});
+    // for (var language in languages) {
       final existingLanguage =
-          await collection.where('language', isEqualTo: language).get();
-
+          await collection.where('language_list', isEqualTo: languages).get();
       if (existingLanguage.docs.isEmpty) {
-        collection.add({'language': language});
+        collection.add({'language_list': languages});
       }
-    }
+    // }
   }
 
   /// ###############################################################

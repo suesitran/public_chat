@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const keyCurrentSelectedLanguages = 'current_selected_languages';
-String deviceLocale = kIsWeb ? 'english' : Platform.localeName;
+String deviceLocale = kIsWeb ? 'viet nam' : Platform.localeName;
 String defaultLanguageCode = 'en';
 
 class LocalSharedData {
