@@ -16,7 +16,6 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
-  hydrated_bloc: ^9.1.5
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^2.0.10+1
@@ -26,7 +25,6 @@ dependencies:
   google_sign_in_web: ^0.12.4+2
   image_network: ^2.5.6
   intl: ^0.18.0
-  path_provider: ^2.1.4
   dropdown_button2: ^2.3.9
   another_flushbar: ^1.12.30
   flutter_spinkit: ^5.2.1

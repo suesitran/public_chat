@@ -8,16 +8,16 @@ import 'package:translator/translator.dart';
 class ServiceLocator {
   static ServiceLocator instance = ServiceLocator._();
 
-  final GetIt _getIt = GetIt.asNewInstance();
-
   ServiceLocator._();
 
+  final GetIt _getIt = GetIt.asNewInstance();
+
   Future<void> initialise() async {
-    registerSingletonIfNeeded(GenAiModel());
-    registerSingletonIfNeeded(GoogleTranslator());
+    registerFactoryIfNeeded(GenAiModel());
+    registerFactoryIfNeeded(GoogleTranslator());
     registerSingletonIfNeeded(TextsUIStatic());
     registerSingletonIfNeeded(Database.instance);
-    await _registerSharePreference();
+    registerSingletonAsyncIfNeeded(SharedPreferences.getInstance());
   }
 
   void registerSingletonIfNeeded<T extends Object>(T instance) {
@@ -26,9 +26,16 @@ class ServiceLocator {
     }
   }
 
-  Future<void> _registerSharePreference() async {
-    final pref = await SharedPreferences.getInstance();
-    _getIt.registerSingleton(pref);
+  void registerSingletonAsyncIfNeeded<T extends Object>(T instance) {
+    if (!_getIt.isRegistered<T>()) {
+      _getIt.registerSingletonAsync<T>(() async => Future(() => instance));
+    }
+  }
+
+  void registerFactoryIfNeeded<T extends Object>(T instance) {
+    if (!_getIt.isRegistered<T>()) {
+      _getIt.registerFactory(() => instance);
+    }
   }
 
   void reset() => _getIt.reset();
