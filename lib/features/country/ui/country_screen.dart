@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/cubit/country_cubit.dart';
 import 'package:public_chat/features/language_load/language_load.dart';
+import 'package:public_chat/utils/app_extensions.dart';
 import 'package:public_chat/utils/constants.dart';
 import 'package:public_chat/utils/functions_alert_dialog.dart';
 import 'package:public_chat/utils/helper.dart';
@@ -127,6 +128,7 @@ class _CountryScreenState extends State<CountryScreen> {
         backgroundColor: Colors.white,
         elevation: 0.5,
         leading: _buildLeadingButtonBack(countryCubit),
+        centerTitle: true,
         title: _buildTitleAppBar(countryCubit),
         actions: [_buildButtonActionAppBar(countryCubit)],
       ),
@@ -204,9 +206,10 @@ class _CountryScreenState extends State<CountryScreen> {
           builder: (context, state) {
             final isShowButtonAction = countryCubit
                 .checkAllowShowButtonAction(widget.isHasBackButton ?? false);
-            final currentCountryCode = state is TemporaryCountryCodeSelected
+            final currentCountryCode = state is TemporaryCountryCodeSelected &&
+                    state.countryCode.isNotNullAndNotEmpty
                 ? state.countryCode
-                : countryCubit.tempCountryCodeSelected;
+                : countryCubit.currentCountryCodeSelected;
             return isShowButtonAction
                 ? GestureDetector(
                     onTap: () async =>
@@ -222,24 +225,30 @@ class _CountryScreenState extends State<CountryScreen> {
                                   ),
                                 ),
                               ),
-                    child: Text(
-                      countryCubit.checkNeedConfirmSelectCountry()
-                          ? Helper.getTextTranslated(
-                              'buttonSelectTitle',
-                              _getCurrentLanguageCode(countryCubit),
-                              previousLanguageCode:
-                                  countryCubit.previousLanguageCodeSelected,
-                            )
-                          : Helper.getTextTranslated(
-                              'buttonGoTitle',
-                              _getCurrentLanguageCode(countryCubit),
-                              previousLanguageCode:
-                                  countryCubit.previousLanguageCodeSelected,
-                            ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                      ),
+                    child: BlocBuilder<LanguageLoadCubit, LanguageLoadState>(
+                      buildWhen: (previous, current) =>
+                          current is LanguageLoadSuccess,
+                      builder: (context, state) {
+                        return Text(
+                          countryCubit.checkNeedConfirmSelectCountry()
+                              ? Helper.getTextTranslated(
+                                  'buttonSelectTitle',
+                                  _getCurrentLanguageCode(countryCubit),
+                                  previousLanguageCode:
+                                      countryCubit.previousLanguageCodeSelected,
+                                )
+                              : Helper.getTextTranslated(
+                                  'buttonGoTitle',
+                                  _getCurrentLanguageCode(countryCubit),
+                                  previousLanguageCode:
+                                      countryCubit.previousLanguageCodeSelected,
+                                ),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        );
+                      },
                     ),
                   )
                 : const SizedBox();

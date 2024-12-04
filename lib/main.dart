@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/features/chat/chat.dart';
@@ -35,41 +36,43 @@ class MainApp extends StatelessWidget {
         BlocProvider<ChatCubit>(create: (context) => ChatCubit()),
         BlocProvider<CountryCubit>(create: (context) => CountryCubit()),
       ],
-      child: MaterialApp(
-        theme: ThemeData(useMaterial3: false),
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const LanguageLoadScreen(),
-        builder: (_, child) {
-          ErrorWidget.builder = (_) {
-            return Container(
-              color: Colors.white,
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, color: Colors.red, size: 100),
-                  SizedBox(height: 8),
-                  Text(
-                    'Error, Please try again!',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      decoration: TextDecoration.none,
+      child: KeyboardDismissOnTap(
+        child: MaterialApp(
+          theme: ThemeData(useMaterial3: false),
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const LanguageLoadScreen(),
+          builder: (_, child) {
+            ErrorWidget.builder = (_) {
+              return Container(
+                color: Colors.white,
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.red, size: 100),
+                    SizedBox(height: 8),
+                    Text(
+                      'Error, Please try again!',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.none,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          };
-          return child!;
-        },
+                  ],
+                ),
+              );
+            };
+            return child!;
+          },
+        ),
       ),
     );
   }

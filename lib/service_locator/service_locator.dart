@@ -17,7 +17,7 @@ class ServiceLocator {
     registerFactoryIfNeeded(GoogleTranslator());
     registerSingletonIfNeeded(TextsUIStatic());
     registerSingletonIfNeeded(Database.instance);
-    registerSingletonAsyncIfNeeded(SharedPreferences.getInstance());
+    await _registerSharePreference();
   }
 
   void registerSingletonIfNeeded<T extends Object>(T instance) {
@@ -26,15 +26,16 @@ class ServiceLocator {
     }
   }
 
-  void registerSingletonAsyncIfNeeded<T extends Object>(T instance) {
-    if (!_getIt.isRegistered<T>()) {
-      _getIt.registerSingletonAsync<T>(() async => Future(() => instance));
-    }
-  }
-
   void registerFactoryIfNeeded<T extends Object>(T instance) {
     if (!_getIt.isRegistered<T>()) {
       _getIt.registerFactory(() => instance);
+    }
+  }
+
+  Future<void> _registerSharePreference() async {
+    if (!_getIt.isRegistered<SharedPreferences>()) {
+      final pref = await SharedPreferences.getInstance();
+      _getIt.registerSingleton(pref);
     }
   }
 

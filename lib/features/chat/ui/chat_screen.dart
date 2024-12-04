@@ -100,32 +100,30 @@ class _ChatScreenState extends State<ChatScreen> {
           );
         }
       },
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0.5,
-            leading: _buildLeadingCountryFlag(chatCubit),
-            title: _buildTitleAppBar(chatCubit),
-            actions: [_buildButtonActionDropDown(chatCubit)],
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                _buildListMessage(chatCubit),
-                MessageBox(
-                  onSendMessage: (value) {
-                    final User? user = FirebaseAuth.instance.currentUser;
-                    if (user == null || value.trim().isEmpty) {
-                      // do nothing
-                      return;
-                    }
-                    chatCubit.sendChat(uid: user.uid, message: value);
-                  },
-                )
-              ],
-            ),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0.5,
+          leading: _buildLeadingCountryFlag(chatCubit),
+          centerTitle: true,
+          title: _buildTitleAppBar(chatCubit),
+          actions: [_buildButtonActionDropDown(chatCubit)],
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildListMessage(chatCubit),
+              MessageBox(
+                onSendMessage: (value) {
+                  final User? user = FirebaseAuth.instance.currentUser;
+                  if (user == null || value.trim().isEmpty) {
+                    // do nothing
+                    return;
+                  }
+                  chatCubit.sendChat(uid: user.uid, message: value);
+                },
+              )
+            ],
           ),
         ),
       ),
