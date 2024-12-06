@@ -163,7 +163,7 @@ class _CountryScreenState extends State<CountryScreen> {
       listener: (context, state) => state is CurrentCountryCodeSelected
           ? context
               .read<LanguageLoadCubit>()
-              .loadAllLanguageStatic(state.countryCode)
+              .translateAllTextStaticAndChatMessage(state.countryCode)
           : null,
       buildWhen: (previous, current) => current is CurrentCountryCodeSelected,
       builder: (context, state) {

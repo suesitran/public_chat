@@ -54,6 +54,9 @@ class TextsUIStatic {
     'buttonGoTitle': {
       'en': 'Go',
     },
+    'widgetErrorTitle': {
+      'en': 'Error, Please try again!',
+    },
   };
 
   Map<String, Map<String, String>> get texts => _text;

@@ -22,7 +22,7 @@ class CountryCubit extends Cubit<CountryState> {
     emit(CurrentCountryCodeSelected(countryCode: currentCountryCodeSelected));
   }
 
-  Future<void> selectCountry(String countryCode) async {
+  void selectCountry(String countryCode) {
     tempCountryCodeSelected = countryCode;
     emit(TemporaryCountryCodeSelected(countryCode: tempCountryCodeSelected));
   }

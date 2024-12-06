@@ -98,7 +98,8 @@ class LanguageLoadCubit extends Cubit<LanguageLoadState> {
   // Check has country code in local and != "US" => translate by language code
   // Opposite use text with country code device
   // country code device == null => use language code == default
-  Future<void> loadAllLanguageStatic(String? countryCodeDevice) async {
+  Future<void> translateAllTextStaticAndChatMessage(
+      String? countryCodeDevice) async {
     emit(LanguageLoadInProgress());
     // Order of priority : local > device > ''
     String currentCountryCode = ServiceLocator.instance

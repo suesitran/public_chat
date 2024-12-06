@@ -17,6 +17,43 @@ class LoginScreen extends StatelessWidget {
   final String currentCountryCode;
   final String currentLanguageCode;
 
+  void _handleActionLoginSuccess(BuildContext context) {
+    FunctionsAlertDialog.showAlertFlushBar(
+      context,
+      Helper.getTextTranslated(
+        'loginSuccessMessage',
+        currentLanguageCode,
+      ),
+      true,
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            context.read<LoginCubit>().checkCountryCodeLocalExisted()
+                ? ChatScreen(
+                    currentCountryCode: currentCountryCode,
+                    currentLanguageCode: currentLanguageCode,
+                  )
+                : CountryScreen(
+                    currentCountryCode: currentCountryCode,
+                    currentLanguageCode: currentLanguageCode,
+                  ),
+      ),
+    );
+  }
+
+  void _handleActionLoginFailure(BuildContext context) {
+    FunctionsAlertDialog.showAlertFlushBar(
+      context,
+      Helper.getTextTranslated(
+        'loginFailMessage',
+        currentLanguageCode,
+      ),
+      false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
@@ -31,39 +68,10 @@ class LoginScreen extends StatelessWidget {
           Navigator.of(context).pop();
         }
         if (state is LoginSuccess && context.mounted) {
-          FunctionsAlertDialog.showAlertFlushBar(
-            context,
-            Helper.getTextTranslated(
-              'loginSuccessMessage',
-              currentLanguageCode,
-            ),
-            true,
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  context.read<LoginCubit>().checkCountryCodeLocalExisted()
-                      ? ChatScreen(
-                          currentCountryCode: currentCountryCode,
-                          currentLanguageCode: currentLanguageCode,
-                        )
-                      : CountryScreen(
-                          currentCountryCode: currentCountryCode,
-                          currentLanguageCode: currentLanguageCode,
-                        ),
-            ),
-          );
+          _handleActionLoginSuccess(context);
         }
         if (state is LoginFailed && context.mounted) {
-          FunctionsAlertDialog.showAlertFlushBar(
-            context,
-            Helper.getTextTranslated(
-              'loginFailMessage',
-              currentLanguageCode,
-            ),
-            false,
-          );
+          _handleActionLoginFailure(context);
         }
       },
       child: Scaffold(

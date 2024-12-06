@@ -19,7 +19,7 @@ class _LanguageLoadScreenState extends State<LanguageLoadScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<LanguageLoadCubit>().loadAllLanguageStatic(
+      context.read<LanguageLoadCubit>().translateAllTextStaticAndChatMessage(
           WidgetsBinding.instance.platformDispatcher.locale.countryCode);
     });
     super.initState();
