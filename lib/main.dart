@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/features/chat/chat.dart';
 import 'package:public_chat/features/country/country.dart';
 import 'package:public_chat/features/genai_setting/bloc/genai_bloc.dart';
@@ -31,7 +30,6 @@ class MainApp extends StatelessWidget {
           create: (context) => LanguageLoadCubit(),
         ),
         BlocProvider<LoginCubit>(create: (context) => LoginCubit()),
-        BlocProvider<UserManagerCubit>(create: (context) => UserManagerCubit()),
         BlocProvider<GenaiBloc>(create: (context) => GenaiBloc()),
         BlocProvider<ChatCubit>(create: (context) => ChatCubit()),
         BlocProvider<CountryCubit>(create: (context) => CountryCubit()),

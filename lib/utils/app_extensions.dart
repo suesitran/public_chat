@@ -6,7 +6,7 @@ import 'package:public_chat/service_locator/service_locator.dart';
 extension UserPhotoUrl on Message {
   Future<UserDetail?> get userDetail async {
     final DocumentSnapshot<UserDetail> snapshot =
-        await ServiceLocator.instance.get<Database>().getUser(sender);
+        await ServiceLocator.instance.get<Database>().getUser(senderId);
 
     if (!snapshot.exists) {
       return null;

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/repository/database.dart';
@@ -30,10 +31,12 @@ class ChatCubit extends Cubit<ChatState> {
             toFireStore: (value, options) => value.toMap(),
           );
 
-  void sendChat({required String uid, required String message}) {
+  void sendChat({required User user, required String message}) {
     ServiceLocator.instance.get<Database>().writePublicMessage(
           Message(
-            sender: uid,
+            senderId: user.uid,
+            senderDisplayName: user.displayName ?? '',
+            senderPhotoUrl: user.photoURL,
             translations: {currentLanguageCodeSelected: message},
           ),
         );

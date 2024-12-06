@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/_shared/bloc/user_manager/user_manager_cubit.dart';
 import 'package:public_chat/_shared/data/chat_data.dart';
 import 'package:public_chat/_shared/widgets/chat_bubble_widget.dart';
 import 'package:public_chat/_shared/widgets/message_box_widget.dart';
@@ -55,6 +54,37 @@ class _ChatScreenState extends State<ChatScreen> {
         : widget.currentLanguageCode;
   }
 
+  void _handleActionLogoutSuccess(ChatCubit chatCubit) {
+    FunctionsAlertDialog.showAlertFlushBar(
+      context,
+      Helper.getTextTranslated(
+        'logoutSuccessMessage',
+        _getCurrentLanguageCode(chatCubit),
+      ),
+      true,
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LoginScreen(
+          currentCountryCode: _getCurrentCountryCode(chatCubit),
+          currentLanguageCode: _getCurrentLanguageCode(chatCubit),
+        ),
+      ),
+    );
+  }
+
+  void _handleActionLogoutFailure(ChatCubit chatCubit) {
+    FunctionsAlertDialog.showAlertFlushBar(
+      context,
+      Helper.getTextTranslated(
+        'logoutFailMessage',
+        _getCurrentLanguageCode(chatCubit),
+      ),
+      false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatCubit = context.read<ChatCubit>();
@@ -71,33 +101,10 @@ class _ChatScreenState extends State<ChatScreen> {
           Navigator.of(context).pop();
         }
         if (state is LogoutSuccess && context.mounted) {
-          FunctionsAlertDialog.showAlertFlushBar(
-            context,
-            Helper.getTextTranslated(
-              'logoutSuccessMessage',
-              _getCurrentLanguageCode(chatCubit),
-            ),
-            true,
-          );
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LoginScreen(
-                currentCountryCode: _getCurrentCountryCode(chatCubit),
-                currentLanguageCode: _getCurrentLanguageCode(chatCubit),
-              ),
-            ),
-          );
+          _handleActionLogoutSuccess(chatCubit);
         }
         if (state is LogoutFailed && context.mounted) {
-          FunctionsAlertDialog.showAlertFlushBar(
-            context,
-            Helper.getTextTranslated(
-              'logoutFailMessage',
-              _getCurrentLanguageCode(chatCubit),
-            ),
-            false,
-          );
+          _handleActionLogoutFailure(chatCubit);
         }
       },
       child: Scaffold(
@@ -113,16 +120,7 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Column(
             children: [
               _buildListMessage(chatCubit),
-              MessageBox(
-                onSendMessage: (value) {
-                  final User? user = FirebaseAuth.instance.currentUser;
-                  if (user == null || value.trim().isEmpty) {
-                    // do nothing
-                    return;
-                  }
-                  chatCubit.sendChat(uid: user.uid, message: value);
-                },
-              )
+              _buildMessageBox(chatCubit),
             ],
           ),
         ),
@@ -286,30 +284,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     return const SizedBox.shrink();
                   }
                   final message = doc.data();
-                  if (message.sender.isNotEmpty) {
-                    context
-                        .read<UserManagerCubit>()
-                        .queryUserDetail(message.sender);
-                    return BlocBuilder<UserManagerCubit, UserManagerState>(
-                      builder: (context, state) {
-                        String? photoUrl;
-                        String? displayName;
-
-                        if (state is UserDetailState) {
-                          photoUrl = state.photoUrl;
-                          displayName = state.displayName;
-                        }
-
-                        return ChatBubble(
-                          isMine: message.sender == user?.uid,
-                          message: chatCubit.getMessageTranslated(message),
-                          photoUrl: photoUrl,
-                          displayName: displayName,
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox.shrink();
+                  return ChatBubble(
+                    isMine: message.senderId == user?.uid,
+                    message: chatCubit.getMessageTranslated(message),
+                    photoUrl: message.senderPhotoUrl,
+                    displayName: message.senderDisplayName,
+                  );
                 },
                 emptyBuilder: (context) => Center(
                   child: BlocBuilder<LanguageLoadCubit, LanguageLoadState>(
@@ -336,6 +316,19 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildMessageBox(ChatCubit chatCubit) {
+    final User? user = FirebaseAuth.instance.currentUser;
+    return MessageBox(
+      onSendMessage: (value) {
+        if (user == null || value.trim().isEmpty) {
+          // do nothing
+          return;
+        }
+        chatCubit.sendChat(user: user, message: value);
       },
     );
   }
