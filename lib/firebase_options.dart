@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '680152053567',
     projectId: 'select-languages',
     storageBucket: 'select-languages.firebasestorage.app',
-    androidClientId: '680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com',
-    iosClientId: '680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com',
+    androidClientId:
+        '680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com',
+    iosClientId:
+        '680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com',
     iosBundleId: 'com.longndutc.publicchat',
   );
 
@@ -74,8 +76,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '680152053567',
     projectId: 'select-languages',
     storageBucket: 'select-languages.firebasestorage.app',
-    androidClientId: '680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com',
-    iosClientId: '680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com',
+    androidClientId:
+        '680152053567-emkdlcus6e32uip0iai5n9mju9um4lqb.apps.googleusercontent.com',
+    iosClientId:
+        '680152053567-ohe8r3a5dba9i28fd1lre7tidbe4bufl.apps.googleusercontent.com',
     iosBundleId: 'com.longndutc.publicchat',
   );
 
@@ -87,5 +91,4 @@ class DefaultFirebaseOptions {
     authDomain: 'select-languages.firebaseapp.com',
     storageBucket: 'select-languages.firebasestorage.app',
   );
-
 }

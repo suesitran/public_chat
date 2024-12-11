@@ -61,6 +61,5 @@ class TextsUIStatic {
 
   Map<String, Map<String, String>> get texts => _text;
 
-  set setTexts(Map<String, Map<String, String>> newTexts) =>
-      _text = newTexts;
+  set setTexts(Map<String, Map<String, String>> newTexts) => _text = newTexts;
 }
