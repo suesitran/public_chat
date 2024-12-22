@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:public_chat/features/chat/ui/public_chat_screen.dart';
 import 'package:public_chat/features/login/bloc/login_cubit.dart';
 import 'package:public_chat/features/login/ui/widgets/sign_in_button.dart';
 import 'package:public_chat/utils/locale_support.dart';
+
+import '../../chat/ui/public_chat_screen_with_gemini_bubble.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -27,7 +28,8 @@ class _LoginScreenBody extends StatelessWidget {
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const PublicChatScreen(),
+                  builder: (context) =>
+                      const PublicChatScreenWithGeminiBubble(),
                 ));
           }
         },
